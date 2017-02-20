@@ -1,8 +1,8 @@
-### disciplina - modelagem de  nicho ecológico: teoria e pratica ###
+### disciplina - modelagem de  nicho ecolÃ³gico: teoria e pratica ###
 ### ppg ecologia e biodiversidade - unesp 2017 ###
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 
 ###-----------------------------------------------------------------------------------------###
 ### 3. script ensemble ### 
@@ -102,7 +102,7 @@ for(i in sp){
       enm.gc <- enm.sp[[grep(j, names(enm.sp))]]
       eva.gc <- eva.sp[grep(j, names(eva.sp))]
         
-`	for(k in pe){		
+	for(k in pe){		
           enm.pe <- enm.gc[[grep(k, names(enm.gc))]]
 
             for(l in al){		
@@ -119,10 +119,8 @@ for(i in sp){
 		  	
 		  ens.re[] <- 0}
 
-	   writeRaster(ens.al, 
-		       paste0("ensemble_freq_", i, "_", j, "_", k, ".asc"), format = "ascii")
-	   writeRaster(ens.al / (length(al) * max(re[[1]])), 
-		       paste0("ensemble_freq_", i, "_", j, "_", k, "_bin.asc"), format = "ascii")
+	   writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".asc"), format = "ascii")
+	   writeRaster(ens.al / (length(al) * max(re[[1]])), paste0("ensemble_freq_", i, "_", j, "_", k, "_bin.asc"), format = "ascii")
 		
 	   ens.al[] <- 0}}}
 
