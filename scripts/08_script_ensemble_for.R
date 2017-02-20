@@ -1,13 +1,9 @@
-### disciplina - modelagem de  nicho ecológico: teoria e pratica ###
-### ppg ecologia e biodiversidade - unesp 2017 ###
+### script ensemble ###
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 
 ###-----------------------------------------------------------------------------------------###
-### 3. script ensemble ### 
-###-----------------------------------------------------------------------------------------###
-
 
 # 1. limpara a memoria e carregar os pacotes 
 # limpar o workspace e aumentar a memoria para o r
