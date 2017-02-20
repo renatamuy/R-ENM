@@ -1,8 +1,8 @@
-### disciplina - modelagem de  nicho ecolÛgico: teoria e pratica ###
+### disciplina - modelagem de  nicho ecol√≥gico: teoria e pratica ###
 ### ppg ecologia e biodiversidade - unesp 2017 ###
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
-# MaurÌcio Humberto Vancine - mauricio.vancine@gmail.com
+# Maur√≠cio Humberto Vancine - mauricio.vancine@gmail.com
 
 
 ###-----------------------------------------------------------------------------------------###
@@ -191,31 +191,31 @@ corr <- cor(pres.am.v.na)
 corr
 round(corr, 2) # arredondamento dos valores para dois valores decimais
 abs(round(corr, 2)) # arredondamento e valor absoluto
-ifelse(corr >= 0.7, "Sim", "N„o") # sim ou nao
+ifelse(corr >= 0.7, "Sim", "N√£o") # sim ou nao
 ifelse(corr >= 0.7, 1, 0) # 1 ou 0
 
 # exportar tabela com a correlacao
 write.table(abs(round(corr, 2)), "cor_pres.xls", row.names = T, sep = "\t")
-write.table(ifelse(corr >= 0.7, "Sim", "N„o"), "cor_pres_afirmacao.xls", row.names = T, 
+write.table(ifelse(corr >= 0.7, "Sim", "N√£o"), "cor_pres_afirmacao.xls", row.names = T, 
 		sep = "\t")
 
 # plot da correlacao
 corrplot(corr, type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "CorrelaÁıes entre vari·veis Bioclim·ticas")
+	   title = "Correla√ß√µes entre vari√°veis Bioclim√°ticas")
 
 # apenas azul
 corrplot(abs(corr), type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "CorrelaÁıes entre vari·veis Bioclim·ticas")
+	   title = "Correla√ß√µes entre vari√°veis Bioclim√°ticas")
 
 # apenas vermelho
 corrplot(-1 * (abs(corr)), type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "CorrelaÁıes entre vari·veis Bioclim·ticas")
+	   title = "Correla√ß√µes entre vari√°veis Bioclim√°ticas")
 
 # exportar figura na pasta do diretorio
 tiff("cor_ma.tif", width = 18, height = 18, units = "cm", res = 300, compression = "lzw")
 
 corrplot(abs(corr), type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "CorrelaÁıes entre vari·veis Bioclim·ticas")
+	   title = "Correla√ß√µes entre vari√°veis Bioclim√°ticas")
 
 dev.off()
 
@@ -241,12 +241,12 @@ summary(pca)
 
 # grafico de barras com as contribuicoes
 par(mar = c(3, 5, 5, 2))
-screeplot(pca, main = "ContribuiÁ„o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca, main = "Contribui√ß√£o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
 tiff("screeplot.tif", wi = 18, he = 18, un = "cm", res = 300, comp = "lzw")
 par(mar = c(3, 5, 5, 2))
-screeplot(pca, main = "ContribuiÁ„o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca, main = "Contribui√ß√£o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 dev.off()
 
@@ -264,7 +264,7 @@ write.table(abs(round(pca$rotation[, 1:5], 2)), "contr_pca.xls", row.names = T, 
 
 # plot
 biplot(pca, var.axes = T, xlabs = rep("o", nrow(pca$x)), ylabs = paste0("bio", 1:19), cex = .8,
-	 expand = 1.2, xlab = "PC1 (43.52%)", ylab = "PC2 (23.51%)", main = "PCA Bioclim·ticas AmÈrica do Sul", 
+	 expand = 1.2, xlab = "PC1 (43.52%)", ylab = "PC2 (23.51%)", main = "PCA Bioclim√°ticas Am√©rica do Sul", 
 	 xlim = c(-.03, .04))
 
 # 6.2. pca como novas variaveis
@@ -278,20 +278,20 @@ summary(pca)
 
 # grafico de barras com as contribuicoes
 par(mar = c(3, 5, 5, 2))
-screeplot(pca.am$model, main = "ContribuiÁ„o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca.am$model, main = "Contribui√ß√£o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
 # comparacao
 par(mfrow = c(1, 2))
-screeplot(pca.am$model, main = "ContribuiÁ„o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca.am$model, main = "Contribui√ß√£o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
-screeplot(pca, main = "ContribuiÁ„o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca, main = "Contribui√ß√£o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
 tiff("screeplot_raster.tif", wi = 18, he = 18, un = "cm", res = 300, comp = "lzw")
 par(mar = c(3, 5, 5, 2))
-screeplot(pca.am$model, main = "ContribuiÁ„o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca.am$model, main = "Contribui√ß√£o de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 dev.off()
 
