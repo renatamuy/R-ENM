@@ -38,6 +38,8 @@ asc <- list.files(pattern = ".asc")
 asc
 
 enm <- stack(asc)
+names(enm) <- asc
+enm
 plot(enm[[1]])
 
 # evaluate
