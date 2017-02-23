@@ -1,12 +1,8 @@
-### disciplina - modelagem de  nicho ecológico: teoria e pratica ###
-### ppg ecologia e biodiversidade - unesp 2017 ###
+﻿### script preparacao e selecao das variaveis ambientais ### 
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 
-
-###-----------------------------------------------------------------------------------------###
-### script preparacao e selecao das variaveis ambientais ### 
 ###-----------------------------------------------------------------------------------------###
 
 # 1. limpara a memoria e carregar os pacotes 

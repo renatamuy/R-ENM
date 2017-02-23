@@ -1,4 +1,4 @@
-### script ensemble ###
+﻿### script ensemble frequency and mean ###
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
@@ -44,9 +44,8 @@ txt
 
 eva <- lapply(txt, read.table)
 eva
-eva[[1]]
 names(eva) <- txt
-eva
+eva[[1]]
 
 ###-----------------------------------------------------------------------------------------###
 
@@ -110,12 +109,12 @@ for(i in sp){
 	        for(m in re){		
                   ens.re <- sum(ens.re, enm.al[[m]] >= eva.al[[1]][m, 1])}
 
-          writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", l, ".asc"), 
-		              format = "ascii")		  
+              writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", l, ".asc"), 
+		                         format = "ascii")		  
 		  
-		  ens.al <- sum(ens.al, ens.re)
+	      ens.al <- sum(ens.al, ens.re)
 		  	
-		  ens.re[] <- 0}
+	      ens.re[] <- 0}
 
 	   writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".asc"), format = "ascii")
 	   writeRaster(ens.al / (length(al) * max(re[[1]])), paste0("ensemble_freq_", i, "_", j, "_", k, "_bin.asc"), format = "ascii")
@@ -169,22 +168,22 @@ for(i in sp){
     for(j in gc){		
       enm.gc <- enm.sp[[grep(j, names(enm.sp))]]
               
-	  for(k in pe){		
-            enm.pe <- enm.gc[[grep(k, names(enm.gc))]]
+	for(k in pe){		
+          enm.pe <- enm.gc[[grep(k, names(enm.gc))]]
 
-              for(l in al){		
-                enm.al <- enm.pe[[grep(l, names(enm.pe))]]
+            for(l in al){		
+              enm.al <- enm.pe[[grep(l, names(enm.pe))]]
           	             
-                  for(m in re){		
-                    va[, m] <- values(enm.al[[m]])}
+                for(m in re){		
+                  va[, m] <- values(enm.al[[m]])}
 			
-		    ens.al[] <- apply(va, 1, mean)
+		  ens.al[] <- apply(va, 1, mean)
 		  
-		    writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, "_", k, "_", l, ".asc"), 
+		  writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, "_", k, "_", l, ".asc"), 
 			        format = "ascii")
 
-		va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
-		ens.al[] <- NA}}}}
+	    va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
+            ens.al[] <- NA}}}}
 
 
 ###-----------------------------------------------------------------------------------------###

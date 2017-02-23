@@ -1,6 +1,6 @@
 ### script selecionar e exportar ocorrencias com certo numero de frequencia ###
 
-# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
+# Maurício Humberto Vancine - mauricio.vancine@gmail.com
 
 ###--------------------------------------------------------------------###
 
@@ -10,7 +10,11 @@
 setwd("")
 
 # dados
-da <- read.table(".txt", h = T, sep = "\t")
+# da <- read.table(".txt", h = T, sep = "\t")
+# da
+
+da <- data.frame(sp = rep(c("sp1", "sp2", "sp3"), c(20, 5, 50)), 
+		     lat = -rnorm(75, 22, 1), long = -rnorm(75, 45, 1))
 da
 
 head(da)
@@ -21,7 +25,6 @@ dim(da)
 # frequencias
 ocorr <- data.frame(table(da$sp))
 head(ocorr)
-dim(ocorr)
 colnames(ocorr) <- c("sp", "f")
 head(ocorr)
 
@@ -31,9 +34,6 @@ hist(ocorr$f, col = "gray", xlim = c(0, 100), ylim = c(0, 150))
 ocorr.10 <- ocorr[ocorr$f >= 10, ]
 head(ocorr.10)
 dim(ocorr.10)
-
-hist(ocorr.10$f, col = "gray")
-boxplot(ocorr.10$f, col = "gray")
 
 ###--------------------------------------------------------------------###
 
@@ -48,11 +48,7 @@ da.10
 
 # conferir
 dim(da.10)
-length(unique(da.10$s
-              
-              
-              
-              p))
+length(unique(da.10$sp))
 
 ###--------------------------------------------------------------------###
 

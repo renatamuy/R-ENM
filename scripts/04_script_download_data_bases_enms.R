@@ -10,7 +10,7 @@ rm(list = ls())
 memory.limit(size = 10000000000000) 
 
 # install and require packages
-# install.packages(c("downloader", "xml2", "rvest", "repmis"), dep = T)
+install.packages(c("downloader", "xml2", "rvest", "repmis"), dep = T)
 
 library(downloader)
 library(xml2)
@@ -24,7 +24,7 @@ library(repmis)
 ### 1. current ###
 
 # directory
-setwd("C:/Users/leec/Documents/MEGA/enm/02_scripts") # define directory to store the zips
+setwd("C:/Users/leec/Documents/GitHub/enm_r/scripts") # define directory to store the zips
 
 # list of url
 url <- "http://www.worldclim.org/current"
@@ -262,21 +262,6 @@ for(i in 1:length(zip)){
 list <- list.files(patt = ".zip")
 list
 
-for(i in list){
-  unzip(i, exdir = "present")}
-
-# download
-for(i in list[i]){
-  download(i, paste0(i), mode = "wb")} 
-
-# unzip the archives
-list <- list.files(patt = ".zip")
-list
-
-for(i in list){
-  unzip(i, exdir = "chelsa")}
-
-
 
 # 2. Global 1-km Consensus Land Cover
 
@@ -309,21 +294,6 @@ for(i in 1:length(zip)){
 # unzip the archives
 list <- list.files(patt = ".zip")
 list
-
-for(i in list){
-  unzip(i, exdir = "present")}
-
-# download
-for(i in list[i]){
-  download(i, paste0(i), mode = "wb")} 
-
-# unzip the archives
-list <- list.files(patt = ".zip")
-list
-
-for(i in list){
-  unzip(i, exdir = "chelsa")}
-
 
 
 # 3. Global 1-km Cloud Cover
@@ -397,9 +367,6 @@ list
 for(i in list){
   unzip(i, exdir = "present")}
 
-# download
-for(i in list[i]){
-  download(i, paste0(i), mode = "wb")} 
 
 ###-----------------------------------------------------------------------------------------###
 
@@ -503,4 +470,4 @@ for(i in list){
 
 download("https://www.dropbox.com/sh/pd6q87brzq4a5aj/AAAjbnPgvaaiVSnDisnNFXvja?dl=0&preview=raw+%23baseline_Modern(1950-1999)%23+pr_CCSM_rcp26(2080-2100).txt", "test2.txt", mode = "wb")
  
-
+###-----------------------------------------------------------------------------------------###
