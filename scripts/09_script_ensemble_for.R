@@ -1,14 +1,15 @@
-### script ensemble frequency and mean ###
+### script ensemble frequency import data sequence ###
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Cleber Chaves - cleberchaves@gmail.com 
 
 ###-----------------------------------------------------------------------------------------###
 
-# 1. limpara a memoria e carregar os pacotes 
+# 1. clean memory and  
 # limpar o workspace e aumentar a memoria para o r
 rm(list = ls())
-memory.limit(size = 10000000000000) 
+memory.limit(size = 17500000000000) 
 
 # instalar e carregar pacotes
 # install.packages(c("raster", "rgdal", "vegan"), dep = T)
@@ -33,10 +34,9 @@ setwd("D:/github/enm_r/data/03_saidas_enm")
 asc <- list.files(pattern = ".asc")
 asc
 
-enm <- stack(asc)
-names(enm) <- asc
+enm <- raster("CCSM_Bioclim_0k_B.balansae1.asc")
 enm
-plot(enm[[1]])
+plot(enm)
 
 # evaluate
 txt <- list.files(pattern = ".txt")
@@ -49,12 +49,7 @@ eva[[1]]
 
 ###-----------------------------------------------------------------------------------------###
 
-# frequency ensemble 
-# directory of output of ensemble
-dir.create("04_ensembles")
-setwd("./04_ensembles")
-getwd()
-
+## frequency ensemble 
 # lists
 # species
 sp <- list("B.balansae")
@@ -77,57 +72,51 @@ re <- list(1:5)
 re
 
 # ensembles
-ens.re <- enm[[1]]
+ens.re <- enm
 ens.re[] <- 0
 names(ens.re) <- "ens.re"
 ens.re
 
-ens.al <- enm[[1]]
+ens.al <- enm
 ens.al[] <- 0
 names(ens.al) <- "ens.al"
 ens.al
 
 # for
 for(i in sp){		
-  enm.sp <- enm[[grep(i, names(enm))]]
+  asc.sp <- grep(i, asc, value = T)
   eva.sp <- eva[grep(i, names(eva))]
-
+  
     for(j in gc){		
-      enm.gc <- enm.sp[[grep(j, names(enm.sp))]]
+      asc.gc <- grep(j, asc.sp, value = T)
       eva.gc <- eva.sp[grep(j, names(eva.sp))]
-        
+       
 	  for(k in pe){		
-          enm.pe <- enm.gc[[grep(k, names(enm.gc))]]
+          asc.pe <- grep(k, asc.gc, value = T)
 
             for(l in al){		
-	        enm.al <- enm.pe[[grep(l, names(enm.pe))]]
+	        asc.al <- grep(l, asc.pe, value = T)
               eva.al <- eva.gc[grep(l, names(eva.gc))]
-           
+			           
 	          for(m in re){		
-                  ens.re <- sum(ens.re, enm.al[[m]] >= eva.al[[1]][m, 1])}
+                  enm.al <- stack(asc.al)
+			ens.re <- sum(ens.re, enm.al[[m]] >= eva.al[[1]][m, 1])}
+		
+		writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", l, ".asc"), 
+				format = "ascii")
 
-              writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", l, ".asc"), 
-		                         format = "ascii")		  
-		  
-	      ens.al <- sum(ens.al, ens.re)
+	     ens.al <- sum(ens.al, ens.re)
 		  	
-	      ens.re[] <- 0}
+	     ens.re[] <- 0}
 
 	   writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".asc"), format = "ascii")
 	   writeRaster(ens.al / (length(al) * max(re[[1]])), paste0("ensemble_freq_", i, "_", j, "_", k, "_bin.asc"), format = "ascii")
 		
 	   ens.al[] <- 0}}}
 
-
 ###-----------------------------------------------------------------------------------------###
 
-# average ensemble 
-# directory of output of ensemble
-setwd("..")
-getwd()
-dir.create("average ensemble")
-setwd("./average ensemble")
-getwd()
+## average ensemble 
 
 # lists
 # species
@@ -160,18 +149,19 @@ names(ens.al) <- "ens.al"
 ens.al
 
 for(i in sp){		
-  enm.sp <- enm[[grep(i, names(enm))]]
+  asc.sp <- grep(i, asc, value = T)
   
     for(j in gc){		
-      enm.gc <- enm.sp[[grep(j, names(enm.sp))]]
+      asc.gc <- grep(j, asc.sp, value = T)
               
 	for(k in pe){		
-          enm.pe <- enm.gc[[grep(k, names(enm.gc))]]
+          asc.pe <- grep(k, asc.gc, value = T)
 
             for(l in al){		
-              enm.al <- enm.pe[[grep(l, names(enm.pe))]]
+              asc.al <- grep(l, asc.pe, value = T)
           	             
                 for(m in re){		
+			enm.al <- stack(asc.al)
                   va[, m] <- values(enm.al[[m]])}
 			
 		  ens.al[] <- apply(va, 1, mean)
@@ -182,7 +172,5 @@ for(i in sp){
 	    va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
             ens.al[] <- NA}}}}
 
-
 ###-----------------------------------------------------------------------------------------###
-
 

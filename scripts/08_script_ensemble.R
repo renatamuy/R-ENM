@@ -9,7 +9,7 @@
 ###-----------------------------------------------------------------------------------------###
 
 
-# 1. limpara a memoria e carregar os pacotes 
+# 1. limpar a memoria e carregar os pacotes 
 # limpar o workspace e aumentar a memoria para o r
 rm(list = ls())
 memory.limit(size = 10000000000000) 
