@@ -214,16 +214,13 @@ list <- as.list(html_attr(html_nodes(pg, "a"), "href"))
 list
 
 # download
-for(i in list[i]){
-  download(paste0("https://cloud.s3it.uzh.ch:8080/v1/AUTH_5218a3a69ebf4a059c5a95889c5ee56e/CHELSA/", i), 
-  paste0(i), mode = "wb")} 
-
-# unzip the archives
-list <- list.files(patt = ".zip")
-list
-
 for(i in list){
-  unzip(i, exdir = "chelsa")}
+  download(paste0("https://cloud.s3it.uzh.ch:8080/v1/AUTH_5218a3a69ebf4a059c5a95889c5ee56e/CHELSA/", i), 
+  paste0(i), mode = "wb")
+
+  unzip(i), exdir = "chelsa")
+  
+  unlink(i)}
 
 
 ###-----------------------------------------------------------------------------------------###
