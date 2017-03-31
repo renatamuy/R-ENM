@@ -2,7 +2,6 @@
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
-# Cleber Chaves - cleberchaves@gmail.com 
 
 ###-----------------------------------------------------------------------------------------###
 
