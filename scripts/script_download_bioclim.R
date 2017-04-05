@@ -1,6 +1,6 @@
 ### script download of data bases for enm ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 # 21/03/2017
 
 ###------------------------------------------------------------------------------###
@@ -269,7 +269,7 @@ for(i in 1:length(re)){
   	  	  dir.create(em[k])
   	  	  setwd(em[k])
 		  zip.em <- grep(em.s[k], zip.an, value = T)
-		  na <- substr(sub(paste0("http://biogeo.ucdavis.edu/data/climate/cmip5/", pe[i], "/"), 
+		  na <- substr(sub(paste0("http://biogeo.ucdavis.edu/data/climate/cmip5/", re[i], "/"), 
 				       "", zip.em), 1, 8)
 		
 		  gcm <- unique(substr(na, 1, 2))
@@ -282,7 +282,7 @@ for(i in 1:length(re)){
 
 			    for(m in 1:length(na.gcm)){
 	   		      dir.create(na.gcm[m])
-	    		  setwd(na.gcm[m])
+	    		      setwd(na.gcm[m])
 
 			      download(zip.gcm[m], paste0(na.gcm[m], ".tif"), mode = "wb")
 			      unzip(paste0(na.gcm[m], ".tif"))
