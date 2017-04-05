@@ -1,6 +1,6 @@
 ### script download of data bases for enm ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 # 17/03/2017
 
 ###-----------------------------------------------------------------------------###
