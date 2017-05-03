@@ -12,7 +12,7 @@ rm(list = ls())
 memory.limit(size = 17500000000000) 
 
 # install and load packages
-# install.packages("downloader"), dep = T)
+# install.packages("downloader", dep = T)
 
 library(downloader)
 
