@@ -160,3 +160,58 @@ for(i in 1:length(nc)){
   download(nc[i], na[i], mode = "wb")}
 
 ###------------------------------------------------------------------------------###
+
+
+###------------------------------------------------------------------------------###
+
+
+# 5. EarthEnv-DEM90 digital elevation model
+
+# directory
+setwd("..")
+dir.create("mde")
+setwd("mde")
+getwd()
+
+# list of url
+url <- "http://mirrors.iplantcollaborative.org/earthenv_dem_data/EarthEnv-DEM90/EarthEnv-DEM90_"
+url
+
+lat <- c(paste0("N", c("00", "05", seq(10, 80, 5))), paste0("S", c("05", seq(10, 55, 5))))
+lat
+
+long <- c(paste0("W", c("005", paste0("0", seq(10, 95, 5)), seq(100, 180, 5))), 
+          paste0("E", c("000", "005", paste0("0", seq(10, 95, 5)), seq(100, 175, 5))))
+long
+
+cells <- levels(interaction(lat, long, sep = ""))
+cells
+
+# download
+#for(i in cells){
+#  download(paste0(url, i, ".tar.gz"), paste0(i, ".tar.gz"), mode = "wb")
+#  untar(paste0(i, ".tar.gz"))
+#  unlink(paste0(i, ".tar.gz"))}
+
+
+# check download and download errors
+do <- sub(".prj", "", sub("EarthEnv-DEM90_", "", list.files(pattern = ".prj")))
+do
+length(do)
+
+ch <- paste0(cells)
+ch
+length(ch)
+
+for(j in ch){
+  if(j %in% do){}
+  else{print(j)}}
+
+for(j in ch){
+  if(j %in% do){}
+  else{
+    download(paste0(url, j, ".tar.gz"), paste0(j, ".tar.gz"), mode = "wb")
+    untar(paste0(j, ".tar.gz"))
+    unlink(paste0(j, ".tar.gz"))}}
+
+###----------------------------------------------------------------------------###
