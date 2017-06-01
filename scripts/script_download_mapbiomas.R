@@ -1,22 +1,22 @@
 ### script download of data bases for enm ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 # 28/04/2017
 
-###-----------------------------------------------------------------------###
-### mapbiomas v02 ###
-###-----------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###
+###                             mapbiomas v02 ###
+###-----------------------------------------------------------------------------###
 
 # clean and increase memory limite
 rm(list = ls())
-memory.limit(size = 17500000000000) 
+memory.limit(size = 1.75e13) 
 
 # install and load packages
 # install.packages("downloader", dep = T)
 
 library(downloader)
 
-###-----------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###
 # directory
 setwd("D:/environmental_data/mapbiomas/colecao_02")
 
