@@ -1,13 +1,13 @@
 ### script download of data bases for enm ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 # 20/03/2017
 
-###------------------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###
 
 # clean and increase memory limite
 rm(list = ls())
-memory.limit(size = 17500000000000) 
+memory.limit(size = 1.75e13) 
 
 # install and require packages
 # install.packages(c("downloader", "xml2", "rvest"), dep = T)
@@ -16,9 +16,10 @@ library(downloader)
 library(xml2)
 library(rvest)
 
-###------------------------------------------------------------------------------###
-### earthenv
-###------------------------------------------------------------------------------###
+
+###-----------------------------------------------------------------------------###
+###                               earthenv
+###-----------------------------------------------------------------------------###
 
 # 1. Global Habitat Heterogeneity
 
@@ -59,7 +60,7 @@ for(i in 1:length(es)){
 
   setwd("..")}
 
-###------------------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###
 
 
 # 2. Global 1-km Consensus Land Cover
@@ -99,15 +100,15 @@ for(i in 1:length(di)){
   setwd("..")}
 
 
-###------------------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###
 
 
 # 3. Global 1-km Cloud Cover
 
 # directory
 setwd("..")
-dir.create("cloud")
-setwd("cloud")
+dir.create("cloud_cover")
+setwd("cloud_cover")
 
 # list of url
 url <- "http://www.earthenv.org/cloud"
@@ -130,7 +131,7 @@ for(i in 1:length(tif)){
   download(tif[i], na[i], mode = "wb")}
 
 
-###------------------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###
 
 # 4. Near-global environmental information for freshwater ecosystems in 1km resolution
 
@@ -159,11 +160,7 @@ na
 for(i in 1:length(nc)){
   download(nc[i], na[i], mode = "wb")}
 
-###------------------------------------------------------------------------------###
-
-
-###------------------------------------------------------------------------------###
-
+###-----------------------------------------------------------------------------###
 
 # 5. EarthEnv-DEM90 digital elevation model
 
@@ -177,7 +174,8 @@ getwd()
 url <- "http://mirrors.iplantcollaborative.org/earthenv_dem_data/EarthEnv-DEM90/EarthEnv-DEM90_"
 url
 
-lat <- c(paste0("N", c("00", "05", seq(10, 80, 5))), paste0("S", c("05", seq(10, 55, 5))))
+lat <- c(paste0("N", c("00", "05", seq(10, 80, 5))), 
+         paste0("S", c("05", seq(10, 55, 5))))
 lat
 
 long <- c(paste0("W", c("005", paste0("0", seq(10, 95, 5)), seq(100, 180, 5))), 
@@ -188,10 +186,10 @@ cells <- levels(interaction(lat, long, sep = ""))
 cells
 
 # download
-#for(i in cells){
-#  download(paste0(url, i, ".tar.gz"), paste0(i, ".tar.gz"), mode = "wb")
-#  untar(paste0(i, ".tar.gz"))
-#  unlink(paste0(i, ".tar.gz"))}
+for(i in cells){
+  download(paste0(url, i, ".tar.gz"), paste0(i, ".tar.gz"), mode = "wb")
+  untar(paste0(i, ".tar.gz"))
+  unlink(paste0(i, ".tar.gz"))}
 
 
 # check download and download errors
@@ -203,10 +201,12 @@ ch <- paste0(cells)
 ch
 length(ch)
 
+# check
 for(j in ch){
   if(j %in% do){}
   else{print(j)}}
 
+# download
 for(j in ch){
   if(j %in% do){}
   else{
