@@ -28,27 +28,26 @@ search()
 
 # pontos
 # diretorio da pasta de dados de entrada
-setwd("D:/mineracao/01_dados")
+setwd("D:/lianas/01_dados")
 
 # occurrence 
-po <- read.table("ocorrencias_anfibios_10.txt", h = T)
+po <- read.table("ocorrencias_lianas_clip.txt", h = T)
 head(po, 10)
 
-plot(po[, 2], po[, 3], col = po$sp, pch = 20, xlab = "long", ylab = "lat")
+plot(po[, 3], po[, 4], col = po$sp, pch = 20, xlab = "long", ylab = "lat")
 
 # especies
 sp <- levels(po$sp)
 sp
 
 # limite 
-sh <- shapefile("limite_gcs_wgs.shp")
+sh <- shapefile("ma_ribeiro_gcs_wgs84.shp")
 sh
 plot(sh)
 
 # diretorio
-setwd("..")
-dir.create("05_mapas_ocorrencias")
-setwd("05_mapas_ocorrencias")
+dir.create("01_mapas_ocorrencias")
+setwd("01_mapas_ocorrencias")
 getwd()
 
 # mapas
