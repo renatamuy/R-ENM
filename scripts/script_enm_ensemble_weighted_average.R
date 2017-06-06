@@ -27,7 +27,7 @@ search()
 
 # import data
 # directory
-setwd("D:/ensemble")
+setwd("D:/_github/enmR/ouput")
 
 # enms
 # list files
