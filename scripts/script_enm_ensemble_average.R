@@ -1,4 +1,4 @@
-### script frequency ensemble ###
+### script ensemble average ###
 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 # 05/06/2017
@@ -21,6 +21,7 @@ library(data.table) # tables
 
 # verify packages
 search()
+
 
 ###-----------------------------------------------------------------------------------------###
 
@@ -46,9 +47,8 @@ eva
 names(eva) <- txt
 eva[[1]]
 
-###-----------------------------------------------------------------------------------------###
+## average ensemble 
 
-## frequency ensemble 
 # lists
 # species
 sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
@@ -71,49 +71,36 @@ re <- 1:5
 re
 
 # ensembles
-ens.re <- enm
-ens.re[] <- 0
-names(ens.re) <- "ens.re"
-ens.re
+va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
+va
 
-ens.al <- enm
-ens.al[] <- 0
+ens.al <- enm[[1]]
+ens.al[] <- NA
 names(ens.al) <- "ens.al"
 ens.al
 
-# for
 for(i in sp){		
-  tif.sp <- grep(i, tif, value = T)
-  eva.sp <- eva[grep(i, names(eva))]
+  asc.sp <- grep(i, asc, value = T)
   
-    for(j in gc){		
-      tif.gc <- grep(j, tif.sp, value = T)
-      eva.gc <- eva.sp[grep(j, names(eva.sp))]
-       
-        for(k in pe){		
-          tif.pe <- grep(k, tif.gc, value = T)
-
-            for(l in al){		
-	            tif.al <- grep(l, tif.pe, value = T)
-              eva.al <- eva.gc[grep(l, names(eva.gc))]
-              	           
-	              for(m in re){		
-                  enm.al <- stack(tif.al)
-                  ens.re <- sum(ens.re, enm.al[[m]] >= eva.al[[1]][m, 1])}
-                  
-	      writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", l, ".tif"), 
-			  format = "GTiff")
-
-	      ens.al <- sum(ens.al, ens.re)
-		  	
-	      ens.re[] <- 0}
-
-	   writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".tif"), format = "GTiff")
-	   writeRaster(ens.al / (length(al) * length(re)), paste0("ensemble_freq_", i, "_", j, "_", k, "_bin.tif"), 
-		       format = "GTiff")
-		
-	   ens.al[] <- 0}}}
+  for(j in gc){		
+    asc.gc <- grep(j, asc.sp, value = T)
+    
+    for(k in pe){		
+      asc.pe <- grep(k, asc.gc, value = T)
+      
+      for(l in al){		
+        asc.al <- grep(l, asc.pe, value = T)
+        
+        for(m in re){		
+          enm.al <- stack(asc.al)
+          va[, m] <- values(enm.al[[m]])}
+        
+        ens.al[] <- apply(va, 1, mean)
+        
+        writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, "_", k, "_", l, ".tif"), 
+                    format = "GTiff")
+        
+        va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
+        ens.al[] <- NA}}}}
 
 ###-----------------------------------------------------------------------------------------###
-
-

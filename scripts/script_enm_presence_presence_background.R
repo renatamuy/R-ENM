@@ -1,71 +1,69 @@
-### disciplina - modelagem de nicho ecológico: teoria e pratica ###
-### ppg ecologia e biodiversidade - unesp 2017 ###
+### script enm ###
 
-# Thadeu Sobral de Souza - thadeusobral@gmail.com 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
-
+# 05/06/2017
 
 ###-----------------------------------------------------------------------------------------###
-### script contruir modelos de nicho ecologico ### 
-###-----------------------------------------------------------------------------------------###
 
-# 1. limpara a memoria e carregar os pacotes 
-# limpar o workspace e aumentar a memoria para o r
+# 1. clear memory and load packages 
+# clear workspace and increase memory
 rm(list = ls())
-memory.limit(size = 17500000000000) 
+memory.limit(size = 1.75e13) 
 
-# instalar e carregar pacotes
-# install.packages(c("raster", "rgdal", "dismo", "gam", "randomForest", "kernlab", "rJava", 
-# 		   	   "vegan"), dep = T)
+# install and load packages
+# install packages
+# install.packages(c("raster", "rgdal", "dismo", "gam", "randomForest", "kernlab", 
+#                    "rJava", "vegan"), dep = T)
 
-# carregar pacotes
-library(raster) # manejo de arquivos sig 
-library(rgdal) # manejo de arquivos sig
-library(dismo) # construir enms
-library(gam) # 
-library(randomForest) # 
-library(kernlab) # algoritmos svm
-library(rJava) # funcionamento do java
-library(vegan) # diversas analises multivariadas
+# load packages
+library(raster)
+library(rgdal) 
+library(dismo) 
+library(gam) 
+library(randomForest) 
+library(kernlab) 
+library(rJava) 
+library(vegan) 
 
-# verificar pacotes carregados
+# verify packages
 search()
 
 ###-----------------------------------------------------------------------------------------###
 
-# 2. dados de entrada
-# diretorio da pasta de dados de entrada
+# 2. import data
+# directory
 setwd("D:/github/enm_r/data")
 
-# importando os pontos de ocorrencia 
-points <- read.table("Bromelia_balansae.txt", h = T)
-head(points, 10)
 
-po <- shapefile("Bromelia_balansae.shp")
-plot(po, pch = 20, axes = T)
+# ocurrences
+po <- read.table("Bromelia_balansae.txt", h = T)
+head(po, 10)
 
-# importando as variaveis .asc
-asc <- list.files(patt = "asc")
-asc
+plot(po$long, po$lat, pch = 20)
 
-asc.0k <- grep("0k", asc, value = T)
-asc.0k
 
-asc.6k <- grep("6k", asc, value = T)
-asc.6k
+#  variables
+tif <- list.files(patt = "tif")
+tif
 
-asc.21k <- grep("21k", asc, value = T)
-asc.21k
+tif.0k <- grep("0k", tif, value = T)
+tif.0k
 
-env.stack.0k <- stack(asc.0k)
+tif.6k <- grep("6k", tif, value = T)
+tif.6k
+
+tif.21k <- grep("21k", tif, value = T)
+tif.21k
+
+env.stack.0k <- stack(tif.0k)
 names(env.stack.0k) <- paste0("bio", c("02", "04", "10", "16", "17"))
 env.stack.0k
 
-env.stack.6k <- stack(asc.6k)
+env.stack.6k <- stack(tif.6k)
 names(env.stack.6k) <- paste0("bio", c("02", "04", "10", "16", "17"))
 env.stack.6k
 
-env.stack.21k <- stack(asc.21k)
+env.stack.21k <- stack(tif.21k)
 names(env.stack.21k) <- paste0("bio", c("02", "04", "10", "16", "17"))
 env.stack.21k
 
@@ -88,7 +86,7 @@ coord <- xyFromCell(env.stack.0k, id)
 coord
 
 plot(env.stack.0k[[1]])
-points(coord, pch = 20, cex = 0.1)
+po(coord, pch = 20, cex = 0.1)
 
 coords <- data.frame(coord, values)
 coords
@@ -103,11 +101,11 @@ colnames(coords) <- c("long", "lat")
 head(coords, 10)
 
 plot(env.stack.0k[[1]])
-points(coords, pch = 20, cex = 0.1)
+po(coords, pch = 20, cex = 0.1)
 
 ###-----------------------------------------------------------------------------------------###
 
-# verificar maxent
+# verify maxent
 jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = "")
 file.exists(jar)
 
@@ -128,7 +126,7 @@ AOGCM <- "CCSM"
 AOGCM
 
 # enms
-for(i in 1:length(levels(points[, 1]))){ # for para cada especie
+for(i in 1:length(levels(po[, 1]))){ # for para cada especie
 
 eval.Bioclim <- NULL
 eval.Gower <- NULL
@@ -139,8 +137,8 @@ eval.SVM <- NULL
 eval.names <- NULL
 
 # selecionando presença e ausencia da especie
-	id.specie <- levels(points[, 1])[i]
-	pr.specie <- points[which(points[, 1] == id.specie), 2:3]
+	id.specie <- levels(po[, 1])[i]
+	pr.specie <- po[which(po[, 1] == id.specie), 2:3]
 	id.background <- sample(nrow(coords), nrow(pr.specie))
 	bc.specie <- coords[id.background, ]
 	
@@ -158,9 +156,9 @@ for(r in 1:5){	# numero de replicas
 ## Bioclim	
 	Bioclim <- bioclim(train[which(train[, 1] == 1), -1])	
 	
- writeRaster(predict(env.stack.0k, Bioclim), paste(AOGCM, "_Bioclim_0k_", id.specie, r, ".asc", sep = ""), format = "ascii")	
- writeRaster(predict(env.stack.6k, Bioclim), paste(AOGCM, "_Bioclim_6k_", id.specie, r, ".asc", sep = ""), format = "ascii")
- writeRaster(predict(env.stack.21k, Bioclim), paste(AOGCM, "_Bioclim_21k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
+ writeRaster(predict(env.stack.0k, Bioclim), paste(AOGCM, "_Bioclim_0k_", id.specie, r, ".tif", sep = ""), format = "GTiff")	
+ writeRaster(predict(env.stack.6k, Bioclim), paste(AOGCM, "_Bioclim_6k_", id.specie, r, ".tif", sep = ""), format = "GTiff")
+ writeRaster(predict(env.stack.21k, Bioclim), paste(AOGCM, "_Bioclim_21k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
  
 	eBioclim <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Bioclim)
 	idBioclim <- which(eBioclim@t == as.numeric(threshold(eBioclim, "spec_sens")))
@@ -170,9 +168,9 @@ for(r in 1:5){	# numero de replicas
 ## Gower	
 	Gower <- domain(train[which(train[, 1] == 1), -1])	
 
- writeRaster(predict(env.stack.0k, Gower), paste(AOGCM, "_Gower_0k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
- writeRaster(predict(env.stack.6k, Gower), paste(AOGCM, "_Gower_6k_", id.specie, r, ".asc", sep = ""), format = "ascii")
- writeRaster(predict(env.stack.21k, Gower), paste(AOGCM, "_Gower_21k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
+ writeRaster(predict(env.stack.0k, Gower), paste(AOGCM, "_Gower_0k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
+ writeRaster(predict(env.stack.6k, Gower), paste(AOGCM, "_Gower_6k_", id.specie, r, ".tif", sep = ""), format = "GTiff")
+ writeRaster(predict(env.stack.21k, Gower), paste(AOGCM, "_Gower_21k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
  
 	eGower <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Gower)
 	idGower <- which(eGower@t == as.numeric(threshold(eGower, "spec_sens")))
@@ -182,9 +180,9 @@ for(r in 1:5){	# numero de replicas
 ## Maha	
 	Maha <- mahal(train[which(train[, 1] == 1), -1])	
 	
- writeRaster(predict(env.stack.0k, Maha), paste(AOGCM, "_Maha_0k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
- writeRaster(predict(env.stack.6k, Maha), paste(AOGCM, "_Maha_6k_", id.specie, r, ".asc", sep = ""), format = "ascii")
- writeRaster(predict(env.stack.21k, Maha), paste(AOGCM, "_Maha_21k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
+ writeRaster(predict(env.stack.0k, Maha), paste(AOGCM, "_Maha_0k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
+ writeRaster(predict(env.stack.6k, Maha), paste(AOGCM, "_Maha_6k_", id.specie, r, ".tif", sep = ""), format = "GTiff")
+ writeRaster(predict(env.stack.21k, Maha), paste(AOGCM, "_Maha_21k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
  
 	eMaha <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maha)
 	idMaha <- which(eMaha@t == as.numeric(threshold(eMaha, "spec_sens")))
@@ -195,9 +193,9 @@ for(r in 1:5){	# numero de replicas
 ## Maxent	
 	Maxent <- maxent(train[, -1], train[, 1])	
 
- writeRaster(predict(env.stack.0k, Maxent), paste(AOGCM, "_Maxent_0k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
- writeRaster(predict(env.stack.6k, Maxent), paste(AOGCM, "_Maxent_6k_", id.specie, r, ".asc", sep = ""), format = "ascii")
- writeRaster(predict(env.stack.21k, Maxent), paste(AOGCM, "_Maxent_21k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
+ writeRaster(predict(env.stack.0k, Maxent), paste(AOGCM, "_Maxent_0k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
+ writeRaster(predict(env.stack.6k, Maxent), paste(AOGCM, "_Maxent_6k_", id.specie, r, ".tif", sep = ""), format = "GTiff")
+ writeRaster(predict(env.stack.21k, Maxent), paste(AOGCM, "_Maxent_21k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
  
 	eMaxent <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maxent)
 	idMaxent <- which(eMaxent@t == as.numeric(threshold(eMaxent, "spec_sens")))
@@ -208,9 +206,9 @@ for(r in 1:5){	# numero de replicas
 ## SVM	
 	SVM <- ksvm(pb ~ bio02 + bio04 + bio10 + bio16 + bio17, data = train)	
 
- writeRaster(predict(env.stack.0k, SVM), paste(AOGCM, "_SVM_0k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
- writeRaster(predict(env.stack.6k, SVM), paste(AOGCM, "_SVM_6k_", id.specie, r, ".asc", sep = ""), format = "ascii")
- writeRaster(predict(env.stack.21k, SVM), paste(AOGCM, "_SVM_21k_", id.specie, r, ".asc", sep = ""), format = "ascii") 
+ writeRaster(predict(env.stack.0k, SVM), paste(AOGCM, "_SVM_0k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
+ writeRaster(predict(env.stack.6k, SVM), paste(AOGCM, "_SVM_6k_", id.specie, r, ".tif", sep = ""), format = "GTiff")
+ writeRaster(predict(env.stack.21k, SVM), paste(AOGCM, "_SVM_21k_", id.specie, r, ".tif", sep = ""), format = "GTiff") 
  
 	eSVM <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = SVM)
 	idSVM <- which(eSVM@t == as.numeric(threshold(eSVM, "spec_sens")))
@@ -237,30 +235,4 @@ write.table(eval.SVM, paste("zEval_", AOGCM, "_SVM_", id.specie, ".txt", sep = "
 } # ends for"i"
 
 ###-----------------------------------------------------------------------------------------###
-
-
-# plotando as predicoes
-
-# divide o plot em 1 linha e 5 colunas
-par(mfrow = c(2, 3))
-
-# bioclim
-m1 <- raster ("CCSM_Bioclim_0k_B.balansae1.asc")
-plot (m1, main = "bioclim")
-
-# gower
-m2 <- raster ("CCSM_Gower_0k_B.balansae1.asc")
-plot(m2, main = "gower")
-
-# mahanalobis
-m3 <- raster ("CCSM_Maha_0k_B.balansae1.asc")
-plot(m3, main = "mahanalobis")
-
-# maxent
-m4 <- raster("CCSM_Maxent_0k_B.balansae1.asc")
-plot(m4, main = "maxent")
-
-# svm
-m5 <-raster ("CCSM_SVM_0k_B.balansae1.asc")
-plot(m5, main = "svm")
 

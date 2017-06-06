@@ -1,4 +1,4 @@
-id	Long	Lat
+sp	long	lat
 B.balansae	-50.937544	-21.945639
 B.balansae	-51.693667	-22.280583
 B.balansae	-52.363111	-22.521944

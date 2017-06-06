@@ -1,25 +1,25 @@
-﻿### script preparacao e selecao das variaveis ambientais ### 
+### script variable selection ### 
 
 # Thadeu Sobral de Souza - thadeusobral@gmail.com 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 
 ###-----------------------------------------------------------------------------------------###
 
 # 1. clear the memory and load the packages
-# limpar o workspace e aumentar a memoria para o r
+# clear workspace and increase memory
 rm(list = ls())
-memory.limit(size = 17500000000000) 
+memory.limit(size = 1.75e13) 
 
 # install packages
 # install.packages(c("raster", "rgdal", "corrplot", "RStoolbox", "vegan", "psych"), dep = T)
 
 # load packages
-library(raster) # manejo de arquivos sig 
-library(rgdal) # manejo de arquivos sig
-library(corrplot) # graficos de correlacao
-library(RStoolbox) # pca de arquivos raster
-library(vegan) # diversas analises multivariadas
-library(psych) # analise fatorial
+library(raster) # sig 
+library(rgdal) # sig
+library(corrplot) # correlation
+library(RStoolbox) # raster pca
+library(vegan) # multivariates
+library(psych) # factorial analysis
 
 # check loaded packets
 search()
@@ -28,24 +28,24 @@ search()
 
 # 2. import data
 # directory
-setwd("D:/90_aulas_montadas/_disciplina_enm_R_unesp_2017/scripts_r/01_dados")
+setwd("D:/_github/enmR/data/variables")
 getwd()
 
-# listar o nome dos arquivos no diretorio com um padrao
-asc <- list.files(patt = ".asc")
-asc
+# list name of archives
+tif <- list.files(patt = ".tif$")
+tif
 
-# selecionar o nome dos arquivos especificos
-pres <- grep("0k", asc, value = T)
+# select name
+pres <- grep("0k", tif, value = T)
 pres
 
-hol <- grep("6k", asc, value = T)
+hol <- grep("6k", tif, value = T)
 hol
 
-lgm <- grep("21k", asc, value = T)
+lgm <- grep("21k", tif, value = T)
 lgm
 
-# carregar os arquivos .asc em uma variavel rasterstack e renomea-los
+# load variables ans rename
 pres.s <- stack(pres)
 pres.s
 
@@ -56,7 +56,7 @@ names(pres.s)
 plot(pres.s)
 plot(pres.s[[1]])
 
-# bioclim - descricao
+# bioclim
 # http://www.worldclim.org/bioclim
 
 hol.s <- stack(hol)
@@ -72,17 +72,17 @@ plot(lgm.s)
 
 ###-----------------------------------------------------------------------------------------###
 
-# 3. cortar raster para a area de interesse - mascara
-# 3.1. limite de interesse
-# extensao
-am <- extent(c(-90, -34, -60, 15)) # xmin, xmax, ymin, ymax
-plot(am, xlab = "long", ylab = "lat", type = "n")
+# 3. adjust raster to mask
+# 3.1. limit of interest
+# extention
+sa <- extent(c(-90, -34, -60, 15)) # xmin, xmax, ymin, ymax
+plot(sa, xlab = "long", ylab = "lat", type = "n")
 plot(pres.s[[1]], add = T)
-plot(am, cex.lab = 1.3, col = "red", add = T)
+plot(sa, cex.lab = 1.3, col = "red", add = T)
 
-# corte
-pres.am <- crop(pres.s, am)
-pres.am
+# cut
+pres.sa <- crop(pres.s, sa)
+pres.sa
 pres.s
 
 plot(pres.s[[1]])
@@ -90,39 +90,44 @@ plot(am, col = "red", add = T)
 
 par(mfrow = c(1, 2))
 plot(pres.s$pres_bio01)
-plot(pres.am$pres_bio01)
+plot(pres.sa$pres_bio01)
 dev.off()
 
-hol.am <- crop(hol.s, am)
-hol.am
-plot(hol.am)
+hol.sa <- crop(hol.s, sa)
+hol.sa
+plot(hol.sa)
 
-lgm.am <- crop(lgm.s, am)
-lgm.am
-plot(lgm.am)
+lgm.sa <- crop(lgm.s, sa)
+lgm.sa
+plot(lgm.sa)
 
 
-# 3.2 a partir de um shapefile
-# importar shapefile
+# 3.2 shapefile
+# import shapefile
 br <- shapefile("brasil_gcs_wgs84.shp")
 br
 plot(br, col = "gray", axes = T)
 
-# ajuste ao limite
+# download shapefile
+br <- getData("GADM", country = 'BRA', level = 0)
+br
+plot(br, col = "gray", axes = T)
+
+# adjust to limit
 ma <- mask(pres.s, br)
 ma
 plot(ma)
 plot(ma[[1]])
 plot(br, add = T)
 
-# ajuste da extensao
+# adjust to extention
 cr <- crop(pres.s, br)
 cr
 plot(cr)
 plot(cr[[1]])
 plot(br, add = T)
 
-# ajustar o limite e a extesao
+# adjust to limit and extention
 ma <- mask(pres.s, br)
 cr <- crop(ma, br)
 plot(cr[[1]])
@@ -133,7 +138,7 @@ ma <- mask(cr, br)
 plot(ma[[1]])
 plot(br, add = T)
 
-# juntos
+# together
 pres.br <- mask(crop(pres.s, br), br)
 plot(pres.br)
 
@@ -146,72 +151,71 @@ plot(lgm.br)
 
 ###-----------------------------------------------------------------------------------------###
 
-4. extrair os valores das celulas
-# extraindo valores dos rasters cortados
-pres.am.v <- values(pres.am)
-head(pres.am.v)
-head(pres.am.v, 10)
-head(pres.am.v, 50)
+# 4. extract values of cells
+pres.sa.v <- values(pres.sa)
+head(pres.sa.v)
+head(pres.sa.v, 10)
+head(pres.sa.v, 50)
 
-# contando o numero de linhas
-nrow(pres.am.v)
+# number of lines
+nrow(pres.sa.v)
 
-# dimensao
-dim(pres.am.v)
+# dimension
+dim(pres.sa.v)
 
-# omitir os NAs
-pres.am.v.na <- na.omit(pres.am.v)
-head(pres.am.v.na, 50)
-dim(pres.am.v.na)
+# omit NAs
+pres.sa.v.na <- na.omit(pres.sa.v)
+head(pres.sa.v.na, 50)
+dim(pres.sa.v.na)
 
-# perguntar se ha NAs
-any(is.na(pres.am.v.na))
+# there's NAs?
+any(is.na(pres.sa.v.na))
 
 ###-----------------------------------------------------------------------------------------###
 
-# 5.correlacao
+# 5.correlation
 
-# criar pasta e definir diretorio para analise exploratoria - correlacao
-dir.create("analise_selecao_variaveis")  # criar uma pasta no diretorio
+# create directory
+dir.create("analise_selecao_variaveis") 
 
-setwd("./analise_selecao_variaveis")  # mudar o diretorio para a pasta criada
+setwd("analise_selecao_variaveis") 
 
-dir.create("correlacao")  # criar pasta no diretorio da pasta criada
+dir.create("correlacao") 
 
-setwd("./correlacao") # mudar o diretorio para a pasta criada, da pasta criada
+setwd("correlacao") 
 
 getwd() 
 
-# tabela da correlacao
-corr <- cor(pres.am.v.na)
+# correlation
+corr <- cor(pres.sa.v.na)
 corr
-round(corr, 2) # arredondamento dos valores para dois valores decimais
-abs(round(corr, 2)) # arredondamento e valor absoluto
-ifelse(corr >= 0.7, "Sim", "Não") # sim ou nao
-ifelse(corr >= 0.7, 1, 0) # 1 ou 0
+round(corr, 2) 
+abs(round(corr, 2))
+ifelse(corr >= 0.7, "sim", "nao")
+ifelse(corr >= 0.7, 1, 0)
 
-# exportar tabela com a correlacao
+# export
 write.table(abs(round(corr, 2)), "cor_pres.xls", row.names = T, sep = "\t")
-write.table(ifelse(corr >= 0.7, "Sim", "Não"), "cor_pres_afirmacao.xls", row.names = T, 
-		sep = "\t")
+write.table(ifelse(corr >= 0.7, "sim", "nao"), "cor_pres_afirmacao.xls", 
+      row.names = T, sep = "\t")
 
-# plot da correlacao
+# plot of correlation
 corrplot(corr, type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "Correlações entre variáveis Bioclimáticas")
+	  title = "Correlacao entre variaveis Bioclimaticas")
 
-# apenas azul
+# blue
 corrplot(abs(corr), type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "Correlações entre variáveis Bioclimáticas")
+	  title = "Correlacao entre variaveis Bioclimaticas")
 
-# apenas vermelho
+# red
 corrplot(-1 * (abs(corr)), type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "Correlações entre variáveis Bioclimáticas")
+	  title = "Correlacao entre variaveis Bioclimaticas")
 
-# exportar figura na pasta do diretorio
-tiff("cor_ma.tif", width = 18, height = 18, units = "cm", res = 300, compression = "lzw")
+# exporta figure
+tiff("cor_ma.tif", w = 18, he = 18, units = "cm", res = 300, comp = "lzw")
 
-corrplot(abs(corr), type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
-	   title = "Correlações entre variáveis Bioclimáticas")
+corrplot(corr, type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
+	  title = "Correlacao entre variaveis Bioclimaticas")
 
 dev.off()
 
@@ -219,38 +223,37 @@ dev.off()
 
 # 6. pca
 
-# criar pasta e definir diretorio para analise exploratoria - pca
-setwd("..") # voltar uma pasta no diretorio
-getwd() # conferir o diretorio
-dir.create("pca") # criar pasta no diretorio
-setwd("./pca") # mudar o diretorio para a pasta criada
-getwd() # conferir o diretorio
+# directory
+setwd("..") 
+getwd() 
+dir.create("pca") 
+setwd("pca") #
+getwd() 
 
-# 6.1. pca para escolher variaveis
-# pca do pacote "stats"
-# pca com normalizacao interna
-pca <- prcomp(pres.am.v.na, scale = T)
+# 6.1. pca to choose variables
+# pca 
+pca <- prcomp(pres.sa.v.na, scale = T)
 pca
 
-# contribuicao de cada eixo (eigenvalues - autovalores)
+# contribution of each axis (eigenvalues - autovalores)
 summary(pca)
 
-# grafico de barras com as contribuicoes
+# screeplot
 par(mar = c(3, 5, 5, 2))
-screeplot(pca, main = "Contribuição de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca, main = "Contribuicao de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
 tiff("screeplot.tif", wi = 18, he = 18, un = "cm", res = 300, comp = "lzw")
 par(mar = c(3, 5, 5, 2))
-screeplot(pca, main = "Contribuição de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca, main = "Contribuicao de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 dev.off()
 
-# valores de cada eixo (eigenvectors - autovetores - escores)
+# values of each axis (eigenvectors - autovetores - escores)
 pca$x
 dim(pca$x)
 
-# relacao das variaveis com cada eixo (loadings - cargas)
+# relation of the variables with each axis (loadings - cargas)
 pca$rotation[, 1:5]
 round(pca$rotation[, 1:5], 2)
 abs(round(pca$rotation[, 1:5], 2))
@@ -260,52 +263,52 @@ write.table(abs(round(pca$rotation[, 1:5], 2)), "contr_pca.xls", row.names = T, 
 
 # plot
 biplot(pca, var.axes = T, xlabs = rep("o", nrow(pca$x)), ylabs = paste0("bio", 1:19), cex = .8,
-	 expand = 1.2, xlab = "PC1 (43.52%)", ylab = "PC2 (23.51%)", main = "PCA Bioclimáticas América do Sul", 
+	 expand = 1.2, xlab = "PC1 (43.52%)", ylab = "PC2 (23.51%)", main = "PCA Bioclimaticas", 
 	 xlim = c(-.03, .04))
 
-# 6.2. pca como novas variaveis
-# pca dos raster
-pca.am <- rasterPCA(pres.am, spca = T) 
-pca.am
+# 6.2. pca as new variables
+# pca of raster
+pca.sa <- rasterPCA(pres.sa, spca = T) 
+pca.sa
 
-# contribuicao dos componentes
-summary(pca.am$model)
+# contribution of each axis 
+summary(pca.sa$model)
 summary(pca)
 
-# grafico de barras com as contribuicoes
+# screeplot
 par(mar = c(3, 5, 5, 2))
-screeplot(pca.am$model, main = "Contribuição de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca.sa$model, main = "Contribuicao de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
-# comparacao
+# comparation
 par(mfrow = c(1, 2))
-screeplot(pca.am$model, main = "Contribuição de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca.sa$model, main = "Contribuicao de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
-screeplot(pca, main = "Contribuição de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca, main = "Contribuicao de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 
 tiff("screeplot_raster.tif", wi = 18, he = 18, un = "cm", res = 300, comp = "lzw")
 par(mar = c(3, 5, 5, 2))
-screeplot(pca.am$model, main = "Contribuição de cada PC", ylab = "Autovalores", cex.lab = 1.3)
+screeplot(pca.sa$model, main = "Contribuicao de cada PC", ylab = "Autovalores", cex.lab = 1.3)
 abline(h = 1, col = "red", lty = 2)
 dev.off()
 
-# plot das pcs como novas variaveis
-plot(pca.am$map)
+# plot pf pcas as variables
+plot(pca.sa$map)
 
-plot(pca.am$map[[1:5]])
+plot(pca.sa$map[[1:5]])
 
 
-# exportar as novas variaveis
-# exportar apenas uma variavel
-writeRaster(pca.am$map[[1]], "pc1_e.asc", format = "ascii")
-writeRaster(pca.am$map[[2]], "pc2_e.asc", format = "ascii")
-writeRaster(pca.am$map[[3]], "pc3_e.asc", format = "ascii")
-writeRaster(pca.am$map[[4]], "pc4_e.asc", format = "ascii")
-writeRaster(pca.am$map[[5]], "pc5_e.asc", format = "ascii")
+# export
+# export one by one
+writeRaster(pca.sa$map[[1]], "pc1_e .tif", format = "GTiff")
+writeRaster(pca.sa$map[[2]], "pc2_e .tif", format = "GTiff")
+writeRaster(pca.sa$map[[3]], "pc3_e .tif", format = "GTiff")
+writeRaster(pca.sa$map[[4]], "pc4_e .tif", format = "GTiff")
+writeRaster(pca.sa$map[[5]], "pc5_e .tif", format = "GTiff")
 
-# comando for
+# comand for
 print(1)
 print(2)
 print(3)
@@ -313,64 +316,65 @@ print(4)
 print(5)
 
 for(i in 1:5){
-  print(i)}
+ print(i)}
 
 for(i in 1:5000){
-  print(i)}
+ print(i)}
 
-# exportar as cinco variaveis
+# export usinf for
 for(i in 1:5){
-  writeRaster(pca.am$map[[i]], paste0("pc", i, "_e.asc"), format = "ascii", overwrite = T)}
+ writeRaster(pca.sa$map[[i]], paste0("pc", i, ".tif"), format = "GTiff", 
+             overwrite = T)}
 
 ###-----------------------------------------------------------------------------------------###
 
-# 7. analise fatorial
+# 7. factorial analysis
 
-# criar pasta e definir diretorio para analise exploratoria - fatorial
+# directory
 setwd("..") 
 getwd() 
 dir.create("fatorial") 
-setwd("./fatorial") 
+setwd("fatorial") 
 getwd() 
 
-# analises preliminares de possibilidade de uso da analise fatorial
+# preliminaries analysis
 # kmo e bartlett
-KMO(cor(pres.am.v.na)) # deve ser acima de 0.5
-cortest.bartlett(cor(pres.am.v.na), n = nrow(pres.am.v.na)) # deve ser significativo (p < 0.05)
+KMO(cor(pres.sa.v.na)) # > 0.5
+cortest.bartlett(cor(pres.sa.v.na), n = nrow(pres.sa.v.na)) # p < 0.05
 
-# numero de eixos - semelhante a pca
+# number os axis
 # screeplot
-fa <- fa.parallel(pres.am.v.na, fa = "fa", fm = "ml") # sugere 5 eixos
+fa <- fa.parallel(pres.sa.v.na, fa = "fa", fm = "ml")
 fa
 
 # exportar screeplot
 tiff("screeplot_fatorial.tif", wi = 18, he = 18, un = "cm", res = 300, comp = "lzw")
-fa.parallel(pres.am.v.na, fm = "ml", fa = "fa") 
+fa.parallel(pres.sa.v.na, fm = "ml", fa = "fa") 
 dev.off()
 
 # fatorial
-fa.am <- fa(pres.am.v.na, nfactors = 5, rotate = "varimax", fm = "ml")
-am.loadings <- loadings(fa.am)
-am.loadings
+fa.sa <- fa(pres.sa.v.na, nfactors = 5, rotate = "varimax", fm = "ml")
+sa.loadings <- loadings(fa.sa)
+sa.loadings
 
 abs(round(am.loadings, 2))
 
 # exportar tabela dos resultados
-write.table(abs(round(am.loadings, 2)), "as_loadings.xls", row.names = T, sep = "\t")
+write.table(abs(round(sa.loadings, 2)), "as_loadings.xls", row.names = T, sep = "\t")
 
-# bios escolhidas
+# bios
 # bio02, bio04, bio10, bio16, bio17
 
 # significado das bios
-# BIO1 = Temperatura media anual
-# BIO2 = Variacao da media diurna (media por mes (temp max - temp min))
-# BIO3 = Isotermalidade (BIO2/BIO7) (* 100)
-# BIO4 = Sazonalidade da temperatura (desvio padrao deviation *100)
-# BIO5 = Temperatura maxima do mes mais quente
-# BIO6 = Temperatura minima do mes mais frio
-# BIO7 = Variacao da temperatura anual (BIO5-BIO6)
-# BIO8 = Temperatura media do trimestre mais chuvoso
-# BIO9 = Temperatura media do trimestre mais seco
+# BIO01 = Temperatura media anual
+# BIO02 = Variacao da media diurna (media por mes (temp max - temp min))
+# BIO03 = Isotermalidade (BIO02/BIO07) (* 100)
+# BIO04 = Sazonalidade da temperatura (desvio padrao deviation *100)
+# BIO05 = Temperatura maxima do mes mais quente
+# BIO06 = Temperatura minima do mes mais frio
+# BIO07 = Variacao da temperatura anual (BIO5-BIO6)
+# BIO08 = Temperatura media do trimestre mais chuvoso
+# BIO09 = Temperatura media do trimestre mais seco
 # BIO10 = Temperatura media do trimestre mais quente
 # BIO11 = Temperatura media do trimestre mais frio
 # BIO12 = Precipitacao anual
@@ -384,34 +388,38 @@ write.table(abs(round(am.loadings, 2)), "as_loadings.xls", row.names = T, sep = 
 
 ###-----------------------------------------------------------------------------------------###
 
-# 8. exportar as variaveis escolhidas
-# bios escolhidas
+# 8. export variables
+# bios
 # bio02, bio04, bio10, bio16, bio17
 
-pres.am
-names(pres.am)
+pres.sa
+names(pres.sa)
 
 lista <- c(02, 04, 10, 16, 17)
+lista
 
-pres.am[[01]]
+pres.sa[[01]]
 
-# diretorios de saida
-setwd("D:/90_aulas_montadas/_disciplina_enm_R_unesp_2017/scripts_r/01_dados")
+# diretory
+setwd("..")
+setwd("..")
+setwd("..")
+getwd()
 
-# presente
+# present
 for(i in lista){
-  writeRaster(pres.am[[i]], ifelse(i < 10, paste0("CCSM_0k_am_bio0", i, ".asc"), 
-		  paste0("CCSM_0k_am_bio", i, ".asc")), format = "ascii")}
+ writeRaster(pres.sa[[i]], ifelse(i < 10, paste0("CCSM_0k_am_bio0", i, " .tif"), 
+		 paste0("CCSM_0k_am_bio", i, " .tif")), format = "GTiff")}
 
 # holoceno
 for(i in lista){
-  writeRaster(hol.am[[i]], ifelse(i < 10, paste0("CCSM_6k_am_bio0", i, ".asc"), 
-		  paste0("CCSM_6k_am_bio", i, ".asc")), format = "ascii")}
+ writeRaster(hol.sa[[i]], ifelse(i < 10, paste0("CCSM_6k_am_bio0", i, " .tif"), 
+		 paste0("CCSM_6k_am_bio", i, " .tif")), format = "GTiff")}
 
 # lgm
 for(i in lista){
-  writeRaster(lgm.am[[i]], ifelse(i < 10, paste0("CCSM_21k_am_bio0", i, ".asc"), 
-		  paste0("CCSM_21k_am_bio", i, ".asc")), format = "ascii")}
+ writeRaster(lgm.sa[[i]], ifelse(i < 10, paste0("CCSM_21k_am_bio0", i, " .tif"), 
+		 paste0("CCSM_21k_am_bio", i, " .tif")), format = "GTiff")}
 
 ###-----------------------------------------------------------------------------------------###
 
