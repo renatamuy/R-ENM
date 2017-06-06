@@ -17,7 +17,7 @@ memory.limit(size = 1.75e13)
 # load packages
 library(raster) # sig 
 library(rgdal) # sig
-library(data.table) # tables
+library(data.table) # long tables
 
 # verify packages
 search()
