@@ -3,7 +3,7 @@
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 # 05/06/2017
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
 
 # 1. clear memory and load packages 
 # clear workspace and increase memory
@@ -17,16 +17,15 @@ memory.limit(size = 1.75e13)
 # load packages
 library(raster) # sig 
 library(rgdal) # sig
-library(data.table) # tables
 
 # verify packages
 search()
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
 
 # import data
 # directory
-setwd("D:/github/enm_r/data/03_saidas_enm")
+setwd("D:/_github/enmR/ouput")
 
 # enms
 # list files
@@ -46,12 +45,12 @@ eva
 names(eva) <- txt
 eva[[1]]
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
 
 ## frequency ensemble 
 # lists
 # species
-sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
+sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
 # gcms
@@ -63,7 +62,7 @@ pe <- c("0k", "6k", "21k")
 pe
 
 # algorithms
-al <- c("Bioclim", "Gower", "Maha", "Maxent", "SVM")
+al <- c("bioclim", "gower", "mahalanobis", "maxent", "svm")
 al
 
 # replicates
@@ -93,7 +92,7 @@ for(i in sp){
         for(k in pe){		
           tif.pe <- grep(k, tif.gc, value = T)
 
-            for(l in al){		
+            for(l in al[3]){
 	            tif.al <- grep(l, tif.pe, value = T)
               eva.al <- eva.gc[grep(l, names(eva.gc))]
               	           
@@ -101,19 +100,23 @@ for(i in sp){
                   enm.al <- stack(tif.al)
                   ens.re <- sum(ens.re, enm.al[[m]] >= eva.al[[1]][m, 1])}
                   
-	      writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", l, ".tif"), 
-			  format = "GTiff")
+	            writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", 
+	                                       l, ".tif"), 
+			                    format = "GTiff")
 
-	      ens.al <- sum(ens.al, ens.re)
+	            ens.al <- sum(ens.al, ens.re)
 		  	
-	      ens.re[] <- 0}
+	            ens.re[] <- 0}
 
-	   writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".tif"), format = "GTiff")
-	   writeRaster(ens.al / (length(al) * length(re)), paste0("ensemble_freq_", i, "_", j, "_", k, "_bin.tif"), 
-		       format = "GTiff")
+  writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".tif"), 
+              format = "GTiff")
+	writeRaster(ens.al / (length(al) * length(re)), paste0("ensemble_freq_", i, "_", 
+	                                                       j, "_", k, "_bin.tif"), 
+	            format = "GTiff")
 		
-	   ens.al[] <- 0}}}
+	ens.al[] <- 0}}}
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
+
 
 

@@ -41,52 +41,52 @@ head(po, 10)
 plot(po$long, po$lat, pch = 20)
 
 #  variables
-tif <- list.files(patt = "tif")
-tif
+ti <- list.files(patt = "tif")
+ti
 
-tif.0k <- grep("0k", tif, value = T)
-tif.0k
+ti.0k <- grep("0k", ti, value = T)
+ti.0k
 
-tif.6k <- grep("6k", tif, value = T)
-tif.6k
+ti.6k <- grep("6k", ti, value = T)
+ti.6k
 
-tif.21k <- grep("21k", tif, value = T)
-tif.21k
+ti.21k <- grep("21k", ti, value = T)
+ti.21k
 
-env.stack.0k <- stack(tif.0k)
-names(env.stack.0k) <- paste0("bio", c("02", "04", "10", "16", "17"))
-env.stack.0k
+en.0k <- stack(ti.0k)
+names(en.0k) <- paste0("bio", c("02", "04", "10", "16", "17"))
+en.0k
 
-env.stack.6k <- stack(tif.6k)
-names(env.stack.6k) <- paste0("bio", c("02", "04", "10", "16", "17"))
-env.stack.6k
+en.6k <- stack(ti.6k)
+names(en.6k) <- paste0("bio", c("02", "04", "10", "16", "17"))
+en.6k
 
-env.stack.21k <- stack(tif.21k)
-names(env.stack.21k) <- paste0("bio", c("02", "04", "10", "16", "17"))
-env.stack.21k
+en.21k <- stack(ti.21k)
+names(en.21k) <- paste0("bio", c("02", "04", "10", "16", "17"))
+en.21k
 
-plot(env.stack.0k)
-plot(env.stack.6k)
-plot(env.stack.21k)
+plot(en.0k)
+plot(en.6k)
+plot(en.21k)
 
-plot(env.stack.0k[[1]])
+plot(en.0k[[1]])
 points(po$long, po$lat, pch = 20)
 
 
 ## extract coordinates for background
 # coordinates
-id <- 1:ncell(env.stack.0k)
+id <- 1:ncell(en.0k)
 head(id, 50)
 length(id)
 
-co <- xyFromCell(env.stack.0k, id)
-head(coord, 50)
+co <- xyFromCell(en.0k, id)
+head(co, 50)
 
-plot(env.stack.0k[[1]])
+plot(en.0k[[1]])
 points(co, pch = "o", cex = 1e-1)
 
 # without NAs
-va <- values(env.stack.0k)[, 1]
+va <- values(en.0k)[, 1]
 head(va, 50)
 length(va)
 
@@ -102,17 +102,19 @@ head(cs, 10)
 colnames(cs) <- c("long", "lat")
 head(cs, 10)
 
-plot(env.stack.0k[[1]])
+plot(en.0k[[1]])
 points(cs, pch = "o", cex = 1e-1)
 
 ###---------------------------------------------------------------------------###
 
 # verify maxent
+
+# copy maxent.jar in "C:\Users\john01\Documents\R\win-library\3.4\dismo\java"
+
 jar <- paste0(system.file(package = "dismo"), "/java/maxent.jar")
 file.exists(jar)
 
 ###---------------------------------------------------------------------------###
-
 
 ### ENMs ###
 
@@ -140,8 +142,8 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
   # selecting presence and absence
 	id.specie <- levels(po[, 1])[i]
 	pr.specie <- po[which(po[, 1] == id.specie), 2:3]
-	id.background <- sample(nrow(coords), nrow(pr.specie))
-	bc.specie <- coords[id.background, ]
+	id.background <- sample(nrow(cs), nrow(pr.specie))
+	bc.specie <- cs[id.background, ]
 	
 
   for(r in 1:5){	# number of replicas
@@ -149,8 +151,8 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
     # train and test data	
 	  pr.sample.train <- sample(nrow(pr.specie), round(0.75 * nrow(pr.specie)))
 	  bc.sample.train <- sample(nrow(bc.specie), round(0.75 * nrow(bc.specie)))
-	  test <- na.omit(prepareData(x = env.stack.0k, p = pr.specie[-pr.sample.train, ], b = bc.specie[-bc.sample.train, ]))
-  	train <- na.omit(prepareData(x = env.stack.0k, p = pr.specie[pr.sample.train, ], b = bc.specie[bc.sample.train, ]))
+	  test <- na.omit(prepareData(x = en.0k, p = pr.specie[-pr.sample.train, ], b = bc.specie[-bc.sample.train, ]))
+  	train <- na.omit(prepareData(x = en.0k, p = pr.specie[pr.sample.train, ], b = bc.specie[bc.sample.train, ]))
 
  
     ### algorithms
@@ -160,9 +162,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  Bioclim <- bioclim(train[which(train[, 1] == 1), -1])	
 	 
 	  # 1.2 projection
-    writeRaster(predict(env.stack.0k, Bioclim), paste0(AOGCM, "_bioclim_0k_", id.specie, r, ".tif"), format = "GTiff")	
-    writeRaster(predict(env.stack.6k, Bioclim), paste0(AOGCM, "_bioclim_6k_", id.specie, r, ".tif"), format = "GTiff")
-    writeRaster(predict(env.stack.21k, Bioclim), paste0(AOGCM, "_bioclim_21k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.0k, Bioclim), paste0(AOGCM, "_bioclim_0k_", id.specie, r, ".tif"), format = "GTiff")	
+    writeRaster(predict(en.6k, Bioclim), paste0(AOGCM, "_bioclim_6k_", id.specie, r, ".tif"), format = "GTiff")
+    writeRaster(predict(en.21k, Bioclim), paste0(AOGCM, "_bioclim_21k_", id.specie, r, ".tif"), format = "GTiff") 
     
     # 1.3 evaluation
 	  eBioclim <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Bioclim)
@@ -176,9 +178,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  Gower <- domain(train[which(train[, 1] == 1), -1])	
 
 	  # 2.2 projection
-    writeRaster(predict(env.stack.0k, Gower), paste0(AOGCM, "_gower_0k_", id.specie, r, ".tif"), format = "GTiff") 
-    writeRaster(predict(env.stack.6k, Gower), paste0(AOGCM, "_gower_6k_", id.specie, r, ".tif"), format = "GTiff")
-    writeRaster(predict(env.stack.21k, Gower), paste0(AOGCM, "_gower_21k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.0k, Gower), paste0(AOGCM, "_gower_0k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.6k, Gower), paste0(AOGCM, "_gower_6k_", id.specie, r, ".tif"), format = "GTiff")
+    writeRaster(predict(en.21k, Gower), paste0(AOGCM, "_gower_21k_", id.specie, r, ".tif"), format = "GTiff") 
  
     # 2.3 evaluation
 	  eGower <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Gower)
@@ -187,14 +189,14 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  eval.Gower <- rbind(eval.Gower, eval.Gower.sp)
 
 	  
-    ## 3. mahanobis	
+    ## 3. mahalanobis	
 	  # 3.1 calibration
 	  Maha <- mahal(train[which(train[, 1] == 1), -1])	
 	
 	  # 3.2 projection
-    writeRaster(predict(env.stack.0k, Maha), paste0(AOGCM, "_mahanobis_0k_", id.specie, r, ".tif"), format = "GTiff") 
-    writeRaster(predict(env.stack.6k, Maha), paste0(AOGCM, "_mahanobis_6k_", id.specie, r, ".tif"), format = "GTiff")
-    writeRaster(predict(env.stack.21k, Maha), paste0(AOGCM, "_mahanobis_21k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.0k, Maha), paste0(AOGCM, "_mahalanobis_0k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.6k, Maha), paste0(AOGCM, "_mahalanobis_6k_", id.specie, r, ".tif"), format = "GTiff")
+    writeRaster(predict(en.21k, Maha), paste0(AOGCM, "_mahalanobis_21k_", id.specie, r, ".tif"), format = "GTiff") 
  
     # 3.3 evaluation
 	  eMaha <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maha)
@@ -208,9 +210,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  Maxent <- maxent(train[, -1], train[, 1])	
 
 	  # 4.2 projection
-    writeRaster(predict(env.stack.0k, Maxent), paste0(AOGCM, "_maxent_0k_", id.specie, r, ".tif"), format = "GTiff") 
-    writeRaster(predict(env.stack.6k, Maxent), paste0(AOGCM, "_maxent_6k_", id.specie, r, ".tif"), format = "GTiff")
-    writeRaster(predict(env.stack.21k, Maxent), paste0(AOGCM, "_maxent_21k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.0k, Maxent), paste0(AOGCM, "_maxent_0k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.6k, Maxent), paste0(AOGCM, "_maxent_6k_", id.specie, r, ".tif"), format = "GTiff")
+    writeRaster(predict(en.21k, Maxent), paste0(AOGCM, "_maxent_21k_", id.specie, r, ".tif"), format = "GTiff") 
  
     # 4.3 evaluation
 	  eMaxent <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maxent)
@@ -224,9 +226,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  SVM <- ksvm(pb ~ bio02 + bio04 + bio10 + bio16 + bio17, data = train)	
 
 	  # 5.2 projection
-    writeRaster(predict(env.stack.0k, SVM), paste0(AOGCM, "_svm_0k_", id.specie, r, ".tif"), format = "GTiff") 
-    writeRaster(predict(env.stack.6k, SVM), paste0(AOGCM, "_svm_6k_", id.specie, r, ".tif"), format = "GTiff")
-    writeRaster(predict(env.stack.21k, SVM), paste0(AOGCM, "_svm_21k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.0k, SVM), paste0(AOGCM, "_svm_0k_", id.specie, r, ".tif"), format = "GTiff") 
+    writeRaster(predict(en.6k, SVM), paste0(AOGCM, "_svm_6k_", id.specie, r, ".tif"), format = "GTiff")
+    writeRaster(predict(en.21k, SVM), paste0(AOGCM, "_svm_21k_", id.specie, r, ".tif"), format = "GTiff") 
  
     # 5.3 evaluation
 	  eSVM <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = SVM)
@@ -246,7 +248,7 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 
   write.table(eval.Bioclim, paste0("zEval_", AOGCM, "_bioclim_", id.specie, ".txt"))
   write.table(eval.Gower, paste0("zEval_", AOGCM, "_gower_", id.specie, ".txt"))
-  write.table(eval.Maha, paste0("zEval_", AOGCM, "_maha_", id.specie, ".txt"))
+  write.table(eval.Maha, paste0("zEval_", AOGCM, "_mahalanobis_", id.specie, ".txt"))
   write.table(eval.Maxent, paste0("zEval_", AOGCM, "_maxent_", id.specie, ".txt"))
   write.table(eval.SVM, paste0("zEval_", AOGCM, "_svm_", id.specie, ".txt"))
 
