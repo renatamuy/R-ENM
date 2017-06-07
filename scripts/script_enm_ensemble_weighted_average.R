@@ -55,63 +55,41 @@ eva
 sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
-# gcms
-gc <- c("CCSM")
-gc
-
 # periods
 pe <- c("0k", "6k", "21k")
 pe
 
-# algorithms
-al <- c("bioclim", "gower", "mahalanobis", "maxent", "svm")
-al
+# data.table
+da <- data.table()
+da
 
-# replicates
-re <- 1:5
-re
+# raster
+ens <- enm[[1]]
+ens[] <- NA
+names(ens) <- "ens"
+ens
 
-# ensembles
+# ensemble
 for(i in sp){
   tif.sp <- grep(i, tif, value = T)
   eva.sp <- eva[grep(i, names(eva))]
 
-tss <- do.call("rbind", eva)$TSS
-tss
+  tss <- do.call("rbind", eva.sp)$TSS
+  id.tss <- which(tss > 0.5)
 
-
-
-
-va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
-va
-
-ens.al <- enm[[1]]
-ens.al[] <- NA
-names(ens.al) <- "ens.al"
-ens.al
-
-for(i in sp){		
-  asc.sp <- grep(i, asc, value = T)
-  
-  for(j in gc){		
-    asc.gc <- grep(j, asc.sp, value = T)
-    
-    for(k in pe){		
-      asc.pe <- grep(k, asc.gc, value = T)
+    for(j in pe){
+      tif.pe <- grep(j, tif.sp, value = T)
+      te <- data.table(pe = rep(j, ncell = enm), stack(tif.pe[id.tss])[])
+      da <- rbind(da, te)}}
       
-      for(l in al){		
-        asc.al <- grep(l, asc.pe, value = T)
-        
-        for(m in re){		
-          enm.al <- stack(asc.al)
-          va[, m] <- values(enm.al[[m]])}
-        
-        ens.al[] <- apply(va, 1, mean)
-        
-        writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, "_", k, "_", l, ".tif"), 
-                    format = "GTiff")
-        
-        va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
-        ens.al[] <- NA}}}}
+  da.s <- scale(da)
+      
+  ens[] <- apply(da.s, 1, mean)
+
+  writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, ".tif"), 
+              format = "GTiff")
+
+  da <- data.table()
+  ens[] <- NA}
 
 ###-----------------------------------------------------------------------------------------###
