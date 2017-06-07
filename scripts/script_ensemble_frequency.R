@@ -92,27 +92,32 @@ for(i in sp){
         for(k in pe){		
           tif.pe <- grep(k, tif.gc, value = T)
 
-            for(l in al[3]){
+            for(l in al){
 	            tif.al <- grep(l, tif.pe, value = T)
               eva.al <- eva.gc[grep(l, names(eva.gc))]
               	           
 	              for(m in re){		
                   enm.al <- stack(tif.al)
                   ens.re <- sum(ens.re, enm.al[[m]] >= eva.al[[1]][m, 1])}
-                  
+              
+              dir.create("ensemble_freq")
+              setwd("ensemble_freq")
 	            writeRaster(ens.re, paste0("ensemble_freq_", i, "_", j, "_", k, "_", 
 	                                       l, ".tif"), 
 			                    format = "GTiff")
+	            setwd("..")
 
 	            ens.al <- sum(ens.al, ens.re)
 		  	
 	            ens.re[] <- 0}
 
-  writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".tif"), 
-              format = "GTiff")
-	writeRaster(ens.al / (length(al) * length(re)), paste0("ensemble_freq_", i, "_", 
-	                                                       j, "_", k, "_bin.tif"), 
-	            format = "GTiff")
+          setwd("ensemble_freq")
+          writeRaster(ens.al, paste0("ensemble_freq_", i, "_", j, "_", k, ".tif"), 
+                      format = "GTiff")
+          writeRaster(ens.al / (length(al) * length(re)), paste0("ensemble_freq_", 
+                                                   i, "_", j, "_", k, "_bin.tif"), 
+                      format = "GTiff")
+          setwd("..")
 		
 	ens.al[] <- 0}}}
 
