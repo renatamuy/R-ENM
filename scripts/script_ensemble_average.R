@@ -27,7 +27,7 @@ search()
 
 # import data
 # directory
-setwd("D:/github/enm_r/data/03_saidas_enm")
+setwd("D:/_github/enmR/ouput")
 
 # enms
 # list files
@@ -51,7 +51,7 @@ eva[[1]]
 
 # lists
 # species
-sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
+sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
 # gcms
@@ -63,44 +63,52 @@ pe <- c("0k", "6k", "21k")
 pe
 
 # algorithms
-al <- c("Bioclim", "Gower", "Maha", "Maxent", "SVM")
+al <- c("bioclim", "gower", "mahalanobis", "maxent", "svm")
 al
 
 # replicates
 re <- 1:5
 re
 
-# ensembles
-va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
-va
+# variables
+da <- data.table()
+da
 
 ens.al <- enm[[1]]
 ens.al[] <- NA
 names(ens.al) <- "ens.al"
 ens.al
 
+# ensembles
 for(i in sp){		
-  asc.sp <- grep(i, asc, value = T)
+  tif.sp <- grep(i, tif, value = T)
   
   for(j in gc){		
-    asc.gc <- grep(j, asc.sp, value = T)
+    tif.gc <- grep(j, tif.sp, value = T)
     
     for(k in pe){		
-      asc.pe <- grep(k, asc.gc, value = T)
+      tif.pe <- grep(k, tif.gc, value = T)
       
       for(l in al){		
-        asc.al <- grep(l, asc.pe, value = T)
+        tif.al <- grep(l, tif.pe, value = T)
         
         for(m in re){		
-          enm.al <- stack(asc.al)
-          va[, m] <- values(enm.al[[m]])}
+          enm.al <- stack(tif.al)
+          da[m] <- values(enm.al[[m]])}
         
-        ens.al[] <- apply(va, 1, mean)
+        da <- data.table(v1 = rnorm(100), v2 = rnorm(100))
+        da[, 1]
         
+        ens.al[] <- apply(da, 1, mean)
+        
+        dir.create("ensemble_aver")
+        setwd("ensemble_aver")
         writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, "_", k, "_", l, ".tif"), 
                     format = "GTiff")
+        setwd("..")
         
-        va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
+        da <- data.table()
         ens.al[] <- NA}}}}
 
 ###-----------------------------------------------------------------------------------------###
+
