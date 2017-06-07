@@ -3,7 +3,7 @@
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 # 05/06/2017
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
 
 # 1. clear memory and load packages 
 # clear workspace and increase memory
@@ -24,7 +24,7 @@ library(vegan)
 search()
 
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
 
 # import data
 # directory
@@ -35,7 +35,7 @@ setwd("D:/_github/enmR/ouput")
 tif <- list.files(patt = ".tif$")
 tif
 
-enm <- raster(tif[1])
+enm <- raster(tif[3])
 enm
 plot(enm)
 
@@ -48,7 +48,7 @@ eva
 names(eva) <- txt
 eva
 
-###-----------------------------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###
 
 ## weighted average ensemble 
 # lists
@@ -81,18 +81,22 @@ for(i in sp){
 
     for(j in pe){
       tif.pe <- grep(j, tif.sp, value = T)
-      da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}}
+      da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}
 
-  da.s <- data.table(decostand(da, "stand", na.rm = T))
+  da.s <- data.table(decostand(da, "stand"))
   da.s.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.s)
 
-      for(k in pe){
-      ens[] <- apply(da.s, 1, weighted.mean(tss.05))
+    for(k in pe){
+      da.pe <- da.s.pe[pe == k, -1]
+      ens[] <- apply(da.pe, 1, function (x) sum(x*tss.05)/sum(tss.05))
 
-      writeRaster(ens.al, paste0("ensemble_wei_aver_", i, "_", j, ".tif"), 
-                  format = "GTiff")}
-
+      dir.create("ensemble")
+      setwd("ensemble")
+      writeRaster(ens, paste0("ensemble_wei_aver_", i, "_", j, ".tif"), 
+                  format = "GTiff")
+      setwd("..")}
+      
   da <- data.table()
   ens[] <- NA}
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
