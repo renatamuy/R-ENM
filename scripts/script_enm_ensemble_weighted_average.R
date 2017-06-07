@@ -18,6 +18,7 @@ memory.limit(size = 1.75e13)
 library(raster) # sig 
 library(rgdal) # sig
 library(data.table) # long tables
+library(vegan)
 
 # verify packages
 search()
@@ -56,7 +57,7 @@ sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
 # periods
-pe <- c("0k", "6k", "21k")
+pe <- c("00k", "06k", "21k")
 pe
 
 # data.table
@@ -75,19 +76,21 @@ for(i in sp){
   eva.sp <- eva[grep(i, names(eva))]
 
   tss <- do.call("rbind", eva.sp)$TSS
-  id.tss <- which(tss > 0.5)
+  id.tss <- which(tss > .5)
+  tss.05 <- tss[tss > .5]
 
     for(j in pe){
       tif.pe <- grep(j, tif.sp, value = T)
-      te <- data.table(pe = rep(j, ncell = enm), stack(tif.pe[id.tss])[])
-      da <- rbind(da, te)}}
-      
-  da.s <- scale(da)
-      
-  ens[] <- apply(da.s, 1, mean)
+      da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}}
 
-  writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, ".tif"), 
-              format = "GTiff")
+  da.s <- data.table(decostand(da, "stand", na.rm = T))
+  da.s.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.s)
+
+      for(k in pe){
+      ens[] <- apply(da.s, 1, weighted.mean(tss.05))
+
+      writeRaster(ens.al, paste0("ensemble_wei_aver_", i, "_", j, ".tif"), 
+                  format = "GTiff")}
 
   da <- data.table()
   ens[] <- NA}
