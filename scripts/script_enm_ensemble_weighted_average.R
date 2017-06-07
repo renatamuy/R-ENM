@@ -72,6 +72,16 @@ re <- 1:5
 re
 
 # ensembles
+for(i in sp){
+  tif.sp <- grep(i, tif, value = T)
+  eva.sp <- eva[grep(i, names(eva))]
+
+tss <- do.call("rbind", eva)$TSS
+tss
+
+
+
+
 va <- matrix(NA, nrow = ncell(enm), ncol = length(al))
 va
 
