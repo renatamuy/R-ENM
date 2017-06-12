@@ -7,6 +7,7 @@
 
 # clean and increase memory limite
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
 # install and require packages
@@ -36,13 +37,29 @@ pg
 list <- grep("downloads", as.list(html_attr(html_nodes(pg, "a"), "href")), value = T)
 list
 
-https://deepblue.lib.umich.edu/data/downloads/pg15bf03p
+url2 <- "https://deepblue.lib.umich.edu/data/concern/file_sets"
+url2
+
 
 # download
 for(i in list){
-  download(paste0("https://deepblue.lib.umich.edu", i), 
-           paste0(i), mode = "wb")}
+  pg2 <- read_html(paste0(url2, sub("/data/downloads", "", i)))
+  
+  no <- pg2 %>%
+    html_nodes("h1") %>%
+    html_text()
+  
+  na <- sub("Open Access", "", no[2])
+  na
+  
+  dir.create(sub(".zip", "", na))
+  setwd(sub(".zip", "", na))
+  
+  download(paste0("https://deepblue.lib.umich.edu", i), na, mode = "wb")
+  unzip(na)
+  unlink(na)
+  
+  setwd("..")}
 
 
 ###------------------------------------------------------------------------------###
-
