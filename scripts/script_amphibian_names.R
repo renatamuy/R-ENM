@@ -22,3 +22,8 @@ for(i in seq(10, 8340, 10)[1:2]){
         html_nodes("p") %>%
         html_text()}
 
+str(no)
+
+strsplit
+
+grep("Gynandropaa yunnanensis", no, value = T)
