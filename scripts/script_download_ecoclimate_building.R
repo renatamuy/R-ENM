@@ -1,42 +1,40 @@
 ### script download of data bases for enm ###
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
-# 28/04/2017
+# 17/06/2017
 
 ###-----------------------------------------------------------------------------###
-###                             mapbiomas v02 ###
+###                             ecoclimate                                      ###
 ###-----------------------------------------------------------------------------###
 
-# clean and increase memory limite
+# memory
 rm(list = ls())
-memory.limit(size = 1.75e13) 
+gc()
+memory.limit(size = 1.75e13)
 
-# install and load packages
-# install.packages("downloader", dep = T)
-
-library(downloader)
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(downloader, xml2, rvest)
 
 ###-----------------------------------------------------------------------------###
+
 # directory
-setwd("D:/environmental_data/mapbiomas/colecao_02")
+setwd("D:/environmental_data")
+dir.create("ecoclimate")
+setwd("ecoclimate")
+gewd()
 
 # url
-url <- "http://maps.lapig.iesa.ufg.br/mapbiomas/"
+url <- "http://ecoclimate.org/downloads/"
+url
+
+
+
 
 # download
-an <- 2000:2016
-an
-
-bi <-  c("AMAZONIA", "PANTANAL", "CAATINGA", "MATAATLANTICA", 
-         "CERRADO", "PAMPA")
-bi
-
 for(i in an){
-  url.an <- paste0(url, i, "/")
-  
-    for(j in bi){
-      url.bi <- paste0(url.an, j, ".tif")
-      download(url.bi, paste0(j, "_", i, ".tif"), mode = "wb")}}
+  url.bi <- paste0(url.an, j, ".tif")
+  download(url.bi, paste0(j, "_", i, ".tif"), mode = "wb")}
 
 
-###-----------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###

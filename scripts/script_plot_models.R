@@ -1,26 +1,18 @@
-### script mapas ###
+### script maps ###
 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 # 27/05/2017
 
 ###------------------------------------------------------------------------------###
 
-# 1. limpar a memoria e carregar os pacotes 
-# limpar o workspace e aumentar a memoria para o r
+# memory
 rm(list = ls())
-memory.limit(size = 1.75e13) 
+gc()
+memory.limit(size = 1.75e13)
 
-# instalar e carregar pacotes
-# install.packages(c("raster", "rgdal", "vegan"), dep = T)
-
-# carregar pacotes
-library(raster) # manejo de arquivos sig 
-library(rgdal) # manejo de arquivos sig
-library(vegan) # diversas analises multivariadas
-library(maps)
-
-# verificar pacotes carregados
-search()
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(raster, rgdal, vegan, maps)
 
 ###------------------------------------------------------------------------------###
 
@@ -52,7 +44,7 @@ plot(po[, 2], po[, 3], col = po$sp, pch = 20, xlab = "long", ylab = "lat")
 sp <- levels(po$sp)
 sp
 
-# diretorio
+# diretory
 setwd("..")
 dir.create("04_mapas")
 setwd("04_mapas")

@@ -1,19 +1,34 @@
-### script selecionar e exportar ocorrencias com certo numero de frequencia ###
+### script select points frequency ###
 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# 17/06/2017
 
 ###--------------------------------------------------------------------###
 
-# importar dados
+# memory
+rm(list = ls())
+gc()
+memory.limit(size = 1.75e13) 
 
-# diretorio
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(data.table)
+
+# verify packages
+search()
+
+###--------------------------------------------------------------------###
+
+# import data
+
+# diretory
 setwd("")
 
-# dados
+# data
 # da <- read.table(".txt", h = T, sep = "\t")
 # da
 
-da <- data.frame(sp = rep(c("sp1", "sp2", "sp3"), c(20, 5, 50)), 
+da <- data.table(sp = rep(c("sp1", "sp2", "sp3"), c(20, 5, 50)), 
 		     lat = -rnorm(75, 22, 1), long = -rnorm(75, 45, 1))
 da
 
@@ -22,40 +37,40 @@ dim(da)
 
 ###--------------------------------------------------------------------###
 
-# frequencias
-ocorr <- data.frame(table(da$sp))
+# frequency
+ocorr <- data.table(table(da$sp))
 head(ocorr)
 colnames(ocorr) <- c("sp", "f")
 head(ocorr)
 
-hist(ocorr$f, col = "gray", xlim = c(0, 100), ylim = c(0, 150))
+hist(ocorr$f, col = "gray")
 
-# ocorrencias acima de um valor
+#occurrencies
 ocorr.10 <- ocorr[ocorr$f >= 10, ]
 head(ocorr.10)
 dim(ocorr.10)
 
 ###--------------------------------------------------------------------###
 
-# juntar frequencias a ocorrencias
+# merge
 m <- merge(da, ocorr)
 head(m)
 dim(m)
 
-# selecionar as especies
+# select
 da.10 <- m[m$f >= 10,]
 da.10
 
-# conferir
+# check
 dim(da.10)
 length(unique(da.10$sp))
 
 ###--------------------------------------------------------------------###
 
-# exportar as tabelas
-write.table(da.10, ".xls", sep = "\t", quote = F, row.names = F)
+# export
+write.table(da.10, "occur_10.xls", sep = "\t", quote = F, row.names = F)
 
-write.table(da.10[, -4], ".txt", sep = "\t", quote = F, row.names = F)
+write.table(da.10[, -4], "occur_10.txt", sep = "\t", quote = F, row.names = F)
 
 ###--------------------------------------------------------------------###
 

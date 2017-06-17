@@ -22,16 +22,19 @@ search()
 
 # 2. import data
 # directory
-setwd("")
+setwd("D:/_github/enmR/data")
 
 # ocurrences
-po <- read.table("", h = T)
+po <- read.table("Bromelia_balansae.txt", h = T)
 head(po, 10)
 
 plot(po$long, po$lat, pch = 20)
 
 #  variables
 ti <- list.files(patt = "tif")
+ti
+
+ti <- grep("0k", ti, value = T)
 ti
 
 en <- stack(ti)
@@ -124,6 +127,7 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 
     # verify 
   	print(paste0(id.specie, "_", ifelse(r < 10, paste0("0", r), r)))
+  	
   	
     ### algorithms
   	
