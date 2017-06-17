@@ -42,7 +42,7 @@ url2
 
 
 # download
-for(i in 391:length(list)){
+for(i in 492:length(list)){
   pg2 <- read_html(paste0(url2, sub("/data/downloads", "", list[[i]])))
   
   no <- pg2 %>%

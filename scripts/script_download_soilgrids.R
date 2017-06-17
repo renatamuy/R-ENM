@@ -11,18 +11,8 @@ gc()
 memory.limit(size = 1.75e13) 
 
 # packages
-# install.packages(c("RCurl", "rgdal", "GSIF", "raster", "plotKML", "XML", 
-#                   "lattice", "aqp", "soiltexture"), dep = T)
-
-library(RCurl)
-library(rgdal)
-library(GSIF)
-library(raster)
-library(plotKML)
-library(XML)
-library(lattice)
-library(aqp)
-library(soiltexture)
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(RCurl, rgdal, GSIF, raster, plotKML, XML, lattice, aqp, soiltexture)
 
 ## GDAL paths:
 if(.Platform$OS.type == "windows"){
