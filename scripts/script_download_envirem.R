@@ -42,20 +42,21 @@ url2
 
 
 # download
-for(i in list){
-  pg2 <- read_html(paste0(url2, sub("/data/downloads", "", i)))
+for(i in 391:length(list)){
+  pg2 <- read_html(paste0(url2, sub("/data/downloads", "", list[[i]])))
   
   no <- pg2 %>%
     html_nodes("h1") %>%
     html_text()
   
   na <- sub("Open Access", "", no[2])
-  na
   
-  dir.create(sub(".zip", "", na))
-  setwd(sub(".zip", "", na))
+  dir.create(paste0(ifelse(i < 9, paste0("00", i), ifelse(i < 99, paste0("0", i), i)), 
+                    "_", sub(".zip", "", na)))
+  setwd(paste0(ifelse(i < 9, paste0("00", i), ifelse(i < 99, paste0("0", i), i)), 
+               "_", sub(".zip", "", na)))
   
-  download(paste0("https://deepblue.lib.umich.edu", i), na, mode = "wb")
+  download(paste0("https://deepblue.lib.umich.edu", list[[i]]), na, mode = "wb")
   unzip(na)
   unlink(na)
   
