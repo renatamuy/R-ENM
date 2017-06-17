@@ -10,14 +10,7 @@ rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
 
-###-----------------------------------------------------------------------------###
-###                               soilgrids
-###-----------------------------------------------------------------------------###
-
-# SoilGrids tutorial
-# Reference: [http://gsif.isric.org/doku.php?id=wiki:tutorial_soilgrids]
-# Tom.Hengl@isric.org
-
+# packages
 # install.packages(c("RCurl", "rgdal", "GSIF", "raster", "plotKML", "XML", 
 #                   "lattice", "aqp", "soiltexture"), dep = T)
 
@@ -44,6 +37,8 @@ if(.Platform$OS.type == "windows"){
 }
 
 ###-----------------------------------------------------------------------------###
+###                               soilgrids
+###-----------------------------------------------------------------------------###
 
 # directory
 setwd("D:/environmental_data")
@@ -53,86 +48,53 @@ getwd()
 
 ###-----------------------------------------------------------------------------###
 
-## 10 km
-dir.create("10km")
-setwd("10km")
-getwd()
+# resolution
+re <- c("10km", "5km", "1km", "250m")
+re
 
-# ftp
-ftp <- "ftp://ftp.soilgrids.org/data/aggregated/10km/"
+# links
+ftp.km <- "ftp://ftp.soilgrids.org/data/aggregated/"
 
-filenames <- getURL(ftp, ftp.use.epsv = F, dirlistonly = T)
+ftp.m <- "ftp://ftp.soilgrids.org/data/recent/"
 
-filenames <- strsplit(filenames, "\r*\n")[[1]]
+# download
+for(i in re){
+  
+  # ftp
+  if(i != "250m"){
+    ftp <- paste0(ftp.km, i, "/")
 
-filenames[1:5]
+    # directory
+    dir.create(i)
+    setwd(i)
+  
+    # files
+    filenames <- getURL(ftp, ftp.use.epsv = F, dirlistonly = T)
+    filenames <- strsplit(filenames, "\r*\n")[[1]]
 
-# download to a local directory:
-for(i in filenames){
-  try(download.file(paste0(ftp, i), i))}
-
-###-----------------------------------------------------------------------------###
-
-## 5 km
-setwd("..")
-dir.create("5km")
-setwd("5km")
-getwd()
-
-# ftp
-ftp <- "ftp://ftp.soilgrids.org/data/aggregated/5km/"
-
-filenames <- getURL(ftp, ftp.use.epsv = F, dirlistonly = T)
-
-filenames <- strsplit(filenames, "\r*\n")[[1]]
-
-filenames[1:5]
-
-# download to a local directory:
-for(i in filenames){
-  try(download.file(paste0(ftp, i), i))}
-
-###-----------------------------------------------------------------------------###
-
-## 1 km
-setwd("..")
-dir.create("1km")
-setwd("1km")
-getwd()
-
-# ftp
-ftp <- "ftp://ftp.soilgrids.org/data/aggregated/1km/"
-
-filenames <- getURL(ftp, ftp.use.epsv = F, dirlistonly = T)
-
-filenames <- strsplit(filenames, "\r*\n")[[1]]
-
-filenames[1:5]
-
-# download to a local directory:
-for(i in filenames){
-  try(download.file(paste0(ftp, i), i))}
-
-###-----------------------------------------------------------------------------###
-
-## 250 m
-setwd("..")
-dir.create("250m")
-setwd("250m")
-getwd()
-
-# ftp
-ftp <- "ftp://ftp.soilgrids.org/data/recent/"
-
-filenames <- getURL(ftp, ftp.use.epsv = F, dirlistonly = T)
-
-filenames <- strsplit(filenames, "\r*\n")[[1]]
-
-filenames[1:5]
-
-# download to a local directory:
-for(i in filenames){
-  try(download.file(paste0(ftp, i), i))}
+    # download
+    for(j in filenames){
+      try(download.file(paste0(ftp, j), j))}
+    
+    setwd("..")
+  
+  # ftp
+  } else{
+    
+    ftp <- ftp.m
+  
+    # directory
+    dir.create(i)
+    setwd(i)
+  
+    # files
+    filenames <- getURL(ftp, ftp.use.epsv = F, dirlistonly = T)
+    filenames <- strsplit(filenames, "\r*\n")[[1]]
+  
+    # download
+    for(k in filenames){
+      try(download.file(paste0(ftp, k), k))}
+    }}
 
 ###-----------------------------------------------------------------------------###
 
