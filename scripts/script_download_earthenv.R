@@ -7,14 +7,12 @@
 
 # clean and increase memory limite
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
-# install and require packages
-# install.packages(c("downloader", "xml2", "rvest"), dep = T)
-
-library(downloader)
-library(xml2)
-library(rvest)
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(downloader, xml2, rvest)
 
 
 ###-----------------------------------------------------------------------------###
@@ -55,8 +53,8 @@ for(i in 1:length(es)){
   dir.create(di[i])
   setwd(di[i])
 
-	  for(j in 1:length(li)){
-  	  download(li[j], na[j], mode = "wb")}
+	for(j in 1:length(li)){
+    download(li[j], na[j], mode = "wb")}
 
   setwd("..")}
 
@@ -94,8 +92,8 @@ for(i in 1:length(di)){
   dir.create(di[i])
   setwd(di[i])
 
-	  for(j in 1:length(li)){
-  	  download(li[j], na[j], mode = "wb")}
+	for(j in 1:length(li)){
+    download(li[j], na[j], mode = "wb")}
 
   setwd("..")}
 

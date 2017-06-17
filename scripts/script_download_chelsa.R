@@ -111,8 +111,8 @@ for(i in ce){
       
       print(list)
 
-      #for(k in list){
-        #download(paste0(url.e, k), paste0(k), mode = "wb")}
+      for(k in list){
+        download(paste0(url.e, k), paste0(k), mode = "wb")}
       
       setwd("..")}
     
@@ -139,8 +139,8 @@ for(i in ce){
     
         print(list)
     
-        # for(m in list){
-         #download(paste0(url.e, m), paste0(m), mode = "wb")}
+        for(m in list){
+          download(paste0(url.e, m), paste0(m), mode = "wb")}
      
         setwd("..")
   
@@ -149,28 +149,31 @@ for(i in ce){
         dir.create(sub("/", "", l))
         setwd(sub("/", "", l))
     
-        for(n in te){
+        for(n in ty){
           
           dir.create(sub("/", "", n))
           setwd(sub("/", "", n))
+          
+          for(o in te){
+          
+            dir.create(sub("/", "", o))
+            setwd(sub("/", "", o))
       
-          url.e <- paste0(url, i, n)
+            url.e <- paste0(url, i, l, n, o)
       
-          pg <- read_html(url.e)
+            pg <- read_html(url.e)
       
-          list <- grep(".7z", html_attr(html_nodes(pg, "a"), "href"), value = T)
+            list <- grep(".7z", html_attr(html_nodes(pg, "a"), "href"), value = T)
       
-          print(list)
+            print(list)
       
-          #for(o in list){
-            #download(paste0(url.e, o), paste0(o), mode = "wb")}
+            for(p in list){
+              download(paste0(url.e, p), paste0(p), mode = "wb")}
       
+            setwd("..")}
+          
           setwd("..")}
-    
-    setwd("..")}}}}
+        
+        setwd("..")}}}}
       
-
-
-
 ###-----------------------------------------------------------------------------###
-

@@ -9,14 +9,9 @@
 rm(list = ls())
 memory.limit(size = 1.75e13) 
 
-# install and require packages
-# install.packages(c("downloader", maps", "maptools", "raster", "rgdal"), dep = T)
-
-library(downloader)
-library(maptools)
-library(maps)
-library(raster)
-library(rgdal)
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(downloader, maps, maptools, raster, rgdal)
 
 ###-----------------------------------------------------------------------------###
 ###                                 gadm
@@ -78,7 +73,5 @@ for(i in 1:length(do)){
     setwd("D:/environmental_data/vector/base_gadm/rds")
       }, error=function(e){cat("ERROR :", conditionMessage(e), "\n")})
 }
-
-
 
 ###-----------------------------------------------------------------------------###

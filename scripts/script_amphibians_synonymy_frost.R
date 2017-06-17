@@ -32,17 +32,15 @@ for(i in seq(10, 8340, 10)[1:2]){
   sp <- c(sp, grep("-", grep("Amphibia", li, value = T), value = T))}
 
   
-    for(j in sp){
-      pg <- read_html(paste0("http://research.amnh.org", j))
+  for(j in sp){
+    pg <- read_html(paste0("http://research.amnh.org", j))
       
-      no <- pg %>%
-        html_nodes("p") %>%
-        html_text()}
-      no
+    no <- pg %>%
+      html_nodes("p") %>%
+      html_text()}
+    no
 
-class(no)
-
-strsplit
+    class(no)
 
 ###---------------------------------------------------------------------###
 

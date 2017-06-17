@@ -4,17 +4,17 @@
 # 28/04/2017
 
 ###-----------------------------------------------------------------------------###
-###                             mapbiomas v02 ###
+###                             mapbiomas v02                                   ###
 ###-----------------------------------------------------------------------------###
 
 # clean and increase memory limite
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
-# install and load packages
-# install.packages("downloader", dep = T)
-
-library(downloader)
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(downloader)
 
 ###-----------------------------------------------------------------------------###
 # directory
@@ -34,9 +34,9 @@ bi
 for(i in an){
   url.an <- paste0(url, i, "/")
   
-    for(j in bi){
-      url.bi <- paste0(url.an, j, ".tif")
-      download(url.bi, paste0(j, "_", i, ".tif"), mode = "wb")}}
+  for(j in bi){
+    url.bi <- paste0(url.an, j, ".tif")
+    download(url.bi, paste0(j, "_", i, ".tif"), mode = "wb")}}
 
 
-###-----------------------------------------------------------------------###
+###-----------------------------------------------------------------------------###

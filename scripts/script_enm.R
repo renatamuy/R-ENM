@@ -8,22 +8,12 @@
 # 1. clear memory and load packages 
 # clear workspace and increase memory
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
-# install and load packages
-# install packages
-# install.packages(c("raster", "rgdal", "dismo", "gam", "randomForest", "kernlab", 
-#                    "rJava", "vegan"), dep = T)
-
-# load packages
-library(raster)
-library(rgdal) 
-library(dismo) 
-library(gam) 
-library(randomForest) 
-library(kernlab) 
-library(rJava) 
-library(vegan) 
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan)
 
 # verify packages
 search()
@@ -124,15 +114,17 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	bc.specie <- cs[id.background, ]
 	
 
-  for(r in 1:5){	# number of replicas
+  for(r in 1:10){	# number of replicas
     ## preparing the models
     # train and test data	
-	  pr.sample.train <- sample(nrow(pr.specie), round(0.75 * nrow(pr.specie)))
-	  bc.sample.train <- sample(nrow(bc.specie), round(0.75 * nrow(bc.specie)))
+	  pr.sample.train <- sample(nrow(pr.specie), round(0.7 * nrow(pr.specie)))
+	  bc.sample.train <- sample(nrow(bc.specie), round(0.7 * nrow(bc.specie)))
 	  test <- na.omit(prepareData(x = en, p = pr.specie[-pr.sample.train, ], b = bc.specie[-bc.sample.train, ]))
   	train <- na.omit(prepareData(x = en, p = pr.specie[pr.sample.train, ], b = bc.specie[bc.sample.train, ]))
 
- 
+    # verify 
+  	print(paste0(id.specie, "_", ifelse(r < 10, paste0("0", r), r)))
+  	
     ### algorithms
   	
     ## 1. bioclim

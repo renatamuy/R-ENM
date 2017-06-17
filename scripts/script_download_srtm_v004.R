@@ -5,14 +5,14 @@
 
 ###------------------------------------------------------------------------------###
 
-# limpar e aumentar a memoria
+# memory
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13)
 
-# pacotes
-# install.packages("downloader", dep = T)
-
-library(downloader)
+# # packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(downloader)
 
 # diretorio
 setwd("D:/environmental_data/srtm/v004")

@@ -7,15 +7,14 @@
 
 # clean and increase memory limite
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
-# install and require packages
-# install.packages(c("maps", "maptools", "raster", "rgdal"), dep = T)
+# packages
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(maps, maptools, raster, rgdal)
 
-library(maptools)
-library(maps)
-library(raster)
-library(rgdal)
 
 ###-----------------------------------------------------------------------------###
 ###                                 gadm

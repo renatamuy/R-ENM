@@ -5,16 +5,14 @@
 
 ###-----------------------------------------------------------------------------###
 
-# clean and increase memory limite
+# memory
 rm(list = ls())
-memory.limit(size = 1.75e13) 
+gc()
+memory.limit(size = 1.75e13)
 
-# install and require packages
-# install.packages(c("downloader", "xml2", "rvest"), dep = T)
-
-library(downloader)
-library(xml2)
-library(rvest)
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(downloader, xml2, rvest)
 
 ###-----------------------------------------------------------------------------###
 ###                               topodata
@@ -56,16 +54,16 @@ to
 # check
 for(j in to){
   if(j %in% li){}
-      else{print(j)}}
+  else{print(j)}}
 
 # download
 for(j in to){
   if(j %in% li){}
-    else{
-      download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
-      paste0(j, ".zip"), mode = "wb")
-      unzip(j)
-      unlink(j)}}
+  else{
+    download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
+    paste0(j, ".zip"), mode = "wb")
+    unzip(j)
+    unlink(j)}}
 
 
 ###-----------------------------------------------------------------------------###
@@ -97,15 +95,15 @@ al
 
 for(j in al){
   if(j %in% li){}
-      else{print(j)}}
+  else{print(j)}}
 
 for(j in al){
   if(j %in% li){}
-    else{
-      download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
-      paste0(j, ".zip"), mode = "wb")
-      unzip(j)
-      unlink(j)}}
+  else{
+    download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
+    paste0(j, ".zip"), mode = "wb")
+    unzip(j)
+    unlink(j)}}
   
 
 ###-----------------------------------------------------------------------------###
@@ -137,15 +135,15 @@ de
 
 for(j in de){
   if(j %in% li){}
-      else{print(j)}}
+  else{print(j)}}
 
 for(j in de){
   if(j %in% li){}
-    else{
-      download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
-      paste0(j, ".zip"), mode = "wb")
-      unzip(paste0(j, ".zip"))
-      unlink(paste0(j, ".zip"))}}
+  else{
+    download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
+    paste0(j, ".zip"), mode = "wb")
+    unzip(paste0(j, ".zip"))
+    unlink(paste0(j, ".zip"))}}
 
 ###-----------------------------------------------------------------------------###
 
@@ -176,15 +174,15 @@ as
 
 for(j in as){
   if(j %in% li){}
-      else{print(j)}}
+  else{print(j)}}
 
 for(j in as){
   if(j %in% li){}
-    else{
-      download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
-      paste0(j, ".zip"), mode = "wb")
-      unzip(paste0(j, ".zip"))
-      unlink(paste0(j, ".zip"))}}
+  else{
+    download(paste0("http://www.dsr.inpe.br/topodata/data/geotiff/", j, ".zip"), 
+    paste0(j, ".zip"), mode = "wb")
+    unzip(paste0(j, ".zip"))
+    unlink(paste0(j, ".zip"))}}
 
 ###-----------------------------------------------------------------------------###
 

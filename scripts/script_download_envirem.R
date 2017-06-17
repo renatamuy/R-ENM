@@ -10,12 +10,10 @@ rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
 
-# install and require packages
-# install.packages(c("downloader", "xml2", "rvest"), dep = T)
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(downloader, xml2, rvest)
 
-library(downloader)
-library(xml2)
-library(rvest)
 
 ###-----------------------------------------------------------------------------###
 ###                                envirem
@@ -23,8 +21,8 @@ library(rvest)
 
 # directory
 setwd("D:/environmental_data")
-dir.create("envirem_r")
-setwd("envirem_r")
+dir.create("envirem")
+setwd("envirem")
 getwd()
 
 # list of url
