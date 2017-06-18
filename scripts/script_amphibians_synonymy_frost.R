@@ -15,7 +15,7 @@ if(!require("pacman")) install.packages("pacman")
 pacman::p_load(rvest, data.table)
 
 ###---------------------------------------------------------------------###
-###				amphibians synonymys frost				###
+###				               amphibians synonymys frost	              			###
 ###---------------------------------------------------------------------###
 
 # species 
@@ -26,21 +26,32 @@ for(i in seq(10, 8340, 10)[1:2]){
   
   url <- paste0("http://research.amnh.org/vz/herpetology/amphibia/amphib/basic_search/(offset)/", i,
                 "/(query)/*")
-
-  li <- getHTMLLinks(url)
   
-  sp <- c(sp, grep("-", grep("Amphibia", li, value = T), value = T))}
+  pg <- read_html(url)
+  
+  li <- html_nodes(pg, "a") %>%
+    html_attr("href")
+  
+  sp <- c(sp, grep("-", grep("Amphibia", li, value = T), value = T))
 
   
   for(j in sp){
-    pg <- read_html(paste0("http://research.amnh.org", j))
-      
-    no <- pg %>%
-      html_nodes("p") %>%
-      html_text()}
-    no
-
-    class(no)
+    
+    # page
+    pg.sp <- read_html(paste0("http://research.amnh.org", j))
+    
+    # names
+    na <- html_nodes(pg.sp, "h2") %>%
+      html_text() %>%
+      '['(3)
+    na
+    
+    # synonymies
+    sy <- html_node(pg.sp, "div.synonymy") %>%
+      html_nodes("b") %>%
+      html_text()
+    sy
+    
 
 ###---------------------------------------------------------------------###
 
