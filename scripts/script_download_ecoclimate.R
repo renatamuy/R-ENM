@@ -14,9 +14,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(RCurl, downloader, xml2, rvest)
-
-install.packages("xml2")
+pacman::p_load(downloader, rvest, RSelenium, XML)
 
 # check packages
 search()
@@ -28,34 +26,63 @@ search()
 setwd("D:/environmental_data")
 dir.create("ecoclimate")
 setwd("ecoclimate")
-gewd()
+getwd()
 
 # url
-ed <- "http://ecoclimate.org/downloads/"
-ed
+en <- "http://ecoclimate.org/downloads/"
+en
 
-pg <- read_html(ed)
+pg <- read_html(en)
 pg
 
-li <- grep("dropbox", html_attr(html_nodes(pg, "a"), "href"), value = T)
+li <- html_nodes(pg, "span") %>%
+  html_nodes("a") %>%
+  html_attr("href")
 li
 
+pg.d <- read_html(li[1])
+pg.d
+
+li.d <- html_nodes(pg.d, "ol") %>%
+  html_children() %>%
+  html_node("a") %>%
+  html_attr("href")
+li.d
+
+pg.d.a <- read_html(li.d[1])
+pg.d.a
+
+li.d.a <- html_nodes(pg.d.a, "a") %>%
+  html_attr("class")
+li.d.a
+
+
+require(rvest)
+text <- '<a role="menuitem" class="bubble-menu-item" href="#" aria-disabled="false">Download direto</a>'
+
+h <- read_html(text)
+
+h %>% 
+  html_nodes(xpath = '//*[@id="a"]') 
+%>%
+  xml_attr("value")
+
+
+
 # download
-for(i in li){
+for(i in li[1]){
   pg.d <- read_html(i)
   li.d <- grep("/sh/", html_attr(html_nodes(pg.d, "a"), "href"), value = T)
   
-  download(li.d, 
+  li.d[1]
   
+  read_html(li.d[1])
+  
+  <a role="menuitem" class="bubble-menu-item" href="#" aria-disabled="false">Download direto</a>
 
-
-# download
-for(i in an){
-  url.bi <- paste0(url.an, j, ".tif")
-  download(https://www.dropbox.com/sh/uhpwptssl6hyynz/AAB907n4eanPiv-KVMrxvYaAa/raw%20%23baseline_Modern%281950-1999%29%23%20tasmin_CCSM_rcp26%282080-2100%29.zip?dl=0, paste0(j, "_", i, ".tif"), mode = "wb")
-  
-  download("https://www.dropbox.com/sh/uhpwptssl6hyynz/AAB907n4eanPiv-KVMrxvYaAa/raw%20%23baseline_Modern%281950-1999%29%23%20tasmin_CCSM_rcp26%282080-2100%29.zip#", 
-           "test.zip")
-  
+  for(j in li.d){
+    pg.d.a <- read_html(j)
+    li.d.a <- html_attr(html_nodes(pg.d.a, "a"), "href")
+    
 ###-----------------------------------------------------------------------------###
   
