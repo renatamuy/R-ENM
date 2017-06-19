@@ -1,6 +1,6 @@
 ### script ensemble weighted average ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 # 05/06/2017
 
 ###----------------------------------------------------------------------------###
@@ -8,21 +8,15 @@
 # 1. clear memory and load packages 
 # clear workspace and increase memory
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
-# install and load packages
-# install packages
-# install.packages(c("raster", "rgdal", "data.table"), dep = T)
-
-# load packages
-library(raster) # sig 
-library(rgdal) # sig
-library(data.table) # long tables
-library(vegan)
+# packages
+if(!require("pacman")) install.packages("pacman")
+pacman::p_load(raster, rgdal, data.table)
 
 # verify packages
 search()
-
 
 ###----------------------------------------------------------------------------###
 
