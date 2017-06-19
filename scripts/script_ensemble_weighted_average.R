@@ -54,6 +54,9 @@ sp
 pe <- c("00k", "06k", "21k")
 pe
 
+# pe <- c("pres", "rcp45_2050", "rcp45_2070", "rcp85_2050", "rcp85_2070")
+# pe
+
 # data.table
 da <- data.table()
 da
@@ -65,31 +68,37 @@ names(ens) <- "ens"
 ens
 
 # ensemble
+dir.create("ensemble_wei")
+
 for(i in sp){
   tif.sp <- grep(i, tif, value = T)
   eva.sp <- eva[grep(i, names(eva))]
-
+  
   tss <- do.call("rbind", eva.sp)$TSS
   id.tss <- which(tss > .5)
   tss.05 <- tss[tss > .5]
-
+  
   for(j in pe){
     tif.pe <- grep(j, tif.sp, value = T)
     da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}
-
-  da.s <- data.table(decostand(da, "range"))
-  da.s.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.s)
-
+  
+  da.r <- data.table(decostand(da, "range", na.rm = T)) 
+  
+  da.r.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.r)
+  
   for(k in pe){
-    da.pe <- da.s.pe[pe == k, -1]
+    da.pe <- da.r.pe[pe == k, -1]
     ens[] <- apply(da.pe, 1, function (x) sum(x * tss.05) / sum(tss.05))
-
-    dir.create("ensemble_wei")
+    
     setwd("ensemble_wei")
+    
     writeRaster(ens, paste0("ensemble_wei_aver_", i, "_", k, ".tif"), 
                 format = "GTiff")
-    setwd("..")}
-      
+    
+    setwd("..")
+    
+    print(paste0("Nice! The ensemble ", i, " for ", k, " it's done!"))}
+  
   da <- data.table()
   ens[] <- NA}
 
