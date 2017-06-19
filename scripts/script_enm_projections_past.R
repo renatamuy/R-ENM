@@ -1,4 +1,4 @@
-### script enm projection ###
+### script enm projections past ###
 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 # 05/06/2017
