@@ -12,8 +12,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(downloader, xml2, rvest)
-
+pacman::p_load(downloader, rvest)
 
 ###-----------------------------------------------------------------------------###
 ###                                envirem
@@ -21,8 +20,8 @@ pacman::p_load(downloader, xml2, rvest)
 
 # directory
 setwd("D:/environmental_data")
-dir.create("envirem")
-setwd("envirem")
+dir.create("envirem_r")
+setwd("envirem_r")
 getwd()
 
 # list of url
@@ -40,7 +39,7 @@ url2
 
 
 # download
-for(i in 492:length(list)){
+for(i in 591:length(list)){
   pg2 <- read_html(paste0(url2, sub("/data/downloads", "", list[[i]])))
   
   no <- pg2 %>%
