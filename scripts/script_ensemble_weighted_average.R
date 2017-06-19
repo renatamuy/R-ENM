@@ -73,22 +73,22 @@ for(i in sp){
   id.tss <- which(tss > .5)
   tss.05 <- tss[tss > .5]
 
-    for(j in pe){
-      tif.pe <- grep(j, tif.sp, value = T)
-      da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}
+  for(j in pe){
+    tif.pe <- grep(j, tif.sp, value = T)
+    da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}
 
   da.s <- data.table(decostand(da, "stand"))
   da.s.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.s)
 
-    for(k in pe){
-      da.pe <- da.s.pe[pe == k, -1]
-      ens[] <- apply(da.pe, 1, function (x) sum(x * tss.05) / sum(tss.05))
+  for(k in pe){
+    da.pe <- da.s.pe[pe == k, -1]
+    ens[] <- apply(da.pe, 1, function (x) sum(x * tss.05) / sum(tss.05))
 
-      dir.create("ensemble_wei")
-      setwd("ensemble_wei")
-      writeRaster(ens, paste0("ensemble_wei_aver_", i, "_", k, ".tif"), 
-                  format = "GTiff")
-      setwd("..")}
+    dir.create("ensemble_wei")
+    setwd("ensemble_wei")
+    writeRaster(ens, paste0("ensemble_wei_aver_", i, "_", k, ".tif"), 
+                format = "GTiff")
+    setwd("..")}
       
   da <- data.table()
   ens[] <- NA}
