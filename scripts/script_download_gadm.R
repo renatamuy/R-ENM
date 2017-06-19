@@ -7,6 +7,7 @@
 
 # clean and increase memory limite
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
 # packages
