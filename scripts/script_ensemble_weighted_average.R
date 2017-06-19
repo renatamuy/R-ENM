@@ -77,7 +77,7 @@ for(i in sp){
     tif.pe <- grep(j, tif.sp, value = T)
     da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}
 
-  da.s <- data.table(decostand(da, "stand"))
+  da.s <- data.table(decostand(da, "range"))
   da.s.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.s)
 
   for(k in pe){
