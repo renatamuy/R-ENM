@@ -13,7 +13,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, data.table)
+pacman::p_load(raster, rgdal, data.table, vegan)
 
 # verify packages
 search()
