@@ -36,7 +36,7 @@ list <- grep(".zip", html_attr(html_nodes(pg, "a"), "href"), value = T)
 list
 
 # download
-for(i in list){
+for(i in list){}
 
   dir.create(sub(".zip", "", strsplit(strsplit(i, "[?]")[[1]][1], "[/]")[[1]][6]))
   setwd(sub(".zip", "", strsplit(strsplit(i, "[?]")[[1]][1], "[/]")[[1]][6]))
