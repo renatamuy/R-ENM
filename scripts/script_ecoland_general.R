@@ -98,7 +98,7 @@ reco[] <- da$val
 length(da$val)
 
 plot(reco, col = c("blue", "green", "orange", "red"))
-
+plot(br, add = T)
 
 
 ###---------------------------------------------------------------------------###
@@ -111,8 +111,9 @@ da
 
 # classificacao 
 for(i in 1:nrow(da)){
+  
   if(is.na(da$cl[i])){
-    
+    da[i, 4] <- NA
     da[i, 5] <- NA
     
   } else{
@@ -120,36 +121,41 @@ for(i in 1:nrow(da)){
       da[i, 4] <- "blue"
       da[i, 5] <- 0} 
     
-    else if(da[i, 2] <= .25 & 
-            da[i, 3] > .25 & da[i, 3] <= .75){  
+    else if(da[i, 2] <= .25 & da[i, 3] > .25 & da[i, 3] <= .75){  
       da[i, 4] <- "cyan"
+      da[i, 5] <- .125} 
+    
+    else if(da[i, 2] > .25 & da[i, 2] <= .75 & da[i, 3] <= .25){  
+      da[i, 4] <- "cyan4"
       da[i, 5] <- .25} 
     
-    else if(da[i, 2] > .25 & da[i, 2] <= .75 &
-            da[i, 3] <= 25){  
-      da[i, 4] <- "chocolate"
-      da[i, 5] <- .25} 
-    
-    else if(da[i, 2] > .25 & da[i, 2] <= .75 &
-            da[i, 3] > .25 & da[i, 3] <= .75){  
+    else if(da[i, 2] > .25 & da[i, 2] <= .75 & da[i, 3] > .25 & da[i, 3] <= .75){  
       da[i, 4] <- "green"
-      da[i, 5] <- .25} 
+      da[i, 5] <- .375} 
     
-    else if(da[i, 2] > .75 & 
-            da[i, 3] <= .25){  
+    else if(da[i, 2] > .75 & da[i, 3] <= .25){  
       da[i, 4] <- "chocolate"
-      da[i, 5] <- .25} 
+      da[i, 5] <- .5} 
     
-    else if(da[i, 2] <= .25 & 
-            da[i, 3] > .75){  
+    else if(da[i, 2] <= .25 & da[i, 3] > .75){  
       da[i, 4] <- "yellow"
-      da[i, 5] <- .75} 
+      da[i, 5] <- .625} 
+    
+    else if(da[i, 2] > .25 & da[i, 2] <= .75 & da[i, 3] > .75){  
+      da[i, 4] <- "orange"
+      da[i, 5] <- .75}
+    
+    else if(da[i, 2] > .75 & da[i, 3] > .25 & da[i, 3] <= .75){  
+      da[i, 4] <- "dark green"
+      da[i, 5] <- .875}
     
     else if(da[i, 2] > .75 & da[i, 3] > .75){  
       da[i, 4] <- "red"
       da[i, 5] <- 1}}}
 
 da
+
+table(da$col)
 
 # plot
 par(mar = c(5, 5, 2, 2))
@@ -167,9 +173,8 @@ smoothScatter(da[, 2:3], nrpoints = 0, add = T, colramp = colorRampPalette(c("wh
 
 points(da$cl, da$la, col = da$col, pch = 20, cex = .8)
 
-abline(h = .25 , v = .25, col = "gray", lty = 2)
-abline(h = .75 , v = .75, col = "gray", lty = 2)
-
+abline(h = .25 , v = .25, col = "gray50", lty = 2)
+abline(h = .75 , v = .75, col = "gray50", lty = 2)
 
 
 # map
@@ -180,7 +185,9 @@ reco[] <- da$val
 
 length(da$val)
 
-plot(reco, col = c("blue", "green", "orange", "red"))
+plot(reco, col = c("blue", "cyan", "cyan4", "green", "chocolate", "yellow", "orange", 
+                   "dark green", "red"))
+plot(br, add = T)
 
 
 ###---------------------------------------------------------------------------###
