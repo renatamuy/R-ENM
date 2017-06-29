@@ -1,6 +1,6 @@
 ### script ecoland general ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 # 28/06/2017
 
 ###---------------------------------------------------------------------------###
@@ -20,7 +20,7 @@ search()
 
 ###---------------------------------------------------------------------------###
 
-# limite
+# limit
 br <- getData("GADM", country = "BRA", level = 0)
 br
 
@@ -42,13 +42,13 @@ plot(br, add = T)
 
 ###---------------------------------------------------------------------------###
 
-## classificacao em 4 quadrantes
+## classification in 4 
 
 # values
 da <- data.table(id = 1:ncell(re.b), cl = re.b[], la = rl.b[], col = "NA", val = 0)
 da
 
-# classificacao 
+# classification
 for(i in 1:nrow(da)){
   if(is.na(da$cl[i])){
     
@@ -70,7 +70,7 @@ for(i in 1:nrow(da)){
 
 da
 
-# plot normal
+# plot
 par(mar = c(5, 5, 2, 2))
 plot(da$cl, da$la, type = "n",
      xlim = c(0, 1),
@@ -103,13 +103,13 @@ plot(br, add = T)
 
 ###---------------------------------------------------------------------------###
 
-## classificacao em 9 quadrantes
+## classification in 9
 
 # values
 da <- data.table(id = 1:ncell(re.b), cl = re.b[], la = rl.b[], col = "NA", val = 0)
 da
 
-# classificacao 
+# classification
 for(i in 1:nrow(da)){
   
   if(is.na(da$cl[i])){
