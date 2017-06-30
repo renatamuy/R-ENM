@@ -1,6 +1,6 @@
 ### script ecoland general ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 # 28/06/2017
 
 ###---------------------------------------------------------------------------###
@@ -65,7 +65,8 @@ da.c.na
 dim(da.c.na)
 
 # classification
-for(i in 1:nrow(da.s.na)){
+system.time(
+  for(i in 1:nrow(da.s.na)){
   
   if(da.s.na[i, 2] <= .5 & da.s.na[i, 3] <= .5){
     da.s.na[i, 4] <- "blue"
@@ -78,7 +79,7 @@ for(i in 1:nrow(da.s.na)){
     da.s.na[i, 5] <- .75} 
   else if(da.s.na[i, 2] > .5 & da.s.na[i, 3] > .5){  
     da.s.na[i, 4] <- "red"
-    da.s.na[i, 5] <- 1}}
+    da.s.na[i, 5] <- 1}})
 
 da.s.na
 
@@ -142,6 +143,7 @@ da.c.na
 dim(da.c.na)
 
 # classification
+system.time(
 for(i in 1:nrow(da.s.na)){
   
   if(da.s.na[i, 2] <= .25 & 
@@ -187,7 +189,7 @@ for(i in 1:nrow(da.s.na)){
   else if(da.s.na[i, 2] > .75 & 
           da.s.na[i, 3] > .75){  
     da.s.na[i, 4] <- "red"
-    da.s.na[i, 5] <- 1}}
+    da.s.na[i, 5] <- 1}})
 
 da.s.na
 
