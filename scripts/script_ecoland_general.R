@@ -127,57 +127,77 @@ plot(br, add = T)
 da <- data.table(id = 1:ncell(re.b), cl = re.b[], la = rl.b[], col = "NA", val = 0)
 da
 
+id.na <- as.matrix(da[which(is.na(da$cl)), 1])
+str(id.na)
+head(id.na)
+
+da.s.na <- da[!id.na]
+da.s.na
+dim(da.s.na)
+head(da.s.na)
+
+da.c.na <- da[id.na]
+da.c.na$val <- NA 
+da.c.na
+dim(da.c.na)
+
 # classification
-for(i in 1:nrow(da)){
+for(i in 1:nrow(da.s.na)){
   
-  if(is.na(da$cl[i])){
-    da[i, 4] <- NA
-    da[i, 5] <- NA
-    
-  } else{
-    if(da[i, 2] <= .25 & da[i, 3] <= .25){
-      da[i, 4] <- "blue"
-      da[i, 5] <- 0} 
-    
-    else if(da[i, 2] <= .25 & da[i, 3] > .25 & da[i, 3] <= .75){  
-      da[i, 4] <- "cyan"
-      da[i, 5] <- .125} 
-    
-    else if(da[i, 2] > .25 & da[i, 2] <= .75 & da[i, 3] <= .25){  
-      da[i, 4] <- "cyan4"
-      da[i, 5] <- .25} 
-    
-    else if(da[i, 2] > .25 & da[i, 2] <= .75 & da[i, 3] > .25 & da[i, 3] <= .75){  
-      da[i, 4] <- "green"
-      da[i, 5] <- .375} 
-    
-    else if(da[i, 2] > .75 & da[i, 3] <= .25){  
-      da[i, 4] <- "chocolate"
-      da[i, 5] <- .5} 
-    
-    else if(da[i, 2] <= .25 & da[i, 3] > .75){  
-      da[i, 4] <- "yellow"
-      da[i, 5] <- .625} 
-    
-    else if(da[i, 2] > .25 & da[i, 2] <= .75 & da[i, 3] > .75){  
-      da[i, 4] <- "orange"
-      da[i, 5] <- .75}
-    
-    else if(da[i, 2] > .75 & da[i, 3] > .25 & da[i, 3] <= .75){  
-      da[i, 4] <- "dark green"
-      da[i, 5] <- .875}
-    
-    else if(da[i, 2] > .75 & da[i, 3] > .75){  
-      da[i, 4] <- "red"
-      da[i, 5] <- 1}}}
+  if(da.s.na[i, 2] <= .25 & 
+     da.s.na[i, 3] <= .25){
+    da.s.na[i, 4] <- "blue"
+    da.s.na[i, 5] <- 0} 
+  
+  else if(da.s.na[i, 2] <= .25 & 
+          da.s.na[i, 3] > .25 & da.s.na[i, 3] <= .75){  
+    da.s.na[i, 4] <- "cyan"
+    da.s.na[i, 5] <- .125} 
+  
+  else if(da.s.na[i, 2] > .25 & da.s.na[i, 2] <= .75 & 
+          da.s.na[i, 3] <= .25){  
+    da.s.na[i, 4] <- "cyan4"
+    da.s.na[i, 5] <- .25} 
+  
+  else if(da.s.na[i, 2] > .25 & da.s.na[i, 2] <= .75 & 
+          da.s.na[i, 3] > .25 & da.s.na[i, 3] <= .75){  
+    da.s.na[i, 4] <- "green"
+    da.s.na[i, 5] <- .375} 
+  
+  else if(da.s.na[i, 2] > .75 & 
+          da.s.na[i, 3] <= .25){  
+    da.s.na[i, 4] <- "chocolate"
+    da.s.na[i, 5] <- .5} 
+  
+  else if(da.s.na[i, 2] <= .25 & 
+          da.s.na[i, 3] > .75){  
+    da.s.na[i, 4] <- "yellow"
+    da.s.na[i, 5] <- .625} 
+  
+  else if(da.s.na[i, 2] > .25 & da.s.na[i, 2] <= .75 & 
+          da.s.na[i, 3] > .75){  
+    da.s.na[i, 4] <- "orange"
+    da.s.na[i, 5] <- .75}
+  
+  else if(da.s.na[i, 2] > .75 & 
+          da.s.na[i, 3] > .25 & da.s.na[i, 3] <= .75){  
+    da.s.na[i, 4] <- "dark green"
+    da.s.na[i, 5] <- .875}
+  
+  else if(da.s.na[i, 2] > .75 & 
+          da.s.na[i, 3] > .75){  
+    da.s.na[i, 4] <- "red"
+    da.s.na[i, 5] <- 1}}
 
-da
+da.s.na
 
-table(da$col)
+da.eco <- rbind(da.s.na, da.c.na)
+da.eco <- da.eco[order(id)]
+da.eco
 
 # plot
 par(mar = c(5, 5, 2, 2))
-plot(da$cl, da$la, type = "n",
+plot(da.eco$cl, da.eco$la, type = "n",
      xlim = c(0, 1),
      ylim = c(0, 1),
      xlab = "Climate suitability", 
@@ -187,21 +207,22 @@ plot(da$cl, da$la, type = "n",
      cex.axis = 1.2, 
      las = 1)
 
-smoothScatter(da[, 2:3], nrpoints = 0, add = T, colramp = colorRampPalette(c("white", "gray")))
+smoothScatter(da.eco[, 2:3], nrpoints = 0, add = T, 
+              colramp = colorRampPalette(c("white", "gray50")))
 
-points(da$cl, da$la, col = da$col, pch = 20, cex = .8)
+points(da.eco$cl, da.eco$la, col = da.eco$col, pch = 20, cex = .8)
 
-abline(h = .25 , v = .25, col = "gray50", lty = 2)
-abline(h = .75 , v = .75, col = "gray50", lty = 2)
+abline(h = .25 , v = .25, col = "gray30", lty = 2)
+abline(h = .75 , v = .75, col = "gray30", lty = 2)
 
 
 # map
 reco <- re.b
 reco
 
-reco[] <- da$val
+reco[] <- da.eco$val
 
-length(da$val)
+length(da.eco$val)
 
 plot(reco, col = c("blue", "cyan", "cyan4", "green", "chocolate", "yellow", "orange", 
                    "dark green", "red"))
