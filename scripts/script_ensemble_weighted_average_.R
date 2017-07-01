@@ -29,7 +29,7 @@ setwd("D:/amazonia/02_ouput")
 tif <- list.files(patt = ".tif$")
 tif
 
-enm <- raster(tif[3])
+enm <- raster(tif[1])
 enm
 plot(enm)
 
@@ -88,6 +88,8 @@ for(i in sp){
     print(paste0("Nice! The ensemble for ", i, " it's done!"))
   
     da <- data.table()
-    ens[] <- NA}}
+    ens[] <- NA}
+  
+  print("Yeh! It's over!!!")}
 
 ###----------------------------------------------------------------------------###

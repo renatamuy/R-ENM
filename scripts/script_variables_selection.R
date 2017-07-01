@@ -10,18 +10,11 @@
 rm(list = ls())
 memory.limit(size = 1.75e13) 
 
-# install packages
-# install.packages(c("raster", "rgdal", "corrplot", "RStoolbox", "vegan", "psych"), dep = T)
+# packages
+if(!require(pacman)) install.packages("pacman")
+pacman::p_load(raster, rgdal, corrplot, RStoolbox, vegan, psych)
 
-# load packages
-library(raster) # sig 
-library(rgdal) # sig
-library(corrplot) # correlation
-library(RStoolbox) # raster pca
-library(vegan) # multivariates
-library(psych) # factorial analysis
-
-# check loaded packets
+# check package
 search()
 
 ###-----------------------------------------------------------------------------------------###
@@ -86,7 +79,7 @@ pres.sa
 pres.s
 
 plot(pres.s[[1]])
-plot(am, col = "red", add = T)
+plot(sa, col = "red", add = T)
 
 par(mfrow = c(1, 2))
 plot(pres.s$pres_bio01)
@@ -357,7 +350,7 @@ fa.sa <- fa(pres.sa.v.na, nfactors = 5, rotate = "varimax", fm = "ml")
 sa.loadings <- loadings(fa.sa)
 sa.loadings
 
-abs(round(am.loadings, 2))
+abs(round(sa.loadings, 2))
 
 # exportar tabela dos resultados
 write.table(abs(round(sa.loadings, 2)), "as_loadings.xls", row.names = T, sep = "\t")

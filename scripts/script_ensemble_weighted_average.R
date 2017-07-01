@@ -1,6 +1,6 @@
 ### script ensemble weighted average ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 # 05/06/2017
 
 ###----------------------------------------------------------------------------###
@@ -29,7 +29,7 @@ setwd("D:/_github/enmR/ouput")
 tif <- list.files(patt = ".tif$")
 tif
 
-enm <- raster(tif[3])
+enm <- raster(tif[1])
 enm
 plot(enm)
 
@@ -75,8 +75,14 @@ for(i in sp){
   eva.sp <- eva[grep(i, names(eva))]
   
   tss <- do.call("rbind", eva.sp)$TSS
-  id.tss <- which(tss > .5)
-  tss.05 <- tss[tss > .5]
+  id.tss <- which(tss > .4)
+  tss.05 <- tss[tss > .4]
+  
+  if(length(id.tss) == 0){
+    
+    print(paste0("Ops! The ensemble for ", i, " don't have models with TSS above 0.4!"))
+    
+  } else{
   
   for(j in pe){
     tif.pe <- grep(j, tif.sp, value = T)
@@ -101,5 +107,7 @@ for(i in sp){
   
   da <- data.table()
   ens[] <- NA}
+  
+  print("Yeh! It's over!!!")}
 
 ###----------------------------------------------------------------------------###

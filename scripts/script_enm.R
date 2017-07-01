@@ -125,10 +125,7 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  test <- na.omit(prepareData(x = en, p = pr.specie[-pr.sample.train, ], b = bc.specie[-bc.sample.train, ]))
   	train <- na.omit(prepareData(x = en, p = pr.specie[pr.sample.train, ], b = bc.specie[bc.sample.train, ]))
 
-    # verify 
-  	print(paste0(id.specie, "_", ifelse(r < 10, paste0("0", r), r)))
-  	
-  	
+
     ### algorithms
   	
     ## 1. bioclim
@@ -144,6 +141,10 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  eval.Bioclim.sp <- c(eBioclim@t[idBioclim], eBioclim@auc, (eBioclim@TPR[idBioclim] + eBioclim@TNR[idBioclim] - 1))
 	  eval.Bioclim <- rbind(eval.Bioclim, eval.Bioclim.sp)
 
+	  # verify 
+	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Bioclim', replica ", 
+	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
+	  
 	  
     ## 2. gower
 	  # 2.1 calibration
@@ -158,6 +159,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  eval.Gower.sp <- c(eGower@t[idGower], eGower@auc, (eGower@TPR[idGower] + eGower@TNR[idGower] - 1))
 	  eval.Gower <- rbind(eval.Gower, eval.Gower.sp)
 
+	  # verify 
+	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Gower', replica ", 
+	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
 	  
     ## 3. mahalanobis	
 	  # 3.1 calibration
@@ -172,6 +176,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  eval.Maha.sp <- c(eMaha@t[idMaha], eMaha@auc, (eMaha@TPR[idMaha] + eMaha@TNR[idMaha] - 1))
 	  eval.Maha <- rbind(eval.Maha, eval.Maha.sp)
 	
+	  # verify 
+	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Mahalanobis', replica ", 
+	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
 
     ## 4. maxent	
 	  # 4.1 calibration
@@ -186,6 +193,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  eval.Maxent.sp <- c(eMaxent@t[idMaxent], eMaxent@auc, (eMaxent@TPR[idMaxent] + eMaxent@TNR[idMaxent] - 1))
 	  eval.Maxent <- rbind(eval.Maxent, eval.Maxent.sp)
 
+	  # verify 
+	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Maxent', replica ", 
+	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
 
     ## 5. svm	
 	  # 5.1 calibration
@@ -199,6 +209,11 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  idSVM <- which(eSVM@t == as.numeric(threshold(eSVM, "spec_sens")))
 	  eval.SVM.sp <- c(eSVM@t[idSVM], eSVM@auc, (eSVM@TPR[idSVM] + eSVM@TNR[idSVM] - 1))
 	  eval.SVM <- rbind(eval.SVM, eval.SVM.sp)
+	  
+	  # verify 
+	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'SVM', replica ", 
+	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
+	  
 
 	  eval.names <- c(eval.names, paste0(id.specie, ifelse(r < 10, paste0("0", r), r)))	
 	  
