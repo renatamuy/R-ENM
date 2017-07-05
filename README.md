@@ -6,3 +6,5 @@ Scripts ENMs in R
   
 2. [Species distribution modeling with R](https://cran.r-project.org/web/packages/dismo/vignettes/sdm.pdf) - Prof. Robert J. Hijmans e Profa. Jane Elith
 	
+## Vídeos
+1. [Species Distribution Modelling](https://www.youtube.com/watch?v=obuMW5NAtJE&list=PLKYTvTbXFuChaoF-L-1e9RzCagdLPQcCU) - Prof. Richard Pearson
