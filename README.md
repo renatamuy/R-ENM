@@ -1,5 +1,5 @@
-# enmR
-Scripts ENMs in R
+# R-enm
+Scripts ENMs in R, package 'dismo'
 
 ## Sites
 1. [Spatial data manipulation](http://rspatial.org/index.html) - Prof. Robert Hijmans
