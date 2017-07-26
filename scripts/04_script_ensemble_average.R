@@ -3,7 +3,7 @@
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 # 17/06/2017
 
-###-----------------------------------------------------------------------------------------###
+###---------------------------------------------------------------------------------###
 
 # 1. clear memory and load packages 
 # clear workspace and increase memory
@@ -18,35 +18,28 @@ pacman::p_load(raster, rgdal, data.table)
 # verify packages
 search()
 
-###-----------------------------------------------------------------------------------------###
+###----------------------------------------------------------------------------###
 
 # import data
 # directory
-setwd("D:/_github/enmR/ouput")
+setwd("E:/mega/_disciplina_enm_unesp_2017/scripts_r/enm/02_ouput")
 
 # enms
 # list files
-tif <- list.files(patt = ".tif$")
+tif <- dir(patt = ".tif$")
 tif
 
 enm <- raster(tif[[1]])
 enm
 plot(enm)
 
-# evaluate
-txt <- list.files(patt = ".txt")
-txt
-
-eva <- lapply(txt, read.table)
-eva
-names(eva) <- txt
-eva[[1]]
+###----------------------------------------------------------------------------###
 
 ## average ensemble 
 
 # lists
 # species
-sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
+sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", dir(patt = ".txt"), value = T)))
 sp
 
 # gcms
@@ -54,7 +47,7 @@ gc <- c("CCSM")
 gc
 
 # periods
-pe <- c("0k", "6k", "21k")
+pe <- c("00k", "06k", "21k")
 pe
 
 # algorithms
@@ -69,10 +62,13 @@ re
 da <- data.table()
 da
 
-ens.al <- enm[[1]]
-ens.al[] <- NA
-names(ens.al) <- "ens.al"
-ens.al
+ens <- enm[[1]]
+ens[] <- NA
+names(ens) <- "ens"
+ens
+
+# directory
+dir.create("ensemble_aver")
 
 # ensembles
 for(i in sp){		
@@ -87,23 +83,75 @@ for(i in sp){
       for(l in al){		
         tif.al <- grep(l, tif.pe, value = T)
         
-        for(m in re){		
-          enm.al <- stack(tif.al)
-          da[m] <- values(enm.al[[m]])}
+        enm.al <- stack(tif.al)
+        da <- data.table(enm.al[])
         
-        da <- data.table(v1 = rnorm(100), v2 = rnorm(100))
-        da[, 1]
+        ens[] <- apply(da, 1, mean)
         
-        ens.al[] <- apply(da, 1, mean)
-        
-        dir.create("ensemble_aver")
         setwd("ensemble_aver")
-        writeRaster(ens.al, paste0("ensemble_aver_", i, "_", j, "_", k, "_", l, ".tif"), 
+        writeRaster(ens, paste0("ensemble_aver_", i, "_", j, "_", k, "_", l, ".tif"), 
                     format = "GTiff")
         setwd("..")
         
         da <- data.table()
-        ens.al[] <- NA}}}}
+        ens[] <- NA}}}}
 
 ###-----------------------------------------------------------------------------------------###
 
+### hierarchical anova
+
+# directory
+setwd("ensemble_aver")
+
+# list files
+tif.ave <- dir(patt = ".tif$")
+tif.ave
+
+enm.ave <- stack(tif.ave)
+
+# anova
+# valores 
+da <- data.table(decostand(na.omit(enm.ave[]), method = "stand"))
+da
+  
+# fatores para anova
+temp <- rep(c("00k", "06k", "21k"), each = 5)
+temp  
+
+algo <- rep(c("bioclim", "gower", "mahalanobis", "maxent", "svm"), 3)
+algo
+  
+# anova hierarquica
+sq <- NULL
+  
+for(j in 1:nrow(da)){
+  da.parcial <- as.numeric(da[j, ])
+  modelo.lm <- lm(da.parcial ~ algo + temp)
+  modelo.anova <- anova(modelo.lm)
+  sq <- rbind(sq, modelo.anova$"Mean Sq")}
+  
+colnames(sq) <- c("algoritmo", "temporal", "residuo")
+  
+# calculando proporcao de variancia explicada por cada componente
+sq.sum <- apply(sq, 1, sum)
+  
+sq.prop <- sq / sq.sum
+
+
+# adicionando coordenadas
+co <- cbind(xyFromCell(enm, 1:ncell(enm)), enm[])
+co.na <- na.omit(co)
+  
+sq.prop.c <- data.frame(co.na[, 1:2], sq.prop)
+
+summary(sq.prop.c)
+head(sq.prop.c)
+  
+# mapear incerteza
+gridded(sq.prop.c) <- ~x+y
+incerteza <- stack(sq.prop.c)
+
+plot(incerteza)
+  
+###----------------------------------------------------------------------------###
+  
