@@ -69,15 +69,15 @@ for(i in sp){
     geom_vline(xintercept = p10, color = "blue", lwd = 1.1) +
     geom_vline(xintercept = p20, color = "forest green", lwd = 1.1) +
     geom_text(data = sui.na, mapping = aes(x = sui, y = 0, label = na), 
-              size = 6, angle = 90, vjust = -0.4, hjust = -(max(table(sui)))) +
+              size = 6, angle = 90, vjust = -0.4, hjust = -(max(table(sui)) - 3)) +
     labs(title = paste0("Histogram for Suitability of ", i), 
          x = "Suitability", y = "Count")
   
-  ggsave(paste0("hist_", i, "_.tiff"), dpi = 300)
+  ggsave(paste0(i, "_00_hist_.tiff"), dpi = 300)
   
     
-  tiff(paste0("map_", i, "_total.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
-  plot(enm.sp, col = matlab.like2(100), main = i)
+  tiff(paste0(i, "_01_map_total.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
+  plot(enm.sp, col = matlab.like2(100), main = paste0("Map of ", i, " Total"))
   points(po.sp, pch = 20, cex = 1.5)
   addscalebar(pos = "bottomright", plotepsg = 4326)
   addnortharrow(pos = "topleft", padin = c(0.15, 0.15), scale = .7, lwd = 1, 
@@ -85,8 +85,8 @@ for(i in sp){
   dev.off()
   
   writeRaster(enm.sp > lpt, paste0("enm_", i, "_lpt.tif"), format = "GTiff")
-  tiff(paste0("map_", i, "_lpt.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
-  plot(enm.sp > lpt, main = i)
+  tiff(paste0(i, "_02_map_lpt.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
+  plot(enm.sp > lpt, main = paste0("Map of ", i, " LPT"))
   points(po.sp, pch = 20, cex = 1.5)
   addscalebar(pos = "bottomright", plotepsg = 4326)
   addnortharrow(pos = "topleft", padin = c(0.15, 0.15), scale = .7, lwd = 1, 
@@ -94,8 +94,8 @@ for(i in sp){
   dev.off()
   
   writeRaster(enm.sp > p10, paste0("enm_", i, "_p10.tif"), format = "GTiff")
-  tiff(paste0("map_", i, "_p10.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
-  plot(enm.sp > p10, main = i)
+  tiff(paste0(i, "_03_map_p10.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
+  plot(enm.sp > p10, main = paste0("Map of ", i, " P10"))
   points(po.sp, pch = 20, cex = 1.5)
   addscalebar(pos = "bottomright", plotepsg = 4326)
   addnortharrow(pos = "topleft", padin = c(0.15, 0.15), scale = .7, lwd = 1, 
@@ -103,8 +103,8 @@ for(i in sp){
   dev.off()
   
   writeRaster(enm.sp > p20, paste0("enm_", i, "_p20.tif"), format = "GTiff")
-  tiff(paste0("map_", i, "_p20.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
-  plot(enm.sp > p20, main = i)
+  tiff(paste0(i, "_04_map_p20.tif"), he = 18, wi = 18, un = "cm", res = 300, comp = "lzw") 
+  plot(enm.sp > p20, main = paste0("Map of ", i, " P20"))
   points(po.sp, pch = 20, cex = 1.5)
   addscalebar(pos = "bottomright", plotepsg = 4326)
   addnortharrow(pos = "topleft", padin = c(0.15, 0.15), scale = .7, lwd = 1, 
