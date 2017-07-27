@@ -1,30 +1,25 @@
-### script occurrencences - spocc ###
+### script download occurrences - spocc ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 # 25/07/2017
 
 ###---------------------------------------------------------------------------###
 
-# 1. clear memory and load packages 
-# clear workspace and increase memory
+## memory
 rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
 
-# packages
+## packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(spocc, maptools, ggmap)
+pacman::p_load(spocc, ggmap)
 
-# verify packages
+# verify
 search()
-
-# data
-data("wrld_simpl")
 
 ###---------------------------------------------------------------------------###
 
-## data from one source
-
+## data from one base and one specie
 # search
 re <- occ(query = "Vitreorana uranoscopa", from = "gbif")
 re
@@ -34,7 +29,7 @@ re$gbif$data$Vitreorana_uranoscopa
 
 ###---------------------------------------------------------------------------###
 
-## download
+## download from multiple bases and multiple species
 sp <- c("Vitreorana uranoscopa")
 
 ba <- c("gbif", "ebird", "ecoengine", "bison", "antweb", "vertnet", "idigbio", "inat",
@@ -45,7 +40,7 @@ re.a
 
 ###---------------------------------------------------------------------------###
 
-## preparate
+## preparate data - seleting name, longitude, latitude and bases
 # gbif
 da.gbif <- na.omit(cbind(re.a$gbif$data$Vitreorana_uranoscopa$name, 
                          re.a$gbif$data$Vitreorana_uranoscopa$longitude,
@@ -113,7 +108,7 @@ da.ala <- na.omit(cbind(re.a$ala$data$Vitreorana_uranoscopa$name,
 da <- data.frame(rbind(da.gbif, da.bison, da.inat, da.ebird, da.ecoengine,  
                        da.antweb, da.vertnet, da.idigbio, da.obis, da.ala))
 
-colnames(da) <- c("sp", "longitude", "latitude", "prov")
+colnames(da) <- c("sp", "longitude", "latitude", "base")
 da$longitude <- as.numeric(as.character(da$longitude))
 da$latitude <- as.numeric(as.character(da$latitude))
 str(da)
@@ -130,8 +125,9 @@ write.table(da, "occurrence_vitreorana_uranoscopa.txt", sep = "\t", quote = F,
 # map
 # af <- get_map(location = c(-60, 0, -30, -40), zoom = 5)
 
-af <- get_map(location = c(min(da$longitude), max(da$latitude), max(da$longitude), 
-                                                  min(da$latitude)), zoom = 5)
+af <- get_map(location = c(min(da$longitude), max(da$latitude), 
+                           max(da$longitude), min(da$latitude)), zoom = 5)
+
 ggmap(af, extent = "panel") +
   geom_point(data = da, aes(x = longitude, y = latitude), size = 3.3) + 
   geom_point(data = da, aes(x = longitude, y = latitude), size = 1.9, color = "red") +
