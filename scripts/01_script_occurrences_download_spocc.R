@@ -1,26 +1,25 @@
-### script occurrencences - spocc ###
+### script download occurrences - spocc ###
 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
 # 25/07/2017
 
 ###---------------------------------------------------------------------------###
 
-# 1. clear memory and load packages 
-# clear workspace and increase memory
+## memory
 rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
 
-# packages
+## packages
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(spocc, ggmap)
 
-# verify packages
+# verify
 search()
 
 ###---------------------------------------------------------------------------###
 
-## data from one base
+## data from one base and one specie
 # search
 re <- occ(query = "Vitreorana uranoscopa", from = "gbif")
 re
