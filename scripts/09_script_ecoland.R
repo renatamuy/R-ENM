@@ -1,152 +1,251 @@
-### paper - barbeiros no parana ###
-
-# andrade et al. 2017
+### script enm ###
 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
-# 10/01/2017
+# 28/07/2017
 
-### analise  ###
+### ecoland ###
 
-###-----------------------------------------------------------------------------------------###
+###---------------------------------------------------------------------------###
 
-# limpar o workspace e aumentar a memoria para o r
+## memory
 rm(list = ls())
-gc() 
-memory.limit(size = 10000000000) 
+gc()
+memory.limit(size = 1.75e13)
 
-# instalar e carregar pacotes
+##packages
+# install and load
 if(!require(pacman)) install.packages("pacman")
-pacman::p_load(raster, data.table)
+pacman::p_load(raster, rgdal, data.table, colorRamps)
 
-###-----------------------------------------------------------------------------------------###
+# verify packages
+search()
 
-# diretorio
-setwd("D:/butterflies/modelos_borboletas/modelos/ecoland")
+###---------------------------------------------------------------------------###
 
-###-----------------------------------------------------------------------------------------###
+## directory
+setwd("E:/github/enmR/ouput/ecoland")
 
+###---------------------------------------------------------------------------###
 
-# import data
-enm.clim <- raster("clima_richness.tif")
-plot(enm.clim)
-enm.lands <- raster("landscape_richness.tif")
-plot(enm.lands)
-enm.clim.v <- values(enm.clim)
-enm.land.v <- values(enm.lands)
-###-----------------------------------------------------------------------------------------###
+## data
+# limite
+br <- getData("GADM", country = "BRA", level = 0)
+br
 
-# graficos
+# enm climate
+re <- raster(res = 1, xmn = -75, xmx = -33, ymn = -35, ymx = 6)
+re[] <- rbeta(ncell(re), 2, 2)
+re.b <- mask(re, br)
 
-da <- data.table(clim = enm.clim.v, lands = enm.land.v)
+plot(re.b, col = matlab.like2(100))
+plot(br, add = T)
+
+# enm landscape
+rl <- raster(res = 1, xmn = -75, xmx = -33, ymn = -35, ymx = 6)
+rl[] <- rbeta(ncell(rl), 5, 2)
+rl.b <- mask(rl, br)
+
+plot(rl.b, col = magenta2green(100))
+plot(br, add = T)
+
+###---------------------------------------------------------------------------###
+
+## data
+# values
+da <- data.table(id = 1:ncell(re.b), cl = re.b[], la = rl.b[],
+                 xyFromCell(rl, 1:ncell(rl)))
+da
+
 da.na <- na.omit(da)
 da.na
-write.table(da.na, 'table_suit_climate_land_.txt')
 
-min(da.na$clim)
-min(da.na$lands)
+da <- data.table(da.na, col_4 = "NA", val_4 = 0, col_9 = "NA", val_9 = 0)
+da
 
-# plot
+###---------------------------------------------------------------------------###
+
+## classification 4
+for(i in 1:nrow(da)){
+  if(da[i, 2] <= .5 & da[i, 3] <= .5){
+    da[i, 6] <- "blue"
+    da[i, 7] <- 0} 
+  else if(da[i, 2] <= .5 & da[i, 3] > .5){  
+    da[i, 6] <- "green"
+    da[i, 7] <- .25} 
+  else if(da[i, 2] > .5 & da[i, 3] <= .5){  
+    da[i, 6] <- "orange"
+    da[i, 7] <- .75} 
+  else if(da[i, 2] > .5 & da[i, 3] > .5){  
+    da[i, 6] <- "red"
+    da[i, 7] <- 1}}
+
+da
+
+###---------------------------------------------------------------------------###
+
+## classification 9
+for(i in 1:nrow(da)){
+  if(da[i, 2] <= .25 & 
+     da[i, 3] <= .25){
+    da[i, 8] <- "blue"
+    da[i, 9] <- 0} 
+  
+  else if(da[i, 2] <= .25 & 
+          da[i, 3] > .25 & da[i, 3] <= .75){  
+    da[i, 8] <- "cyan"
+    da[i, 9] <- .125} 
+  
+  else if(da[i, 2] > .25 & da[i, 2] <= .75 & 
+          da[i, 3] <= .25){  
+    da[i, 8] <- "cyan4"
+    da[i, 9] <- .25} 
+  
+  else if(da[i, 2] > .25 & da[i, 2] <= .75 & 
+          da[i, 3] > .25 & da[i, 3] <= .75){  
+    da[i, 8] <- "green"
+    da[i, 9] <- .375} 
+  
+  else if(da[i, 2] > .75 & 
+          da[i, 3] <= .25){  
+    da[i, 8] <- "chocolate"
+    da[i, 9] <- .5} 
+  
+  else if(da[i, 2] <= .25 & 
+          da[i, 3] > .75){  
+    da[i, 8] <- "yellow"
+    da[i, 9] <- .625} 
+  
+  else if(da[i, 2] > .25 & da[i, 2] <= .75 & 
+          da[i, 3] > .75){  
+    da[i, 8] <- "orange"
+    da[i, 9] <- .75}
+  
+  else if(da[i, 2] > .75 & 
+          da[i, 3] > .25 & da[i, 3] <= .75){  
+    da[i, 8] <- "dark green"
+    da[i, 9] <- .875}
+  
+  else if(da[i, 2] > .75 & 
+          da[i, 3] > .75){  
+    da[i, 8] <- "red"
+    da[i, 9] <- 1}}
+
+da
+
+###---------------------------------------------------------------------------###
+
+## write data
+fwrite(da, "da_ecoland.csv")
+
+###---------------------------------------------------------------------------###
+
+## scatterplot
 par(mar = c(5, 5, 2, 2))
-plot(da.na$clim, da.na$lands, type = "n",
-     ylim = c(0, 150), 
-	   xlim = c(0, 150),
-     xlab = "Climate Richness", 
-	   ylab = "Landscape Richness",
+plot(da$cl, da$la, type = "n",
+     xlim = c(0, 1),
+     ylim = c(0, 1),
+     xlab = "Climate suitability", 
+     ylab = "Landscape suitability",
      col.axis = 'grey30',					
      cex.lab = 1.6,												
      cex.axis = 1.2, 
      las = 1)
 
-abline(h = .25 * max(da.na$clim), v = .25 * max(da.na$lands), col = "gray", lty = 2)
-abline(h = .75 * max(da.na$clim), v = .75 * max(da.na$lands), col = "gray", lty = 2)
+smoothScatter(da[, 2:3], nrpoints = 0, 
+              colramp = colorRampPalette(c("gray100", "gray75")), add = T)
+
+points(da$cl, da$la, col = da$col_4, pch = 20, cex = .8)
+
+abline(h = .5 , v = .5, col = "gray30", lty = 2)
+
+## barplot
+barplot(table(da[, 7]) / nrow(da), ylim = c(0, max(table(da[, 7]) / nrow(da)) + .1),
+        col = c("blue", "green", "orange", "red"))
+
+## map
+da.4 <- da[, c(4, 5, 7)]
+da.4
+
+gridded(da.4) <- ~x + y
+da.4
+
+ra.4 <- raster(da.4)
+ra.4
+
+plot(ra.4, col = c("blue", "green", "orange", "red"))
+
+writeRaster(ra.4, "ecoland_04.tif", format = "GTiff")
 
 
-h <- da.na[da.na$clim >= .75 * max(da.na$clim) & 
-             da.na$lands >= .75 * max(da.na$lands), ]
-points(h$clim, h$lands, col = adjustcolor("red", .01))
+# plots
+par(mfrow = c(1, 3))
 
-h.c_m.l <- da.na[da.na$clim >= 0.75 * max(da.na$clim) & 
-                   da.na$lands >= 0.25 * max(da.na$lands) & 
-                   da.na$lands < 0.75 * max(da.na$lands), ]
-points(h.c_m.l$clim, h.c_m.l$lands, col = adjustcolor("dark green", .01))
+plot(re.b, col = matlab.like2(100), main = "Climate")
+plot(br, add = T)
 
-m.c_h.l <- da.na[da.na$clim >= 0.25 * max(da.na$clim) & 
-                   da.na$clim < 0.75 * max(da.na$clim) & 
-                   da.na$lands >= 0.75 * max(da.na$lands), ]
-points(m.c_h.l$clim, m.c_h.l$lands, col = adjustcolor("dark orange", .01))
+plot(rl.b, col = magenta2green(100), main = "Landscape")
+plot(br, add = T)
 
-m.c_m.l <- da.na[da.na$clim >= 0.25 * max(da.na$clim) & 
-                   da.na$clim < 0.75 * max(da.na$clim) & 
-                   da.na$lands >= 0.25 * max(da.na$lands) & 
-                   da.na$lands < 0.75 * max(da.na$lands), ]
-points(m.c_m.l$clim, m.c_m.l$lands, col = adjustcolor("green", .01))
+plot(ra.4, col = c("blue", "green", "orange", "red"), main = "Ecoland - 4")
+plot(br, add = T)
 
-l.c_h.l <- da.na[da.na$clim < 0.25 * max(da.na$clim) & 
-                   da.na$lands >= 0.75 * max(da.na$lands), ]
-points(l.c_h.l$clim, l.c_h.l$lands, col = adjustcolor("yellow", .01))
+dev.off()
 
-h.c_l.l <- da.na[da.na$clim >= 0.75 * max(da.na$clim) & 
-                   da.na$lands < 0.25 * max(da.na$lands), ]
-points(h.c_l.l$clim, h.c_l.l$lands, col = adjustcolor("chocolate4", .01))
-
-l.c_m.l <- da.na[da.na$clim < 0.25 * max(da.na$clim) & 
-                   da.na$lands >= 0.25 * max(da.na$lands) & 
-                   da.na$lands < 0.75 * max(da.na$lands), ]
-points(l.c_m.l$clim, l.c_m.l$lands, col = adjustcolor("blue", .01))
-
-m.c_l.l <- da.na[da.na$clim >= 0.25 * max(da.na$clim) & 
-                   da.na$clim >= 0.25 * max(da.na$clim) & 
-                   da.na$lands < 0.25 * max(da.na$lands), ]
-points(m.c_l.l$clim, m.c_l.l$lands, col = adjustcolor("blue", .01))
-
-l <- da.na[da.na$clim < 0.25 * max(da.na$clim) & 
-             da.na$lands < 0.25 * max(da.na$lands), ]
-points(l$clim, l$lands, col = adjustcolor("blue", .01))
+###---------------------------------------------------------------------------###
 
 
-# tabela
-co <- data.table(id = 1:ncell(enm.clim), cl = enm.clim[], la = enm.lands[])
-co.na <- na.omit(co)
+## scatterplot
+par(mar = c(5, 5, 2, 2))
+plot(da$cl, da$la, type = "n",
+     xlim = c(0, 1),
+     ylim = c(0, 1),
+     xlab = "Climate suitability", 
+     ylab = "Landscape suitability",
+     col.axis = 'grey30',					
+     cex.lab = 1.6,												
+     cex.axis = 1.2, 
+     las = 1)
 
-co.na$col <- NA
-co.na
+smoothScatter(da[, 2:3], nrpoints = 0, 
+              colramp = colorRampPalette(c("gray100", "gray75")), add = T)
 
-:nrow(co.na)
+points(da$cl, da$la, col = da$col_9, pch = 20, cex = .8)
 
-for(i in 1:50){
-  if(co.na[i, co.na$cl >= .75 * max(co.na$cl) & 
-           co.na$la >= .75 * max(co.na$la)]){co.na$col <- "red"}
-  
-  else if(co.na[i, co.na$cl >= 0.75 * max(co.na$cl) & 
-                co.na$la >= 0.25 * max(co.na$la) & 
-                co.na$la < 0.75 * max(co.na$la)]){co.na$col <- "dark green"}
-  
-  else if(co.na[i, co.na$cl >= 0.25 * max(co.na$cl) & 
-                co.na$cl < 0.75 * max(co.na$cl) & 
-                co.na$la >= 0.75 * max(co.na$la)]){co.na$col <- "orange"}
-  
-  else if(co.na[i, co.na$cl >= 0.25 * max(co.na$cl) & 
-                co.na$cl < 0.75 * max(co.na$cl) & 
-                co.na$la >= 0.25 * max(co.na$la) & 
-                co.na$la < 0.75 * max(co.na$la)]){co.na$col <- "yellow"}
-  
-  else if(co.na[i, co.na$cl >= 0.75 * max(co.na$cl) & 
-                co.na$la < 0.25 * max(co.na$la)]){co.na$col <- "chocolate4"}
-  
-  else if(co.na[i, co.na$cl < 0.25 * max(co.na$cl) & 
-                co.na$la >= 0.25 * max(co.na$la) & 
-                co.na$la < 0.75 * max(co.na$la)]){co.na$col <- "blue"}}
-     
+abline(h = .25 , v = .25, col = "gray30", lty = 2)
+abline(h = .75 , v = .75, col = "gray30", lty = 2)
 
-co.na
+## barplot
+barplot(table(da[, 9]) / nrow(da), ylim = c(0, max(table(da[, 9]) / nrow(da)) + .1),
+        col = c("blue", "cyan", "cyan4", "green", "chocolate", "yellow", "orange", 
+                "dark green", "red"))
 
-# mapa
-r <- raster()
-values(r) <- rnorm(ncell(r))
+## map
+da.9 <- da[, c(4, 5, 9)]
+da.9
 
-plot(r, col = c("black", "gray"))
+gridded(da.9) <- ~x + y
+da.9
+
+ra.9 <- raster(da.9)
+ra.9
+
+plot(ra.9, col = c("blue", "cyan", "cyan4", "green", "chocolate", "yellow", "orange", 
+             "dark green", "red"))
+
+writeRaster(ra.9, "ecoland_09.tif", format = "GTiff")
 
 
+# plots
+par(mfrow = c(1, 3))
 
+plot(re.b, col = matlab.like2(100), main = "Climate")
+plot(br, add = T)
 
+plot(rl.b, col = magenta2green(100), main = "Landscape")
+plot(br, add = T)
 
+plot(ra.9, col = c("blue", "cyan", "cyan4", "green", "chocolate", "yellow", "orange", 
+                   "dark green", "red"), main = "Ecoland - 9")
+plot(br, add = T)
+
+###---------------------------------------------------------------------------###
