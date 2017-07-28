@@ -1,6 +1,6 @@
 ### script download occurrences - spocc ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 # 25/07/2017
 
 ###---------------------------------------------------------------------------###
@@ -129,8 +129,12 @@ af <- get_map(location = c(min(da$longitude), max(da$latitude),
                            max(da$longitude), min(da$latitude)), zoom = 5)
 
 ggmap(af, extent = "panel") +
-  geom_point(data = da, aes(x = longitude, y = latitude), size = 3.3) + 
-  geom_point(data = da, aes(x = longitude, y = latitude), size = 1.9, color = "red") +
+  geom_point(data = da, aes(x = longitude, y = latitude, fill = base), 
+             shape = 21, size = 3) +
+  theme(legend.position = c(0.9, 0.2),
+        legend.background = element_rect(color = "black", fill = "grey90", 
+                                         size = 1, linetype = "solid")) +
+  scale_fill_discrete(name = "Bases") + 
   ggtitle(expression("Occurrences of" ~ italic("Vitreorana uranoscopa")))
 
 ggsave("map_vitreorana_uranoscopa.tiff", dpi = 300)
