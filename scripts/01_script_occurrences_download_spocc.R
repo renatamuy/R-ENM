@@ -30,7 +30,7 @@ re$gbif$data$Vitreorana_uranoscopa
 ###---------------------------------------------------------------------------###
 
 ## download from multiple bases and multiple species
-sp <- c("Eleutherodactylus johnstonei")
+sp <- c("Vitreorana uranoscopa")
 
 ba <- c("gbif", "ebird", "ecoengine", "bison", "antweb", "vertnet", "idigbio", "inat",
         "obis", "ala")
