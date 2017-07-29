@@ -1,6 +1,8 @@
 ### script amphibians synonymys frost ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Maurício Humberto Vancine - mauricio.vancine@
+
+###  amphibians synonymys frost	###
 
 ###---------------------------------------------------------------------###
 
@@ -13,8 +15,6 @@ memory.limit(size = 1.75e13)
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(rvest, data.table, stringr)
 
-###---------------------------------------------------------------------###
-###				        amphibians synonymys frost	       			###
 ###---------------------------------------------------------------------###
 
 # data
@@ -42,8 +42,6 @@ for(i in seq(10, 8360, 10)){
   
   # page of specie
   pg.sp <- read_html(paste0("http://research.amnh.org", j))
-  
-  pg.sp <- read_html("http://research.amnh.org/vz/herpetology/amphibia/Amphibia/Anura/Hyperoliidae/Hyperolius/Hyperolius-rwandae")
   
   # names
   na.p <- html_nodes(pg.sp, "title") %>%
@@ -73,9 +71,6 @@ for(i in seq(10, 8360, 10)){
 
 
 fwrite(da, "synonymes_amphibia_frost.txt", sep = "\t")
-
-
-  
 
 ###---------------------------------------------------------------------###
 

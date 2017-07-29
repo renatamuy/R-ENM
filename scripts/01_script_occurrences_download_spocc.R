@@ -30,12 +30,12 @@ re$gbif$data$Vitreorana_uranoscopa
 ###---------------------------------------------------------------------------###
 
 ## download from multiple bases and multiple species
-sp <- c("Vitreorana uranoscopa")
+sp <- c("Eleutherodactylus johnstonei")
 
 ba <- c("gbif", "ebird", "ecoengine", "bison", "antweb", "vertnet", "idigbio", "inat",
         "obis", "ala")
 
-re.a <- occ(query = sp, from = ba)
+re.a <- occ(query = sp, from = ba, limit = 5000)
 re.a
 
 ###---------------------------------------------------------------------------###
