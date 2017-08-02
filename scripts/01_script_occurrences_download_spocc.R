@@ -11,7 +11,6 @@ gc()
 memory.limit(size = 1.75e13) 
 
 ## packages
-if(!require("pacman")) install.packages("pacman")
 pacman::p_load(spocc, ggmap)
 
 # verify
@@ -35,7 +34,7 @@ sp <- c("Vitreorana uranoscopa")
 ba <- c("gbif", "ebird", "ecoengine", "bison", "antweb", "vertnet", "idigbio", "inat",
         "obis", "ala")
 
-re.a <- occ(query = sp, from = ba, limit = 5000)
+re.a <- occ(query = sp, from = ba)
 re.a
 
 ###---------------------------------------------------------------------------###

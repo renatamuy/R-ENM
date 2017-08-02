@@ -12,7 +12,6 @@ gc()
 memory.limit(size = 1.75e13)
 
 # packages 
-if(!require("pacman")) install.packages("pacman")
 pacman::p_load(rvest, data.table, stringr, dplyr)
 
 ###---------------------------------------------------------------------###
