@@ -11,7 +11,7 @@ gc()
 memory.limit(size = 1.75e13) 
 
 ## packages
-pacman::p_load(spocc, ggmap)
+pacman::p_load(spocc, data.table, ggmap)
 
 # verify
 search()
@@ -41,70 +41,70 @@ re.a
 
 ## preparate data - seleting name, longitude, latitude and bases
 # gbif
-da.gbif <- na.omit(cbind(re.a$gbif$data$Vitreorana_uranoscopa$name, 
-                         re.a$gbif$data$Vitreorana_uranoscopa$longitude,
-                         re.a$gbif$data$Vitreorana_uranoscopa$latitude, 
-                         re.a$gbif$data$Vitreorana_uranoscopa$prov))
+da.gbif <- cbind(re.a$gbif$data$Vitreorana_uranoscopa$name, 
+                 re.a$gbif$data$Vitreorana_uranoscopa$longitude,
+                 re.a$gbif$data$Vitreorana_uranoscopa$latitude, 
+                 re.a$gbif$data$Vitreorana_uranoscopa$prov)
 
 # bison
-da.bison <- na.omit(cbind(re.a$bison$data$Vitreorana_uranoscopa$name, 
-                          re.a$bison$data$Vitreorana_uranoscopa$longitude,
-                          re.a$bison$data$Vitreorana_uranoscopa$latitude,
-                          re.a$bison$data$Vitreorana_uranoscopa$prov))
+da.bison <- cbind(re.a$bison$data$Vitreorana_uranoscopa$name, 
+                  re.a$bison$data$Vitreorana_uranoscopa$longitude,
+                  re.a$bison$data$Vitreorana_uranoscopa$latitude,
+                  re.a$bison$data$Vitreorana_uranoscopa$prov)
 
 # inat
-da.inat <- na.omit(cbind(re.a$inat$data$Vitreorana_uranoscopa$name, 
-                         re.a$inat$data$Vitreorana_uranoscopa$longitude,
-                         re.a$inat$data$Vitreorana_uranoscopa$latitude,
-                         re.a$inat$data$Vitreorana_uranoscopa$prov))
+da.inat <- cbind(re.a$inat$data$Vitreorana_uranoscopa$name, 
+                 re.a$inat$data$Vitreorana_uranoscopa$longitude,
+                 re.a$inat$data$Vitreorana_uranoscopa$latitude,
+                 re.a$inat$data$Vitreorana_uranoscopa$prov)
 
 # ebird
-da.ebird <- na.omit(cbind(re.a$ebird$data$Vitreorana_uranoscopa$name, 
-                          re.a$ebird$data$Vitreorana_uranoscopa$longitude,
-                          re.a$ebird$data$Vitreorana_uranoscopa$latitude,
-                          re.a$ebird$data$Vitreorana_uranoscopa$prov))
+da.ebird <- cbind(re.a$ebird$data$Vitreorana_uranoscopa$name, 
+                  re.a$ebird$data$Vitreorana_uranoscopa$longitude,
+                  re.a$ebird$data$Vitreorana_uranoscopa$latitude,
+                  re.a$ebird$data$Vitreorana_uranoscopa$prov)
 
 # ecoengine
-da.ecoengine <- na.omit(cbind(re.a$ecoengine$data$Vitreorana_uranoscopa$name, 
-                              re.a$ecoengine$data$Vitreorana_uranoscopa$longitude,
-                              re.a$ecoengine$data$Vitreorana_uranoscopa$latitude,
-                              re.a$ecoengine$data$Vitreorana_uranoscopa$prov))
+da.ecoengine <- cbind(re.a$ecoengine$data$Vitreorana_uranoscopa$name, 
+                      re.a$ecoengine$data$Vitreorana_uranoscopa$longitude,
+                      re.a$ecoengine$data$Vitreorana_uranoscopa$latitude,
+                      re.a$ecoengine$data$Vitreorana_uranoscopa$prov)
 
 # antweb
-da.antweb <- na.omit(cbind(re.a$antweb$data$Vitreorana_uranoscopa$name, 
-                           re.a$antweb$data$Vitreorana_uranoscopa$longitude,
-                           re.a$antweb$data$Vitreorana_uranoscopa$latitude,
-                           re.a$antweb$data$Vitreorana_uranoscopa$prov))
+da.antweb <- cbind(re.a$antweb$data$Vitreorana_uranoscopa$name, 
+                   re.a$antweb$data$Vitreorana_uranoscopa$longitude,
+                   re.a$antweb$data$Vitreorana_uranoscopa$latitude,
+                   re.a$antweb$data$Vitreorana_uranoscopa$prov)
 
 # vertnet
-da.vertnet <- na.omit(cbind(re.a$vertnet$data$Vitreorana_uranoscopa$name, 
-                         re.a$vertnet$data$Vitreorana_uranoscopa$longitude,
-                         re.a$vertnet$data$Vitreorana_uranoscopa$latitude,
-                         re.a$vertnet$data$Vitreorana_uranoscopa$prov))
+da.vertnet <- cbind(re.a$vertnet$data$Vitreorana_uranoscopa$name, 
+                    re.a$vertnet$data$Vitreorana_uranoscopa$longitude,
+                    re.a$vertnet$data$Vitreorana_uranoscopa$latitude,
+                    re.a$vertnet$data$Vitreorana_uranoscopa$prov)
 
 # idigbio
-da.idigbio <- na.omit(cbind(re.a$idigbio$data$Vitreorana_uranoscopa$name, 
-                         re.a$idigbio$data$Vitreorana_uranoscopa$longitude,
-                         re.a$idigbio$data$Vitreorana_uranoscopa$latitude, 
-                         re.a$idigbio$data$Vitreorana_uranoscopa$prov))
+da.idigbio <- cbind(re.a$idigbio$data$Vitreorana_uranoscopa$name, 
+                    re.a$idigbio$data$Vitreorana_uranoscopa$longitude,
+                    re.a$idigbio$data$Vitreorana_uranoscopa$latitude, 
+                    re.a$idigbio$data$Vitreorana_uranoscopa$prov)
 
 # obis 
-da.obis <- na.omit(cbind(re.a$obis$data$Vitreorana_uranoscopa$name, 
-                         re.a$obis$data$Vitreorana_uranoscopa$longitude,
-                         re.a$obis$data$Vitreorana_uranoscopa$latitude,
-                         re.a$obis$data$Vitreorana_uranoscopa$prov))
+da.obis <- cbind(re.a$obis$data$Vitreorana_uranoscopa$name, 
+                 re.a$obis$data$Vitreorana_uranoscopa$longitude,
+                 re.a$obis$data$Vitreorana_uranoscopa$latitude,
+                 re.a$obis$data$Vitreorana_uranoscopa$prov)
 
 # ala
-da.ala <- na.omit(cbind(re.a$ala$data$Vitreorana_uranoscopa$name, 
-                        re.a$ala$data$Vitreorana_uranoscopa$longitude,
-                        re.a$ala$data$Vitreorana_uranoscopa$latitude,
-                        re.a$ala$data$Vitreorana_uranoscopa$prov))
+da.ala <- cbind(re.a$ala$data$Vitreorana_uranoscopa$name, 
+                re.a$ala$data$Vitreorana_uranoscopa$longitude,
+                re.a$ala$data$Vitreorana_uranoscopa$latitude,
+                re.a$ala$data$Vitreorana_uranoscopa$prov)
 
 
 ###---------------------------------------------------------------------------###
 
 # data
-da <- data.frame(rbind(da.gbif, da.bison, da.inat, da.ebird, da.ecoengine,  
+da <- data.table(rbind(da.gbif, da.bison, da.inat, da.ebird, da.ecoengine,  
                        da.antweb, da.vertnet, da.idigbio, da.obis, da.ala))
 
 colnames(da) <- c("sp", "longitude", "latitude", "base")

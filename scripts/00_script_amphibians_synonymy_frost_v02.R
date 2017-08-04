@@ -12,6 +12,7 @@ gc()
 memory.limit(size = 1.75e13)
 
 # packages 
+if(!require(pacman)) install.packages("pacman")
 pacman::p_load(rvest, data.table, stringr, dplyr)
 
 ###---------------------------------------------------------------------###
@@ -27,10 +28,13 @@ pg <- read_html(url)
 fr <- html_nodes(pg, "a") %>%
   html_attr("href")
 
+fr
+
 ###---------------------------------------------------------------------###
 
 ## anura
-an <- grep("/Anura/", fr, value = T)
+an <- grep("/Anura/", grep("ae$", fr, value = T), value = T)
+an
 
 # data
 da <- data.table()
@@ -48,15 +52,10 @@ for(i in an){
   li <- html_nodes(pg, "a") %>%
     html_attr("href")
   
-  # genus
-  ge <- grep("/Anura/", li, value = T)
-  
-  
-  # for genus
-  for(j in ge){
+  if(grep("nae/", li, value = T) != 0){
     
     # http of search
-    url <- paste0("http://research.amnh.org", j)
+    url <- paste0("http://research.amnh.org", i)
     
     # page
     pg <- read_html(url)
@@ -66,10 +65,32 @@ for(i in an){
       html_attr("href")
     
     # genus
+    ge <- grep("nae/", li, value = T)
+    
+    } else {
+      
+      # genus
+      ge <- grep("/Anura/", li, value = T)}
+  
+  
+      # for genus
+      for(j in ge){
+        
+        # http of search
+        url <- paste0("http://research.amnh.org", j)
+    
+    # page
+    pg <- read_html(url)
+    
+    # link
+    li <- html_nodes(pg, "a") %>%
+      html_attr("href")
+    
+    # species
     sp <- grep("-", grep("/Anura/", li, value = T), value = T)
     
     if(length(sp) == 0){
-      te <- data.table(cbind(specie = last(last(strsplit(url, "/"))), link = url))
+      te <- data.table(cbind(species = last(last(strsplit(url, "/"))), links = url))
       da <- rbind(da, te)
       print(last(last(strsplit(url, "/"))))
       
@@ -81,6 +102,8 @@ for(i in an){
         da <- rbind(da, te)
         
         print(last(last(strsplit(sp[[k]], "/"))))}}}}
+
+fwrite(da, "test.csv")
       
 ###---------------------------------------------------------------------###
 

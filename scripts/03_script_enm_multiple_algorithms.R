@@ -24,7 +24,7 @@ search()
 # directory
 setwd("D:/_github/enmR/data")
 
-# ocurrences
+# occurrences
 po <- read.table("Bromelia_balansae.txt", h = T)
 head(po, 10)
 
@@ -47,37 +47,16 @@ plot(en[[1]])
 points(po$long, po$lat, pch = 20)
 
 
-## extract coordinates for background
-# coordinates
-id <- 1:ncell(en)
-head(id, 50)
-length(id)
-
-co <- xyFromCell(en, id)
-head(co, 50)
-
-plot(en[[1]])
-points(co, pch = "o", cex = 1e-1)
-
-# without NAs
-va <- values(en)[, 1]
-head(va, 50)
-length(va)
-
-co.va <- data.frame(co, va)
-head(co.va, 20)
-
-co.va.na <- na.omit(co.va)
-head(co.va.na, 10)
-
-cs <- co.va.na[, -3]
-head(cs, 10)
+## background coordinates
+## background coordinates
+co <- na.omit(data.frame(xyFromCell(en, 1:ncell(en)), en[[1]][]))
+cs <- co[, -3]
 
 colnames(cs) <- c("long", "lat")
 head(cs, 10)
 
 plot(en[[1]])
-points(cs, pch = "o", cex = 1e-1)
+points(cs[sample(nrow(cs), 1000), ], pch = 20, cex = .8)
 
 ###---------------------------------------------------------------------------###
 

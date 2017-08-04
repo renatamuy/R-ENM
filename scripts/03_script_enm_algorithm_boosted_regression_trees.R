@@ -13,8 +13,9 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, dismo, maptools, gam, randomForest, kernlab, rJava, 
-               vegan, colorRamps)
+pacman::p_load(raster, rgdal, dismo, maptools, randomForest, vegan, colorRamps, gbm)
+
+vignette("gbm", "dismo")
 
 # verify packages
 search()

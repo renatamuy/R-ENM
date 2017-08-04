@@ -15,7 +15,7 @@ memory.limit(size = 1.75e13)
 ###---------------------------------------------------------------------------###
 ## packages 
 
-# load packages
+# install and load packages
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(raster, rgdal, dismo, maptools, vegan, colorRamps)
 
@@ -27,7 +27,10 @@ data(wrld_simpl)
 
 ###---------------------------------------------------------------------------###
 
-# data
+## data
+# directory
+setwd("E:/github/enmR/data")
+
 # ocurrences
 po <- read.table("Bromelia_balansae.txt", h = T)
 head(po, 10)
@@ -47,38 +50,16 @@ plot(en)
 plot(en[[1]])
 points(po$long, po$lat, pch = 20)
 
-
-## extract coordinates for background
-# coordinates
-id <- 1:ncell(en)
-head(id, 50)
-length(id)
-
-co <- xyFromCell(en, id)
-head(co, 50)
-
-plot(en[[1]])
-points(co, pch = "o", cex = 1e-1)
-
-# without NAs
-va <- values(en)[, 1]
-head(va, 50)
-length(va)
-
-co.va <- data.frame(co, va)
-head(co.va, 20)
-
-co.va.na <- na.omit(co.va)
-head(co.va.na, 10)
-
-cs <- co.va.na[, -3]
-head(cs, 10)
+## background coordinates
+co <- na.omit(data.frame(xyFromCell(en, 1:ncell(en)), en[[1]][]))
+cs <- co[, -3]
 
 colnames(cs) <- c("long", "lat")
 head(cs, 10)
 
 plot(en[[1]])
-points(cs, pch = "o", cex = 1e-1)
+points(cs[sample(nrow(cs), 1000), ], pch = 20, cex = .8)
+
 
 ###---------------------------------------------------------------------------###
 
@@ -152,18 +133,7 @@ plot(wrld_simpl, add = T, border = "dark grey")
 points(pr.specie[pr.sample.train, ], pch = 20, col = "red")
 points(bc.specie[bc.sample.train, ], pch = 3, col = "red")
 
-
-plot(enm.bioclim > 0.2)
-plot(wrld_simpl, add = T, border = "dark grey")
-
-plot(enm.bioclim > 0.3)
-plot(wrld_simpl, add = T, border = "dark grey")
-
-plot(enm.bioclim > 0.4)
-plot(wrld_simpl, add = T, border = "dark grey")
-
-plot(enm.bioclim > 0.5)
-plot(wrld_simpl, add = T, border = "dark grey")
+writeRaster(enm.bioclim, "enm_bioclim.tif", format = "GTiff")
 
 
 # 1.3 evaluation
@@ -197,13 +167,13 @@ tss
 # sum of the sensitivity and specificity
 plot(enm.bioclim >= thr.bioclim$spec_sens)
 plot(wrld_simpl, add = T, border = "dark grey")
-points(pr.specie[pr.sample.train, ], pch = 20, col = "red")
-points(bc.specie[bc.sample.train, ], pch = 3, col = "red")
+points(pr.specie[-pr.sample.train, ], pch = 20, col = "blue")
+points(bc.specie[-bc.sample.train, ], pch = 3, col = "blue")
 
 # no omission
 plot(enm.bioclim >= thr.bioclim$no_omission)
 plot(wrld_simpl, add = T, border = "dark grey")
-points(pr.specie[pr.sample.train, ], pch = 20, col = "red")
-points(bc.specie[bc.sample.train, ], pch = 3, col = "red")
+points(pr.specie[-pr.sample.train, ], pch = 20, col = "blue")
+points(bc.specie[-bc.sample.train, ], pch = 3, col = "blue")
 
 ###---------------------------------------------------------------------------###
