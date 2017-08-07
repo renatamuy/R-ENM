@@ -13,7 +13,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan)
+pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, colorRamps)
 
 # verify packages
 search()
@@ -22,7 +22,7 @@ search()
 
 # 2. import data
 # directory
-setwd("D:/_github/enmR/data")
+setwd("E:/github/enmR/data")
 
 # occurrences
 po <- read.table("Bromelia_balansae.txt", h = T)
@@ -48,7 +48,6 @@ points(po$long, po$lat, pch = 20)
 
 
 ## background coordinates
-## background coordinates
 co <- na.omit(data.frame(xyFromCell(en, 1:ncell(en)), en[[1]][]))
 cs <- co[, -3]
 
@@ -56,6 +55,9 @@ colnames(cs) <- c("long", "lat")
 head(cs, 10)
 
 plot(en[[1]])
+points(cs[sample(nrow(cs), 1000), ], pch = 20, cex = .8)
+
+plot(en[[1]], col = matlab.like2(100))
 points(cs[sample(nrow(cs), 1000), ], pch = 20, cex = .8)
 
 ###---------------------------------------------------------------------------###
