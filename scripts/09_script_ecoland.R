@@ -65,76 +65,49 @@ da
 ###---------------------------------------------------------------------------###
 
 ## classification 4
-for(i in 1:nrow(da)){
-  if(da[i, 2] <= .5 & da[i, 3] <= .5){
-    da[i, 6] <- "blue"
-    da[i, 7] <- 0} 
-  else if(da[i, 2] <= .5 & da[i, 3] > .5){  
-    da[i, 6] <- "green"
-    da[i, 7] <- .25} 
-  else if(da[i, 2] > .5 & da[i, 3] <= .5){  
-    da[i, 6] <- "orange"
-    da[i, 7] <- .75} 
-  else if(da[i, 2] > .5 & da[i, 3] > .5){  
-    da[i, 6] <- "red"
-    da[i, 7] <- 1}
-    
-    print(paste0(round(i/nrow(da), 6), "%"))}
+da[, col_4 := c("blue", "green", "orange", "red")
+   [max.col(setDT(.(cl <= .5 & la <= .5, 
+                    cl <= .5 & la > .5,
+                    cl > .5 & la <= .5,
+                    cl > .5 & la > .5)))]]
+                                                 
 
-da
+
+da[, val_4 := c(0, .25, .75, 1)
+   [max.col(setDT(.(cl <= .5 & la <= .5, 
+                    cl <= .5 & la > .5,
+                    cl > .5 & la <= .5,
+                    cl > .5 & la > .5)))]]
+
+                                                
 
 ###---------------------------------------------------------------------------###
 
 ## classification 9
-for(i in 1:nrow(da)){
-  if(da[i, 2] <= .25 & 
-     da[i, 3] <= .25){
-    da[i, 8] <- "blue"
-    da[i, 9] <- 0} 
-  
-  else if(da[i, 2] <= .25 & 
-          da[i, 3] > .25 & da[i, 3] <= .75){  
-    da[i, 8] <- "cyan"
-    da[i, 9] <- .125} 
-  
-  else if(da[i, 2] > .25 & da[i, 2] <= .75 & 
-          da[i, 3] <= .25){  
-    da[i, 8] <- "cyan4"
-    da[i, 9] <- .25} 
-  
-  else if(da[i, 2] > .25 & da[i, 2] <= .75 & 
-          da[i, 3] > .25 & da[i, 3] <= .75){  
-    da[i, 8] <- "green"
-    da[i, 9] <- .375} 
-  
-  else if(da[i, 2] > .75 & 
-          da[i, 3] <= .25){  
-    da[i, 8] <- "chocolate"
-    da[i, 9] <- .5} 
-  
-  else if(da[i, 2] <= .25 & 
-          da[i, 3] > .75){  
-    da[i, 8] <- "yellow"
-    da[i, 9] <- .625} 
-  
-  else if(da[i, 2] > .25 & da[i, 2] <= .75 & 
-          da[i, 3] > .75){  
-    da[i, 8] <- "orange"
-    da[i, 9] <- .75}
-  
-  else if(da[i, 2] > .75 & 
-          da[i, 3] > .25 & da[i, 3] <= .75){  
-    da[i, 8] <- "dark green"
-    da[i, 9] <- .875}
-  
-  else if(da[i, 2] > .75 & 
-          da[i, 3] > .75){  
-    da[i, 8] <- "red"
-    da[i, 9] <- 1}
-    
-    print(paste0(round(i/nrow(da), 6), "%"))}
+da[, col_9 := c("blue", "cyan", "cyan4", "green", "chocolate", "yellow", 
+                "orange", "dark green", "red")
+   [max.col(setDT(.(cl <= .25 & la <= .25, 
+   cl <= .25 & la > .25 & la <= .75,
+   cl > .25 & cl <= .75 & la <= .25,
+   cl > .25 & cl <= .75 & la > .25 & la <= .75,
+   cl > .75 & la <= .25,
+   cl <= .25 & la > .75,
+   cl > .25 & cl <= .75 & la > .75,
+   cl > .75 & la > .25 & la <= .75,
+   cl > .75 & la > .75)))]]
+                                       
 
-da
+
+da[, val_9 := c(0, .125, .25, .375, .5, .625, .75, .875, 1)
+   [max.col(setDT(.(cl <= .25 & la <= .25, 
+                    cl <= .25 & la > .25 & la <= .75,
+                    cl > .25 & cl <= .75 & la <= .25,
+                    cl > .25 & cl <= .75 & la > .25 & la <= .75,
+                    cl > .75 & la <= .25,
+                    cl <= .25 & la > .75,
+                    cl > .25 & cl <= .75 & la > .75,
+                    cl > .75 & la > .25 & la <= .75,
+                    cl > .75 & la > .75)))]]
 
 ###---------------------------------------------------------------------------###
 
