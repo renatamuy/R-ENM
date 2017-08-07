@@ -1,6 +1,6 @@
 ### script enm ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 # 28/07/2017
 
 ### ecoland ###
@@ -77,7 +77,9 @@ for(i in 1:nrow(da)){
     da[i, 7] <- .75} 
   else if(da[i, 2] > .5 & da[i, 3] > .5){  
     da[i, 6] <- "red"
-    da[i, 7] <- 1}}
+    da[i, 7] <- 1}
+    
+    print(paste0(round(i/nrow(da), 6), "%"))}
 
 da
 
@@ -128,7 +130,9 @@ for(i in 1:nrow(da)){
   else if(da[i, 2] > .75 & 
           da[i, 3] > .75){  
     da[i, 8] <- "red"
-    da[i, 9] <- 1}}
+    da[i, 9] <- 1}
+    
+    print(paste0(round(i/nrow(da), 6), "%"))}
 
 da
 
