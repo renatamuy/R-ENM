@@ -5,6 +5,20 @@ Scripts ENMs in R
 1. [Spatial data manipulation](http://rspatial.org/index.html) - Prof. Robert Hijmans
   
 2. [Species distribution modeling with R](https://cran.r-project.org/web/packages/dismo/vignettes/sdm.pdf) - Prof. Robert J. Hijmans e Profa. Jane Elith
+
+3. [How to construct a bias file with R for use in MaxEnt modeling](https://scottrinnan.wordpress.com/2015/08/31/how-to-construct-a-bias-file-with-r-for-use-in-maxent-modeling/) - SCOTT RINNAN
+
+4. [Species distribution models in R](http://www.molecularecologist.com/2013/04/species-distribution-models-in-r/)
+
+5. [Modeling Species Distributions in R: First Steps](http://rfunctions.blogspot.com.br/2014/05/modeling-species-distributions-in-r.html)
+
+6. [Ecological niche modelling in R - part 1](http://lab.fengxiao.info/2016/11/23/ENM-in-R-workshop.html)
+
+7. [Obtaining macroclimate data with R to model species’ distributions](https://ecologicaconciencia.wordpress.com/2013/11/29/obtaining-macroclimate-data-with-r-to-model-species-distributions/)
+
+8. [hSDM R package](http://hsdm.sourceforge.net)
+
+9. [Simple Species Distribution Modeling in R﻿](http://kdahlin.weebly.com/open-science/simple-species-distribution-modeling-in-r)
 	
 ## Vídeos
 1. [Species Distribution Modelling](https://www.youtube.com/watch?v=obuMW5NAtJE&list=PLKYTvTbXFuChaoF-L-1e9RzCagdLPQcCU) - Prof. Richard Pearson
