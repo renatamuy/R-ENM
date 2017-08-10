@@ -128,7 +128,7 @@ plot(da$cl, da$la, type = "n",
      cex.axis = 1.2, 
      las = 1)
 
-smoothScatter(da[, 2:3], nrpoints = 0, 
+smoothScatter(da[, 2:3], nrpoints = 0, nbin = 30,
               colramp = colorRampPalette(c("gray100", "gray75")), add = T)
 
 points(da$cl, da$la, col = da$col_4, pch = 20, cex = .8)
@@ -183,7 +183,7 @@ plot(da$cl, da$la, type = "n",
      cex.axis = 1.2, 
      las = 1)
 
-smoothScatter(da[, 2:3], nrpoints = 0, 
+smoothScatter(da[, 2:3], nrpoints = 0, nbin = 30,
               colramp = colorRampPalette(c("gray100", "gray75")), add = T)
 
 points(da$cl, da$la, col = da$col_9, pch = 20, cex = .8)
