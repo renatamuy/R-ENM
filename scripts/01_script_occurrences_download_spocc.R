@@ -11,115 +11,61 @@ gc()
 memory.limit(size = 1.75e13) 
 
 ## packages
-pacman::p_load(spocc, data.table, ggmap)
+pacman::p_load(spocc, data.table, dplyr, ggmap)
 
 # verify
 search()
 
 ###---------------------------------------------------------------------------###
 
-## data from one base and one specie
-# search
-re <- occ(query = "Vitreorana uranoscopa", from = "gbif")
-re
+# import list of species
+setwd("E:/github/enmR/occurrence")
 
-# data of specie
-re$gbif$data$Vitreorana_uranoscopa
-
-###---------------------------------------------------------------------------###
+sp <- fread("")
 
 ## download from multiple bases and multiple species
 sp <- c("Vitreorana uranoscopa")
 
-ba <- c("gbif", "ebird", "ecoengine", "bison", "antweb", "vertnet", "idigbio", "inat",
-        "obis", "ala")
+ba <- c("gbif", "ebird", "ecoengine", "bison", "antweb", "vertnet", 
+        "idigbio", "inat", "obis", "ala")
 
-re.a <- occ(query = sp, from = ba)
-re.a
+re <- occ(query = sp, from = ba)
+re
 
 ###---------------------------------------------------------------------------###
 
 ## preparate data - seleting name, longitude, latitude and bases
-# gbif
-da.gbif <- cbind(re.a$gbif$data$Vitreorana_uranoscopa$name, 
-                 re.a$gbif$data$Vitreorana_uranoscopa$longitude,
-                 re.a$gbif$data$Vitreorana_uranoscopa$latitude, 
-                 re.a$gbif$data$Vitreorana_uranoscopa$prov)
 
-# bison
-da.bison <- cbind(re.a$bison$data$Vitreorana_uranoscopa$name, 
-                  re.a$bison$data$Vitreorana_uranoscopa$longitude,
-                  re.a$bison$data$Vitreorana_uranoscopa$latitude,
-                  re.a$bison$data$Vitreorana_uranoscopa$prov)
+da <- data.table()
 
-# inat
-da.inat <- cbind(re.a$inat$data$Vitreorana_uranoscopa$name, 
-                 re.a$inat$data$Vitreorana_uranoscopa$longitude,
-                 re.a$inat$data$Vitreorana_uranoscopa$latitude,
-                 re.a$inat$data$Vitreorana_uranoscopa$prov)
-
-# ebird
-da.ebird <- cbind(re.a$ebird$data$Vitreorana_uranoscopa$name, 
-                  re.a$ebird$data$Vitreorana_uranoscopa$longitude,
-                  re.a$ebird$data$Vitreorana_uranoscopa$latitude,
-                  re.a$ebird$data$Vitreorana_uranoscopa$prov)
-
-# ecoengine
-da.ecoengine <- cbind(re.a$ecoengine$data$Vitreorana_uranoscopa$name, 
-                      re.a$ecoengine$data$Vitreorana_uranoscopa$longitude,
-                      re.a$ecoengine$data$Vitreorana_uranoscopa$latitude,
-                      re.a$ecoengine$data$Vitreorana_uranoscopa$prov)
-
-# antweb
-da.antweb <- cbind(re.a$antweb$data$Vitreorana_uranoscopa$name, 
-                   re.a$antweb$data$Vitreorana_uranoscopa$longitude,
-                   re.a$antweb$data$Vitreorana_uranoscopa$latitude,
-                   re.a$antweb$data$Vitreorana_uranoscopa$prov)
-
-# vertnet
-da.vertnet <- cbind(re.a$vertnet$data$Vitreorana_uranoscopa$name, 
-                    re.a$vertnet$data$Vitreorana_uranoscopa$longitude,
-                    re.a$vertnet$data$Vitreorana_uranoscopa$latitude,
-                    re.a$vertnet$data$Vitreorana_uranoscopa$prov)
-
-# idigbio
-da.idigbio <- cbind(re.a$idigbio$data$Vitreorana_uranoscopa$name, 
-                    re.a$idigbio$data$Vitreorana_uranoscopa$longitude,
-                    re.a$idigbio$data$Vitreorana_uranoscopa$latitude, 
-                    re.a$idigbio$data$Vitreorana_uranoscopa$prov)
-
-# obis 
-da.obis <- cbind(re.a$obis$data$Vitreorana_uranoscopa$name, 
-                 re.a$obis$data$Vitreorana_uranoscopa$longitude,
-                 re.a$obis$data$Vitreorana_uranoscopa$latitude,
-                 re.a$obis$data$Vitreorana_uranoscopa$prov)
-
-# ala
-da.ala <- cbind(re.a$ala$data$Vitreorana_uranoscopa$name, 
-                re.a$ala$data$Vitreorana_uranoscopa$longitude,
-                re.a$ala$data$Vitreorana_uranoscopa$latitude,
-                re.a$ala$data$Vitreorana_uranoscopa$prov)
+for(i in sp){
+  
+  for(j in 1:length(ba)){
+    
+    for(k in 1:length(sp)){
+      
+      if(dim(re.a[[j]][[2]][[k]]) == 0){print(paste0("Without data for ", ba[j]))
+      
+      } else{
+        
+        da.b <- data.table(re.a[[i]][[2]][[j]]$name,
+                           re.a[[i]][[2]][[j]]$longitude,
+                           re.a[[i]][[2]][[j]]$latitude,
+                           re.a[[i]][[2]][[j]]$prov)
+        
+        da <- rbind(da, da.b, fill = T)
+        
+        colnames(da) <- c("sp", "longitude", "latitude", "base")
+        da$longitude <- as.numeric(as.character(da$longitude))
+        da$latitude <- as.numeric(as.character(da$latitude))
+        
+        fwrite(da, paste0("occurrence_", vitreorana_uranoscopa, ".txt"), sep = "\t", quote = F, 
+               row.names = F)
+        
 
 
-###---------------------------------------------------------------------------###
 
-# data
-da <- data.table(rbind(da.gbif, da.bison, da.inat, da.ebird, da.ecoengine,  
-                       da.antweb, da.vertnet, da.idigbio, da.obis, da.ala))
 
-colnames(da) <- c("sp", "longitude", "latitude", "base")
-da$longitude <- as.numeric(as.character(da$longitude))
-da$latitude <- as.numeric(as.character(da$latitude))
-str(da)
-
-head(da)
-
-setwd("E:/github/enmR/occurrence")
-
-write.table(da, "occurrence_vitreorana_uranoscopa.txt", sep = "\t", quote = F, 
-            row.names = F)
-
-###---------------------------------------------------------------------------###
 
 # map
 # af <- get_map(location = c(-60, 0, -30, -40), zoom = 5)

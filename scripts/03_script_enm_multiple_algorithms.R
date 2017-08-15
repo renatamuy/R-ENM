@@ -48,9 +48,8 @@ points(po$long, po$lat, pch = 20)
 
 
 ## background coordinates
-co <- na.omit(data.frame(xyFromCell(en, 1:ncell(en)), en[[1]][]))
-cs <- co[, -3]
-
+id.na <- na.omit(cbind(1:ncell(en), values(en)[, 1]))
+cs <- xyFromCell(en, id.na[, 1])
 colnames(cs) <- c("long", "lat")
 head(cs, 10)
 
