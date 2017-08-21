@@ -47,11 +47,11 @@ for(i in or){
   pg <- read_html(url.or)
   
   # link
-  li.or <- html_nodes(pg, "a") %>%
+  li.in.or <- html_nodes(pg, "a") %>%
     html_attr("href")
   
   # superfamily
-  if(grep("dea$", li.or, value = T) != 0){
+  if(grep("dea$", li.in.or, value = T) != 0){
     
     li.sup <- grep("dea$", li.or, value = T)
     sup <- last(str_split(li.sup, boundary("word"))[[1]])
@@ -60,17 +60,17 @@ for(i in or){
     url.sup <- paste0("http://research.amnh.org", li.sup)
     
     # page
-    pg.sup. <- read_html(url)
+    pg.in.sup <- read_html(url.sup)
     
     # link
-    li.sup. <- html_nodes(pg.sup., "a") %>%
+    li.in.sup <- html_nodes(pg.in.sup, "a") %>%
       html_attr("href")
     
-    li.sup.fa <- grep("dae$", li.sup., value = T) 
+    li.sup.fa <- grep("dae$", li.in.sup, value = T) 
     sup.fa <- last(do.call(rbind.data.frame, str_split(li.sup.fa, boundary("word"))))
     
     # genus
-    ge <- grep("us$", li, value = T)
+    ge <- grep("us$", li.in.sup, value = T)
     
     for(j in ge){
       

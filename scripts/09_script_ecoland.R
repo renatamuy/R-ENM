@@ -1,6 +1,6 @@
 ### script enm ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 # 28/07/2017
 
 ### ecoland ###
