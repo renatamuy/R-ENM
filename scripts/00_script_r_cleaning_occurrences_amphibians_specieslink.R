@@ -32,6 +32,9 @@ da
 ## preparate data
 
 # take species from column 'species' and put into column 'scientifcname'
+
+### esta levando um milhão de anos... Preciso resolver isso....
+
 for(i in 1:nrow(da)){
   
   print(i)
@@ -44,9 +47,9 @@ for(i in 1:nrow(da)){
     
     da[i, ]$scientificname <- paste(gen, spe)
     }
-  }
+}
 
-table(da.sp$scientificname)
+table(da$scientificname)
 
 # select species with two words (genus and epithet)
 da.sp <- da[str_count(da$scientificname, "\\w+") == 2, ]
@@ -113,7 +116,7 @@ sp
 for(j in sp){
   occ.sp <-  da.sp.in.co[da.sp.in.co$scientificname %in% j]
   fwrite(occ.sp, paste0(sub(" ", "_", str_lower(j)),".csv"))
-}
+  }
 
 ###---------------------------------------------------------------------###
 
