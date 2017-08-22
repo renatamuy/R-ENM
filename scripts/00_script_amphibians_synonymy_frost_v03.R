@@ -50,10 +50,10 @@ for(i in or){
   li.in.or <- html_nodes(pg, "a") %>%
     html_attr("href")
   
-  # superfamily
+  ### superfamily
   if(grep("dea$", li.in.or, value = T) != 0){
     
-    li.sup <- grep("dea$", li.or, value = T)
+    li.sup <- grep("dea$", li.in.or, value = T)
     sup <- last(str_split(li.sup, boundary("word"))[[1]])
     
     # http of search
@@ -66,139 +66,95 @@ for(i in or){
     li.in.sup <- html_nodes(pg.in.sup, "a") %>%
       html_attr("href")
     
+    ### familia
     li.sup.fa <- grep("dae$", li.in.sup, value = T) 
     sup.fa <- last(do.call(rbind.data.frame, str_split(li.sup.fa, boundary("word"))))
     
-    # genus
-    ge <- grep("us$", li.in.sup, value = T)
+    ### genus
+    li.sup.ge <- grep("us$", li.in.sup, value = T) 
+    sup.ge <- last(do.call(rbind.data.frame, str_split(li.sup.ge, boundary("word"))))
     
-    for(j in ge){
+    ### species
+    for(j in li.sup.ge){
       
       # http of search
-      url <- paste0("http://research.amnh.org", j)
-      
+      url.sup.sp <- paste0("http://research.amnh.org", j)
+    
       # page
-      pg <- read_html(url)
-      
+      pg.in.sup.sp <- read_html(url.sup.sp)
+    
       # link
-      li <- html_nodes(pg, "a") %>%
+      li.in.sup.sp <- html_nodes(pg.in.sup.sp, "a") %>%
         html_attr("href")
       
-      # species
-      sp <- grep(j, grep("-", li, value = T), value = T)
+      li.sp <- grep("-", grep("Amphibia", li.in.sup.sp, value = T), value = T)
       
-      # data
-      te <- data.table(cbind(specie = last(last(strsplit(sp, "/"))), 
-                             link = paste0("http://research.amnh.org/", sp)))
-      da <- rbind(da, te)
-          
-      print(last(last(strsplit(sp, "/"))))}
-    
-
-    } else {
       
-      # family
-      if(li.ba != 0){
-      fa <- sort(grep("dae$", li, value = T), li.ba)
+      # page of specie
+      pg.sp <- read_html(paste0("http://research.amnh.org", li.sp))
+      
+      # names
+      na.p <- html_nodes(pg.sp, "title") %>%
+        html_text()
+      
+      na.c <- sub("  Amphibian Species of the World", "", str_replace(na.p, "[|]", ""))
+      
+      na.s <- paste(str_split(na.c, boundary("word"))[[1]][1], 
+                    str_split(na.c, boundary("word"))[[1]][2])
+      
+      na.a <- tolower(sub(" ", "_", na.s))
+      
+      na <- data.table(specie = na.s, species_total = na.c, article = , 
+                       link = li.sp, name = na.a)
+      na
+      
+      # synonymies
+      sy <- html_node(pg.sp, "div.synonymy") %>%
+        html_nodes("d") %>%
+        html_text()
+      sy
+      
+      if(length(sy) == 0){
+        te <- cbind.data.frame(na, synonymes = NA)
       
       } else{
-        fa <- grep("dae$", li, value = T)
+        da <- data.table(na, synonymes = sy)
       }
+    }
       
+    
+  } else{
+    
+    ### family
+    li.fa <- grep("dae$", li.in.or, value = T)
+    fa <- last(do.call(rbind.data.frame, str_split(li.fa, boundary("word"))))
+    
+    li.fam <- sort(c(li.fa, li.sup.fa))
+    fam <- sort(c(as.character(fa), as.character(sup.fa)))
+    
+    
+    for(k in li.fam){
       
-      # for to family
-      for(k in fa){
-      
-      # http of search
-      url <- paste0("http://research.amnh.org", k)
-      
-      # page
-      pg <- read_html(url)
-      
-      # link
-      li <- html_nodes(pg, "a") %>%
-        html_attr("href")
-      
-      
-      # subfamily
-      if(grep("inae$", li, value = T) != 0){
-        
-        li.sub <- grep("inae$", li.sup., value = T)
-          sup <- last(str_split(li.sub, boundary("word"))[[1]])
-          
-          # http of search
-          url.sup <- paste0("http://research.amnh.org", li.sub)
-          
-          # page
-          pg.sup. <- read_html(url)
-          
-          # link
-          li.sup. <- html_nodes(pg.sup., "a") %>%
-            html_attr("href")
-          
-          li.sup.fa <- grep("dae$", li.sup., value = T) 
-          sup.fa <- last(do.call(rbind.data.frame, str_split(li.sup.fa, boundary("word"))))
-        } else{
-        
-        sub <- grep("inae$", li, value = T)
-        
-        for(k in sub){
-        
-        # http of search
-        url <- paste0("http://research.amnh.org", k)
-        
-        # page
-        pg <- read_html(url)
-        
-        # link
-        li <- html_nodes(pg, "a") %>%
-          html_attr("href")
-        
-        # genus
-        ge <- grep("us$", li, value = T)
-        
-        for(j in ge){
-          
-          # http of search
-          url <- paste0("http://research.amnh.org", j)
-          
-          # page
-          pg <- read_html(url)
-          
-          # link
-          li <- html_nodes(pg, "a") %>%
-            html_attr("href")
-          
-          # species
-          sp <- grep(j, grep("-", li, value = T), value = T)
-          
-          # data
-          te <- data.table(cbind(specie = last(last(strsplit(sp, "/"))), 
-                                 link = paste0("http://research.amnh.org/", sp)))
-          da <- rbind(da, te)
-          
-          print(last(last(strsplit(sp, "/"))))}
-        
-        
-      } else {
-      
-      
-      # genus
-      ge <- grep(k, li, value = T)
-      
-      if(length(ge) == 0){
-        te <- data.table(cbind(species = last(last(strsplit(url, "/"))), links = url))
-        da <- rbind(da, te)
-        print(last(last(strsplit(url, "/"))))
-        
-      } else{
-        
-        for(k in 1:length(sp)){
-          te <- data.table(cbind(specie = last(last(strsplit(sp[[k]], "/"))), 
-                                 link = paste0("http://research.amnh.org/", sp[[k]])))
-          da <- rbind(da, te)
-          
-          print(last(last(strsplit(sp[[k]], "/"))))}}}}}
+    # http of search
+    url.sup <- paste0("http://research.amnh.org", k)
+    
+    # page
+    pg.in.sup <- read_html(url.sup)
+    
+    # link
+    li.in.sup <- html_nodes(pg.in.sup, "a") %>%
+      html_attr("href")
+    
+    ### familia
+    li.sup.fa <- grep("dae$", li.in.sup, value = T) 
+    sup.fa <- last(do.call(rbind.data.frame, str_split(li.sup.fa, boundary("word"))))
+    
+    
+  }
+
+}
+    
+    
   
   
   
