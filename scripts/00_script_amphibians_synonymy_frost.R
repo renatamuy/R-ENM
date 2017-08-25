@@ -92,6 +92,8 @@ for(i in seq(10, n.se, 10)){
     html_nodes("b") %>%
     html_text() %>%
       trimws()
+   
+   sy.na <- sy.na[str_count(sy.na, "\\S+") > 1]
   
   sy.in <- html_node(pg.sp, "div.synonymy") %>%
     html_nodes("p") %>%
