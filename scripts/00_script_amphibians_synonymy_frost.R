@@ -107,17 +107,18 @@ for(i in seq(10, n.se, 10)){
     da.sy <- data.frame(synonymies = sy.na, reference = sy.in, 
                       link = paste0("http://research.amnh.org", j))
   }
-  
-  # data
-  ta <- data.table(matrix(rep(ta.da, each = nrow(da.sy)), nrow(da.sy)))
-  colnames(ta) <- ta.na
-  
-  da <- bind_rows(da, cbind(ta, da.sy))
    
-    print(paste0(length(unique(da$species)) / as.numeric(n.sp), "%"))
+   # data
+   ta <- data.table(matrix(rep(ta.da, each = nrow(da.sy)), nrow(da.sy)))
+   colnames(ta) <- ta.na
   
-  }
-  }
+   da <- bind_rows(da, cbind(ta, da.sy))
+   
+   print(paste(length(unique(da$species)), "of", as.numeric(n.sp), "species"))
+ 
+ }
+
+}
 
 # export
 fwrite(da, "synonymes_amphibia_frost.csv", na = "NA")
