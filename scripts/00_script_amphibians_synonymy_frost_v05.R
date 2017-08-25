@@ -17,12 +17,23 @@ pacman::p_load(rvest, data.table, stringr, dplyr)
 
 ###---------------------------------------------------------------------###
 
-## data
-da <- data.table(class = "Amphibia", order = "", superfamily = "", family = "",
-                 subfamily = "", genus = "", species = "", link = "", synonymy = "", 
-                 publication = "")
+### frost
+## species number
+# http of search
+url.n.sp <- "http://research.amnh.org/vz/herpetology/amphibia/index.php//Amphibia"
 
-## frost
+# page
+pg.n.sp <- read_html(url.n.sp)
+
+# link
+n.sp <- html_nodes(pg.nu, "h3")[4] %>%
+  html_text() %>%
+  str_extract(patt = "[0-9]+")
+n.sp
+
+###---------------------------------------------------------------------###
+
+## data
 # http of search
 url <- "http://research.amnh.org/vz/herpetology/amphibia/index.php//Amphibia"
 
@@ -37,7 +48,13 @@ fr <- html_nodes(pg, "a") %>%
 li.or <- grep("/Amphibia/", fr, value = T)
 li.or
 
-or <- last(str_split(li.or, boundary("word"))[[1]])
+or <- as.character(last(do.call(rbind.data.frame, 
+                                str_split(li.or, boundary("word")))))
+or
+
+## data
+da <- data.table()
+da
 
 # for order
 for(i in 1:length(li.or)){
@@ -56,7 +73,7 @@ for(i in 1:length(li.or)){
   if(grep("dea$", li.in.or, value = T) != 0){
     
     li.sup <- grep("dea$", li.in.or, value = T)
-    sup <- last(str_split(li.sup, boundary("word"))[[1]])
+    sup <- as.character(last(str_split(li.sup, boundary("word"))[[1]]))
     
     # http of search
     url.sup <- paste0("http://research.amnh.org", li.sup)
@@ -70,17 +87,19 @@ for(i in 1:length(li.or)){
     
     ### familia
     li.sup.fa <- grep("dae$", li.in.sup, value = T) 
-    sup.fa <- last(do.call(rbind.data.frame, str_split(li.sup.fa, boundary("word"))))
-    
+    sup.fa <- as.character(last(do.call(rbind.data.frame, 
+                                        str_split(li.sup.fa, boundary("word")))))
+  
     ### genus
     li.sup.ge <- grep("us$", li.in.sup, value = T) 
-    sup.ge <- last(do.call(rbind.data.frame, str_split(li.sup.ge, boundary("word"))))
+    sup.ge <- as.character(last(do.call(rbind.data.frame, 
+                                        str_split(li.sup.ge, boundary("word")))))
     
     ### species
-    for(j in li.sup.ge){
+    for(j in 1:length(li.sup.ge)){
       
       # http of search
-      url.sup.sp <- paste0("http://research.amnh.org", j)
+      url.sup.sp <- paste0("http://research.amnh.org", li.sup.ge[j])
     
       # page
       pg.in.sup.sp <- read_html(url.sup.sp)
@@ -90,11 +109,13 @@ for(i in 1:length(li.or)){
         html_attr("href")
       
       li.sp <- grep("-", grep("Amphibia", li.in.sup.sp, value = T), value = T)
-      sp <- last(str_split(li.sp, "[/]")[[1]])
+      sp <- sub("-", " ", last(str_split(li.sp, "[/]")[[1]]))
       
-      da <- rbind(da, c(class = "Amphibia", order = or[i], superfamiliy = sup, 
-                        family = NA, subfamily = NA, genus = sup.ge, 
-                        species = sp, link = li.sp, NA, NA))
+      da <- rbind(da, data.table(cbind(class = "Amphibia", order = or[i], 
+                                       superfamily = sup, family = NA, 
+                                       subfamily = NA, genus = sup.ge[j], 
+                                       species = sp, link = li.sp)))
+      print(da[j, ]$species)
     
       }
       
