@@ -95,16 +95,16 @@ for(i in seq(10, n.se, 10)){
    
    sy.na <- sy.na[str_count(sy.na, "\\S+") > 1]
   
-  sy.in <- html_node(pg.sp, "div.synonymy") %>%
-    html_nodes("p") %>%
-    html_text()
+  # sy.in <- html_node(pg.sp, "div.synonymy") %>%
+  #  html_nodes("p") %>%
+  #  html_text()
   
   if(length(sy.na) == 0){
-    da.sy <- data.frame(synonymies = NA, reference = sy.in, 
+    da.sy <- data.frame(synonymies = NA, # reference = sy.in, 
                         link = paste0("http://research.amnh.org", j))
     
   } else{
-    da.sy <- data.frame(synonymies = sy.na, reference = sy.in, 
+    da.sy <- data.frame(synonymies = sy.na, # reference = sy.in, 
                       link = paste0("http://research.amnh.org", j))
   }
    
