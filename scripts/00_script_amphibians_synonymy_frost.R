@@ -69,8 +69,7 @@ for(i in seq(10, n.se, 10)){
  
  # species
  sp <- grep("-", grep("Amphibia", li, value = T), value = T)
- sp
- 
+
  for(j in sp){
   
   # page of specie
@@ -91,7 +90,8 @@ for(i in seq(10, n.se, 10)){
   # synonymies
   sy.na <- html_node(pg.sp, "div.synonymy") %>%
     html_nodes("b") %>%
-    html_text()
+    html_text() %>%
+      trimws()
   
   sy.in <- html_node(pg.sp, "div.synonymy") %>%
     html_nodes("p") %>%
