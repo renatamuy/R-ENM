@@ -1,6 +1,6 @@
 ### script amphibians synonymys frost ###
 
-# Maurício Humberto Vancine - mauricio.vancine@
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@
 
 ###  amphibians synonymys frost	###
 
@@ -111,6 +111,8 @@ for(i in seq(10, n.se, 10)){
   colnames(ta) <- ta.na
   
   da <- bind_rows(da, cbind(ta, da.sy))
+   
+    print(paste0(length(unique(da$species)) / as.numeric(n.sp), "%"))
   
   }
   }
