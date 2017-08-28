@@ -1,6 +1,6 @@
 ### script amphibians synonymys frost ###
 
-# Maurício Humberto Vancine - mauricio.vancine@
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 
 ###  amphibians synonymys frost	###
 
@@ -13,7 +13,7 @@ memory.limit(size = 1.75e13)
 
 # packages 
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(rvest, data.table, stringr, plyr, dplyr)
+pacman::p_load(rvest, data.table, stringr, stringi, magrittr, plyr, dplyr)
 
 ###---------------------------------------------------------------------###
 
@@ -92,19 +92,26 @@ for(i in seq(10, n.se, 10)){
     html_nodes("b") %>%
     html_text() %>%
       trimws()
-   
-   sy.na <- sy.na[str_count(sy.na, "\\S+") > 1]
   
-  # sy.in <- html_node(pg.sp, "div.synonymy") %>%
-  #  html_nodes("p") %>%
-  #  html_text()
+  sy.na <- sy.na[str_count(sy.na, "\\S+") > 1]
   
+
   if(length(sy.na) == 0){
-    da.sy <- data.frame(synonymies = NA, # reference = sy.in, 
+    
+    sy.in <- html_node(pg.sp, "div.synonymy") %>%
+      html_nodes(xpath = "p") %>%
+      html_text()
+    
+    da.sy <- data.frame(synonymies = last(ta.da), valid_name = last(ta.da), reference = sy.in, 
                         link = paste0("http://research.amnh.org", j))
     
   } else{
-    da.sy <- data.frame(synonymies = sy.na, # reference = sy.in, 
+    
+    sy.in <- html_node(pg.sp, "div.synonymy") %>%
+      html_nodes(xpath = "p[b]") %>%
+      html_text()
+    
+    da.sy <- data.frame(synonymies = sy.na, valid_name = last(sy.na), reference = sy.in, 
                       link = paste0("http://research.amnh.org", j))
   }
    
