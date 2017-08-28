@@ -95,9 +95,7 @@ for(i in seq(10, n.se, 10)){
   
   sy.na <- sy.na[str_count(sy.na, "\\S+") > 1]
   
-
   if(length(sy.na) == 0){
-    
     sy.in <- html_node(pg.sp, "div.synonymy") %>%
       html_nodes(xpath = "p") %>%
       html_text()
@@ -107,13 +105,33 @@ for(i in seq(10, n.se, 10)){
     
   } else{
     
-    sy.in <- html_node(pg.sp, "div.synonymy") %>%
+    if(length(html_node(pg.sp, "div.synonymy") %>% html_nodes(xpath = "p") %>% html_nodes(xpath = "i[b]")) > 0){
+      sy.in <- html_node(pg.sp, "div.synonymy") %>%
+        html_nodes(xpath = "p") %>%
+        html_text()
+      
+      da.sy <- data.frame(synonymies = sy.na, valid_name = last(ta.da), reference = sy.in, 
+                          link = paste0("http://research.amnh.org", j))
+      
+    } else{
+      sy.in <- html_node(pg.sp, "div.synonymy") %>%
       html_nodes(xpath = "p[b]") %>%
       html_text()
-    
-    da.sy <- data.frame(synonymies = sy.na, valid_name = last(sy.na), reference = sy.in, 
-                      link = paste0("http://research.amnh.org", j))
-  }
+      
+      if(length(sy.in) == 0){
+        sy.in <- html_node(pg.sp, "div.synonymy") %>%
+        html_nodes(xpath = "p") %>%
+        html_text()
+      
+        da.sy <- data.frame(synonymies = sy.na, valid_name = last(sy.na), reference = sy.in, 
+                            link = paste0("http://research.amnh.org", j))
+        
+        } else{
+          da.sy <- data.frame(synonymies = sy.na, valid_name = last(sy.na), reference = sy.in, 
+                              link = paste0("http://research.amnh.org", j))
+        }
+      }
+    }
    
    # data
    ta <- data.table(matrix(rep(ta.da, each = nrow(da.sy)), nrow(da.sy)))
@@ -124,7 +142,6 @@ for(i in seq(10, n.se, 10)){
    print(paste(length(unique(da$species)), "of", as.numeric(n.sp), "species"))
  
  }
-
 }
 
 # export
