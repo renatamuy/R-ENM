@@ -93,17 +93,10 @@ for(i in seq(10, n.se, 10)){
     html_text() %>%
       trimws()
   
-<<<<<<< HEAD
   sy.na <- sy.na[str_count(sy.na, "\\S+") > 1]
-=======
-  # sy.in <- html_node(pg.sp, "div.synonymy") %>%
-  #  html_nodes("p") %>%
-  #  html_text()
->>>>>>> 684611d40c3ce4d8127463c40227999d964d7f5c
   
 
   if(length(sy.na) == 0){
-<<<<<<< HEAD
     
     sy.in <- html_node(pg.sp, "div.synonymy") %>%
       html_nodes(xpath = "p") %>%
@@ -119,13 +112,6 @@ for(i in seq(10, n.se, 10)){
       html_text()
     
     da.sy <- data.frame(synonymies = sy.na, valid_name = last(sy.na), reference = sy.in, 
-=======
-    da.sy <- data.frame(synonymies = NA, # reference = sy.in, 
-                        link = paste0("http://research.amnh.org", j))
-    
-  } else{
-    da.sy <- data.frame(synonymies = sy.na, # reference = sy.in, 
->>>>>>> 684611d40c3ce4d8127463c40227999d964d7f5c
                       link = paste0("http://research.amnh.org", j))
   }
    
