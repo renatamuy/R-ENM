@@ -97,9 +97,21 @@ for(i in seq(10, n.se, 10)){
       trimws()
     
     sy.na <- sy.na[str_count(sy.na, "\\S+") > 1]
-    
     sy.na <- na.omit(sy.na)
- 
+    
+    sy.na.bb <- html_node(pg.sp, "div.synonymy") %>%
+      html_nodes(xpath = "p[b]") %>%
+      html_nodes("b") %>%
+      html_text()
+    
+    if(length(sy.na.bb) > 0){
+      sy.na.bb <- sy.na.bb[str_count(sy.na.bb, "\\S+") == 1]
+      sy.na.bb <- paste(sy.na.bb[1], sy.na.bb[2])
+      sy.na <- c(sy.na, sy.na.bb)
+    }
+    
+    
+    
     # information
     if(length(sy.na) == 0){
       sy.in <- html_node(pg.sp, "div.synonymy") %>%
@@ -159,6 +171,7 @@ for(i in seq(10, n.se, 10)){
     
   }
 }
+
 
 # export
 fwrite(da, "synonymes_amphibia_frost.csv", na = "NA")
