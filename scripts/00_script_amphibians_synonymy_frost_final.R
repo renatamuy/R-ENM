@@ -51,7 +51,12 @@ n.se
 
 ## synonymies
 # data
-da <- data.table()
+da <- data.table(class = "", order = "", superfamily = "", family = "", 
+                 subfamily = "", genus = "", species = "", synonymies = "", 
+                 valid_name = "", reference = "", link = "")
+
+da
+
 
 # for
 for(i in seq(10, n.se, 10)){
@@ -104,12 +109,15 @@ for(i in seq(10, n.se, 10)){
       html_nodes("b") %>%
       html_text()
     
-    if(length(sy.na.bb) > 0){
+    sy.na.bb <- str_subset(sy.na.bb, "[a-zA-Z]")
+    
+    sy.na.bb.f <- str_count(sy.na.bb, "\\S+")
+    
+    if(length(sy.na.bb.f[sy.na.bb.f == 1]) > 1 ){
       sy.na.bb <- sy.na.bb[str_count(sy.na.bb, "\\S+") == 1]
       sy.na.bb <- paste(sy.na.bb[1], sy.na.bb[2])
       sy.na <- c(sy.na, sy.na.bb)
     }
-    
     
     
     # information
@@ -171,6 +179,7 @@ for(i in seq(10, n.se, 10)){
     
   }
 }
+
 
 
 # export
