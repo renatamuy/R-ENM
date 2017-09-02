@@ -53,7 +53,7 @@ n.se
 # data
 da <- data.table(class = "", order = "", superfamily = "", family = "", 
                  subfamily = "", genus = "", species = "", synonymies = "", 
-                 valid_name = "", valid_name_complet = "", reference = "", 
+                 valid_name = "", valid_full_name = "", reference = "", 
                  english_names = "", distribution = "", comment = "", link = "")
 
 da
@@ -147,7 +147,7 @@ for(i in seq(10, n.se, 10)){
       sy.in <- sy.in[grep(" ", sy.in)]
       
       da.sy <- data.table(synonymies = last(ta.da), valid_name = last(ta.da), 
-                          valid_name_complet = sp.na, reference = sy.in)
+                          valid_full_name = sp.na, reference = sy.in)
       
     } else{
       
@@ -159,7 +159,7 @@ for(i in seq(10, n.se, 10)){
         sy.in <- sy.in[grep(" ", sy.in)]
         
         da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
-                            valid_name_complet = sp.na, reference = sy.in, 
+                            valid_full_name = sp.na, reference = sy.in, 
                             link = paste0("http://research.amnh.org", j))
         
       } else{
@@ -177,11 +177,11 @@ for(i in seq(10, n.se, 10)){
           sy.in <- sy.in[grep(" ", sy.in)]
           
           da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
-                              valid_name_complet = sp.na, reference = sy.in)
+                              valid_full_name = sp.na, reference = sy.in)
           
         } else{
           da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
-                              valid_name_complet = sp.na, reference = sy.in)
+                              valid_full_name = sp.na, reference = sy.in)
         }
       }
     }
