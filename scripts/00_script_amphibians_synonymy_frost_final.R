@@ -53,7 +53,8 @@ n.se
 # data
 da <- data.table(class = "", order = "", superfamily = "", family = "", 
                  subfamily = "", genus = "", species = "", synonymies = "", 
-                 valid_name = "", valid_name_complet = "", reference = "", link = "")
+                 valid_name = "", valid_name_complet = "", reference = "", 
+                 english_names = "", distribution = "", comment = "", link = "")
 
 da
 
@@ -101,7 +102,6 @@ for(i in seq(10, n.se, 10)){
     
     
     ## synonymies
-    
     # names
     sy.na <- html_node(pg.sp, "div.synonymy") %>%
       html_nodes("p") %>%
@@ -147,8 +147,7 @@ for(i in seq(10, n.se, 10)){
       sy.in <- sy.in[grep(" ", sy.in)]
       
       da.sy <- data.table(synonymies = last(ta.da), valid_name = last(ta.da), 
-                          valid_name_complet = sp.na, reference = sy.in, 
-                          link = paste0("http://research.amnh.org", j))
+                          valid_name_complet = sp.na, reference = sy.in)
       
     } else{
       
@@ -178,27 +177,46 @@ for(i in seq(10, n.se, 10)){
           sy.in <- sy.in[grep(" ", sy.in)]
           
           da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
-                              valid_name_complet = sp.na, reference = sy.in, 
-                              link = paste0("http://research.amnh.org", j))
+                              valid_name_complet = sp.na, reference = sy.in)
           
         } else{
           da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
-                              valid_name_complet = sp.na, reference = sy.in, 
-                              link = paste0("http://research.amnh.org", j))
+                              valid_name_complet = sp.na, reference = sy.in)
         }
       }
     }
     
+    ## english names  
+    en <- html_nodes(pg.sp, "#aswContent.column.big.taxon.rank-Species") %>%
+      html_nodes(xpath = "p") %>%
+      html_text()
+    
+    en <- en[-c(length(en) - 2, length(en) - 1, length(en))]
+    
+    en <- paste(en, collapse = "  -")
     
     ## distribution
-    di <- html_nodes(pg.sp, "p") %>%
-      html_()
-    di
+    di <- html_nodes(pg.sp, "#aswContent.column.big.taxon.rank-Species") %>%
+      html_nodes(xpath = "p") %>%
+      html_text() %>%
+      nth(-3)
     
+    ## comment
+    co <- html_nodes(pg.sp, "#aswContent.column.big.taxon.rank-Species") %>%
+      html_nodes(xpath = "p") %>%
+      html_text() %>%
+      nth(-2)
     
-    # data
+
+    ### data
     ta <- data.table(matrix(rep(ta.da, each = nrow(da.sy)), nrow(da.sy)))
     colnames(ta) <- ta.na
+    
+    da.sy <- data.table(da.sy, english_names = rep(en, nrow(da.sy)), 
+                        distribution = rep(di, nrow(da.sy)), 
+                        comment = rep(co, nrow(da.sy)), 
+                        link = rep(paste0("http://research.amnh.org", j), nrow(da.sy)))
+    
     
     da <- bind_rows(da, cbind(ta, da.sy))
 
