@@ -53,7 +53,7 @@ n.se
 # data
 da <- data.table(class = "", order = "", superfamily = "", family = "", 
                  subfamily = "", genus = "", species = "", synonymies = "", 
-                 valid_name = "", reference = "", link = "")
+                 valid_name = "", valid_name_complet = "", reference = "", link = "")
 
 da
 
@@ -80,6 +80,13 @@ for(i in seq(10, n.se, 10)){
     # page of specie
     pg.sp <- read_html(paste0("http://research.amnh.org", j))
     
+    # species name
+    sp.na <- html_node(pg.sp, "title") %>%
+      html_text() %>%
+      str_split("[|]")
+    
+    sp.na <- str_trim(sp.na[[1]][1])
+    
     # taxonomy
     ta <- html_node(pg.sp, "div#taxonomy_nav") %>%
       html_nodes("span") %>%
@@ -91,6 +98,7 @@ for(i in seq(10, n.se, 10)){
     
     ta.na <- str_to_lower(ta[1, ])
     ta.da <- ta[2, ]
+    
     
     ## synonymies
     
@@ -113,12 +121,22 @@ for(i in seq(10, n.se, 10)){
     
     sy.na.bb.f <- str_count(sy.na.bb, "\\S+")
     
-    if(length(sy.na.bb.f[sy.na.bb.f == 1]) > 1 ){
-      sy.na.bb <- sy.na.bb[str_count(sy.na.bb, "\\S+") == 1]
-      sy.na.bb <- paste(sy.na.bb[1], sy.na.bb[2])
-      sy.na <- c(sy.na, sy.na.bb)
+    if(any(duplicated(sy.na.bb[which(str_count(sy.na.bb, "\\S+") == 1)]))){
+      sy.na <- sy.na
     }
     
+    if(length(str_subset(sy.na.bb[str_count(sy.na.bb, "\\S+") == 1], "[A-Z]")) == 0){
+      sy.na <- sy.na
+      
+    } else {
+      
+      if(length(sy.na.bb.f[sy.na.bb.f == 1]) > 1){
+        sy.na.bb <- sy.na.bb[str_count(sy.na.bb, "\\S+") == 1]
+        sy.na.bb <- paste(sy.na.bb[1], sy.na.bb[2])
+        sy.na <- c(sy.na, sy.na.bb)
+      }
+    }
+
     
     # information
     if(length(sy.na) == 0){
@@ -128,7 +146,8 @@ for(i in seq(10, n.se, 10)){
       
       sy.in <- sy.in[grep(" ", sy.in)]
       
-      da.sy <- data.frame(synonymies = last(ta.da), valid_name = last(ta.da), reference = sy.in, 
+      da.sy <- data.table(synonymies = last(ta.da), valid_name = last(ta.da), 
+                          valid_name_complet = sp.na, reference = sy.in, 
                           link = paste0("http://research.amnh.org", j))
       
     } else{
@@ -140,7 +159,8 @@ for(i in seq(10, n.se, 10)){
         
         sy.in <- sy.in[grep(" ", sy.in)]
         
-        da.sy <- data.frame(synonymies = sy.na, valid_name = last(ta.da), reference = sy.in, 
+        da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
+                            valid_name_complet = sp.na, reference = sy.in, 
                             link = paste0("http://research.amnh.org", j))
         
       } else{
@@ -157,16 +177,23 @@ for(i in seq(10, n.se, 10)){
           
           sy.in <- sy.in[grep(" ", sy.in)]
           
-          da.sy <- data.frame(synonymies = sy.na, valid_name = last(sy.na), reference = sy.in, 
+          da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
+                              valid_name_complet = sp.na, reference = sy.in, 
                               link = paste0("http://research.amnh.org", j))
           
         } else{
-          da.sy <- data.frame(synonymies = sy.na, valid_name = last(sy.na), reference = sy.in, 
+          da.sy <- data.table(synonymies = sy.na, valid_name = last(ta.da), 
+                              valid_name_complet = sp.na, reference = sy.in, 
                               link = paste0("http://research.amnh.org", j))
         }
       }
     }
     
+    
+    ## distribution
+    di <- html_nodes(pg.sp, "p") %>%
+      html_()
+    di
     
     
     # data
@@ -174,15 +201,13 @@ for(i in seq(10, n.se, 10)){
     colnames(ta) <- ta.na
     
     da <- bind_rows(da, cbind(ta, da.sy))
-    
+
     print(paste(length(unique(da$species)), "of", as.numeric(n.sp), "species"))
     
   }
 }
 
-
-
 # export
-fwrite(da, "synonymes_amphibia_frost.csv", na = "NA")
+fwrite(da[-1, ], "synonymes_amphibia_frost.csv", na = "NA")
 
 ###---------------------------------------------------------------------###
