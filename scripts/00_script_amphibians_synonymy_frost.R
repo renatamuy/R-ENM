@@ -2,8 +2,6 @@
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 
-###  amphibians synonymys frost	###
-
 ###---------------------------------------------------------------------###
 
 # memory
