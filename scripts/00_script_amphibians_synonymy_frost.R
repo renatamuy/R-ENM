@@ -2,8 +2,6 @@
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 
-###  amphibians synonymys frost	###
-
 ###---------------------------------------------------------------------###
 
 # memory
@@ -220,7 +218,7 @@ for(i in seq(10, n.se, 10)){
     
     da <- bind_rows(da, cbind(ta, da.sy))
 
-    print(paste(length(unique(da$species)), "of", as.numeric(n.sp), "species"))
+    print(paste(length(unique(da$species)) -1 , "of", as.numeric(n.sp), "species"))
     
   }
 }
