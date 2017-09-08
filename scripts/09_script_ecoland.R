@@ -37,7 +37,8 @@ re <- raster(res = 1, xmn = -75, xmx = -33, ymn = -35, ymx = 6)
 re[] <- rbeta(ncell(re), 2, 2)
 re.b <- mask(re, br)
 
-plot(re.b, col = matlab.like2(100))
+par(mar = c(1, 1, 1, 1))
+plot(re.b, col = matlab.like2(100), axes = F, box = F)
 plot(br, add = T)
 
 # enm landscape

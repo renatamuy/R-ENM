@@ -7,15 +7,14 @@
 
 ###---------------------------------------------------------------------------###
 
-# 1. clear memory and load packages 
-# clear workspace and increase memory
+# memory
 rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, dismo, vegan, viridis)
+pacman::p_load(raster, rgdal, dismo, vegan, viridis, colorRamps)
 
 # verify packages
 search()
@@ -28,6 +27,8 @@ occurence <- paste(system.file(package = "dismo"), "/ex/bradypus.csv", sep = "")
 occ <- read.table(occurence, h = T, sep = ",")[, -1]
 occ
 
+plot(occ$lon, occ$lat, pch = 20)
+
 # variables
 envnames <- list.files(path = paste(system.file(package = "dismo"), "/ex", sep = ""), 
            pattern = "grd", full.names = T)
@@ -38,6 +39,11 @@ env
 names(env) <- paste0("bio", c("01", "05", "06", "07", "08", "12", "16", "17"))
 
 plot(env)
+
+# verify
+plot(env[[1]], col = viridis(100))
+points(occ$lon, occ$lat, pch = 20)
+
 
 ###---------------------------------------------------------------------------###
 
@@ -113,10 +119,11 @@ euclidean <- function (occ, env, method = "mean",
 ###---------------------------------------------------------------------------###
 
 # use
-enm.euc <- euclidean(occ, predictors, method = "mean", suitability = F,
+enm.euc <- euclidean(occ, env, method = "mean", suitability = T,
            decostand.method = "standardize")
 
-plot(enm.euc)
+plot(enm.euc, col = matlab.like2(100))
+points(occ$lon, occ$lat, pch = 20)
 
 ###---------------------------------------------------------------------------###
  
