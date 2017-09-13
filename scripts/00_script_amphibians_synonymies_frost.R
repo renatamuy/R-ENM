@@ -1,4 +1,4 @@
-### script amphibians synonymys frost ###
+### script amphibians synonymies frost ###
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 
@@ -224,6 +224,6 @@ for(i in seq(10, n.se, 10)){
 }
 
 # export
-fwrite(da[-1, ], "synonymes_amphibia_frost.csv", na = "NA")
+fwrite(da[-1, ], "synonymies_amphibia_frost.csv", na = "NA")
 
 ###---------------------------------------------------------------------###
