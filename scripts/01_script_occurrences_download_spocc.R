@@ -64,8 +64,8 @@ for(i in sp[1]){
       
       # map
       ggmap(af, extent = "panel") +
-        geom_point(data = da.d, aes(x = long, y = lat, fill = base), 
-                   shape = 21, size = 3) +
+        geom_point(data = da.d, aes(x = long, y = lat, fill = factor(base)), 
+                   shape = 21, size = 3, alpha = .5) +
        theme(legend.position = c(0.9, 0.2),
              legend.background = element_rect(color = "black", fill = "grey90", 
                                               size = 1, linetype = "solid")) +
