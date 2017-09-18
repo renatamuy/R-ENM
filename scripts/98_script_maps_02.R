@@ -50,7 +50,7 @@ ggplot(data = dt, aes(y = lat, x = long)) +
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         legend.position = "right",
-        legend.key = element_blank()) 
+        legend.key = element_blank())
 
 ggsave("map.tiff", dpi = 300)
 
