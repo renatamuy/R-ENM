@@ -51,7 +51,8 @@ plot(en[[1]])
 points(po$long, po$lat, pch = 20)
 
 ## background coordinates
-co <- na.omit(data.frame(xyFromCell(en, 1:ncell(en)), en[[1]][]))
+co <- na.omit(rasterToPoints(en))
+
 cs <- co[, -3]
 
 colnames(cs) <- c("long", "lat")

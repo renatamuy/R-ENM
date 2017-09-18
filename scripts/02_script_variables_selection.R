@@ -1,6 +1,5 @@
 ### script variable selection ### 
 
-# Thadeu Sobral de Souza - thadeusobral@gmail.com 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 
 ###-----------------------------------------------------------------------------------------###
