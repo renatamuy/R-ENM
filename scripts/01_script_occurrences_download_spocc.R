@@ -18,12 +18,7 @@ search()
 
 ###---------------------------------------------------------------------------###
 
-## import list of species
-setwd("E:/github/enmR/occurrence")
-
-# sp <- fread("")
-# sp
-
+## list of species
 sp <- c("Haddadus binotatus", "Macrogenioglottus alipioi", "Myersiella microps",
         "Proceratophrys boiei", "Vitreorana eurygnatha", "Vitreorana uranoscopa")
 
@@ -36,11 +31,8 @@ ba <- c("gbif", "ebird", "ecoengine", "bison", "antweb", "vertnet",
 ###---------------------------------------------------------------------------###
 
 ## download data
-# map
-af <- get_map(location = c(-65, 0, -30, -40), zoom = 5)
-
 # for
-for(i in sp[1]){
+for(i in sp){
   
   print(paste0("Species --", i, "--"))
   re <- occ(query = i, from = ba, has_coords = T, limit = 10000)
@@ -56,23 +48,9 @@ for(i in sp[1]){
       colnames(da) <- c("sp", "sp_enm", "long", "lat", "base", "date", "key")
       
       da.d <- distinct(da, long, lat, .keep_all = T)
-      
-      da.d$long <- as.numeric(da.d$long)
-      da.d$lat <- as.numeric(da.d$lat)
-      
+
       fwrite(da.d, paste0("occurrence_spocc_", str_to_lower(sub(" ", "_", i)), ".csv"))
       
-      # map
-      ggmap(af, extent = "panel") +
-        geom_point(data = da.d, aes(x = long, y = lat, fill = factor(base)), 
-                   shape = 21, size = 3, alpha = .5) +
-       theme(legend.position = c(0.9, 0.2),
-             legend.background = element_rect(color = "black", fill = "grey90", 
-                                              size = 1, linetype = "solid")) +
-        scale_fill_discrete(name = "Bases") + 
-        ggtitle(paste0("Occurrences of ", i))
-      
-      ggsave(paste0("map_", str_to_lower(sub(" ", "_", i)), ".tiff"), dpi = 300)
     }
 }
 

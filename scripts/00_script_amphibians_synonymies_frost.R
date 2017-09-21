@@ -15,6 +15,9 @@ pacman::p_load(rvest, data.table, stringr, stringi, magrittr, plyr, dplyr)
 
 ###---------------------------------------------------------------------###
 
+### directory
+setwd("E:/mega/_diversidade_funcional_anfibios_ma/bases/01_raw")
+
 ### frost
 ## species number
 # http of search
@@ -61,7 +64,7 @@ da
 for(i in seq(10, n.se, 10)){
   
   # http of search
-  url <- paste0("http://research.amnh.org/vz/herpetology/amphibia/amphib/basic_search/(offset)/", i,
+  url <- paste0("http://research.amnh.org/vz/herpetology/amphibia/amphib/basic_search/(offset)/", "8380",
                 "/(query)/*")
   
   # page
@@ -215,6 +218,9 @@ for(i in seq(10, n.se, 10)){
                         comment = rep(co, nrow(da.sy)), 
                         link = rep(paste0("http://research.amnh.org", j), nrow(da.sy)))
     
+    da.va <- da.sy[nrow(da.sy), ]
+    da.va$synonymies <- last(ta)
+    da.sy <- rbind(da.sy, da.va)
     
     da <- bind_rows(da, cbind(ta, da.sy))
 
@@ -224,6 +230,8 @@ for(i in seq(10, n.se, 10)){
 }
 
 # export
-fwrite(da[-1, ], "synonymies_amphibia_frost.csv", na = "NA")
+fwrite(da[-1, ], "synonymies_amphibia_frost2.csv", na = "NA")
 
 ###---------------------------------------------------------------------###
+
+
