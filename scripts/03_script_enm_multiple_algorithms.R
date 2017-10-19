@@ -5,8 +5,7 @@
 
 ###---------------------------------------------------------------------------###
 
-# 1. clear memory and load packages 
-# clear workspace and increase memory
+# memory
 rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
@@ -14,9 +13,6 @@ memory.limit(size = 1.75e13)
 # packages
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, colorRamps)
-
-# verify packages
-search()
 
 ###---------------------------------------------------------------------------###
 
