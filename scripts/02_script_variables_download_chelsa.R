@@ -1,7 +1,7 @@
 ### script download of data bases for enm ###
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
-# 08/02/2017
+# 26/10/2017
 
 ###-----------------------------------------------------------------------------###
 
@@ -70,110 +70,257 @@ for(i in list){
 ### v1.2
 # directory
 setwd("..")
-dir.create("v1_2b")
-setwd("v1_2b")
+
+setwd("C:/Users/Compaq 6910p/Downloads")
+dir.create("v1_2")
+setwd("v1_2")
 getwd()
 
 # lists
-ce <- c("bioclim/", "climatologies/")
-ce
+url <- "https://www.wsl.ch/lud/chelsa/data/"
+pg <- read_html(url)
+li <- grep("/$", html_attr(html_nodes(pg, "a"), "href"), value = T)[-1]
 
-ty <- c("float/", "integer/")
-ty
 
-cl <- c("prec/", "temp/")
-cl
-
-te <- c("temp/", "tmax/", "tmin/")
-te
-
-url <- "http://www.wsl.ch/lud/chelsa/data/"
-url
 
 # download
-for(i in ce){
+for(i in li){
   
+  ## bioclim ##
   if(i == "bioclim/"){
-  
+    
+    print(sub("/", "", i))
+    
     dir.create(sub("/", "", i))
     setwd(sub("/", "", i))
     
-    for(j in ty){
-      
+    url.i <- paste0(url, i)
+    pg.i <- read_html(url.i)
+    li.i <- grep("/$", html_attr(html_nodes(pg.i, "a"), "href"), value = T)[-1]
+    
+    for(j in li.i){
       dir.create(sub("/", "", j))
       setwd(sub("/", "", j))
       
-      url.e <- paste0(url, i, j)
+      url.j <- paste0(url, i, j)
+      pg.j <- read_html(url.j)
+      li.j <- grep("[.]", html_attr(html_nodes(pg.j, "a"), "href"), value = T)
       
-      pg <- read_html(url.e)
-
-      list <- grep(".7z", html_attr(html_nodes(pg, "a"), "href"), value = T)
+      for(k in li.j){
+        
+      #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+        
+      }
       
-      print(list)
-
-      for(k in list){
-        download(paste0(url.e, k), paste0(k), mode = "wb")}
+      setwd("..")
       
-      setwd("..")}
+    }
     
-  setwd("..")}
-
+    setwd("..")
+    
+  }
   
+  
+  ## climatologies ##
   if(i == "climatologies/"){
+    
+    print(sub("/", "", i))
     
     dir.create(sub("/", "", i))
     setwd(sub("/", "", i))
     
-    for(l in cl){
-      
-      if(l == "prec/"){
+    url.i <- paste0(url, i)
+    pg.i <- read_html(url.i)
+    li.i <- grep("/$", html_attr(html_nodes(pg.i, "a"), "href"), value = T)[-1]
+    
+    for(j in li.i){
+    
+      if(j == "prec/"){
+        dir.create(sub("/", "", j))
+        setwd(sub("/", "", j))
+    
+        url.j <- paste0(url, i, j)
+        pg.j <- read_html(url.j)
+        li.j <- grep("[.]", html_attr(html_nodes(pg.j, "a"), "href"), value = T)
         
-        dir.create(sub("/", "", l))
-        setwd(sub("/", "", l))
-    
-        url.e <- paste0(url, i, l)
-    
-        pg <- read_html(url.e)
-    
-        list <- grep(".7z", html_attr(html_nodes(pg, "a"), "href"), value = T)
-    
-        print(list)
-    
-        for(m in list){
-          download(paste0(url.e, m), paste0(m), mode = "wb")}
-     
+        for(k in li.j){
+          
+        #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+          
+        }
+        
         setwd("..")
-  
-      } else{
-    
-        dir.create(sub("/", "", l))
-        setwd(sub("/", "", l))
-    
-        for(n in ty){
-          
-          dir.create(sub("/", "", n))
-          setwd(sub("/", "", n))
-          
-          for(o in te){
-          
-            dir.create(sub("/", "", o))
-            setwd(sub("/", "", o))
-      
-            url.e <- paste0(url, i, l, n, o)
-      
-            pg <- read_html(url.e)
-      
-            list <- grep(".7z", html_attr(html_nodes(pg, "a"), "href"), value = T)
-      
-            print(list)
-      
-            for(p in list){
-              download(paste0(url.e, p), paste0(p), mode = "wb")}
-      
-            setwd("..")}
-          
-          setwd("..")}
         
-        setwd("..")}}}}
+      }
       
-###-----------------------------------------------------------------------------###
+      setwd("..")
+      
+    }
+      
+      if(j == "temp/"){
+        dir.create(sub("/", "", j))
+        setwd(sub("/", "", j))
+      
+        url.j <- paste0(url, i, j)
+        pg.j <- read_html(url.j)
+        li.j <- grep("/$", html_attr(html_nodes(pg.j, "a"), "href"), value = T)[-1]
+      
+        for(k in li.j){
+          dir.create(sub("/", "", k))
+          setwd(sub("/", "", k))
+        
+          url.k <- paste0(url, i, j, k)
+          pg.k <- read_html(url.k)
+          li.k <- grep("/$", html_attr(html_nodes(pg.k, "a"), "href"), value = T)[-1]
+        
+          for(l in li.k){
+            dir.create(sub("/", "", l))
+            setwd(sub("/", "", l))
+          
+            url.l <- paste0(url, i, j, k, l)
+            pg.l <- read_html(url.l)
+            li.l <- grep("[.]", html_attr(html_nodes(pg.l, "a"), "href"), value = T)
+        
+            for(m in li.l){
+            
+            #download(paste0(url, i, j, k, l, m), paste0(m), mode = "wb")
+            
+            }
+          
+          setwd("..")
+          
+          }
+        
+        setwd("..")
+        
+        }
+      
+      setwd("..")
+      
+    }
+    
+    setwd("..")
+      
+    }
+    
+
+  ## cmip5 ##
+  if(i == "cmip5/"){
+    
+    print(sub("/", "", i))
+    
+    
+    dir.create(sub("/", "", i))
+    setwd(sub("/", "", i))
+    
+    url.i <- paste0(url, i)
+    pg.i <- read_html(url.i)
+    li.i <- grep("/$", html_attr(html_nodes(pg.i, "a"), "href"), value = T)[-1]
+    
+    for(j in li.i){
+      dir.create(sub("/", "", j))
+      setwd(sub("/", "", j))
+      
+      url.j <- paste0(url, i, j)
+      pg.j <- read_html(url.j)
+      li.j <- grep("/$", html_attr(html_nodes(pg.j, "a"), "href"), value = T)[-1]
+      
+      for(k in li.j){
+        dir.create(sub("/", "", k))
+        setwd(sub("/", "", k))
+        
+        url.k <- paste0(url, i, j, k)
+        pg.k <- read_html(url.k)
+        li.k <- grep("[.]", html_attr(html_nodes(pg.k, "a"), "href"), value = T)
+        
+        for(l in li.k){
+          
+          #download(paste0(url, i, j, k, l), paste0(l), mode = "wb")
+            
+          }
+          
+          setwd("..")
+          
+        }
+        
+        setwd("..")
+        
+      }
+      
+      setwd("..")
+      
+  }
+      
+
+  ## pmip3 ##
+  if(i == "pmip3/"){
+    
+    print(sub("/", "", i))
+    
+    dir.create(sub("/", "", i))
+    setwd(sub("/", "", i))
+    
+    url.i <- paste0(url, i)
+    pg.i <- read_html(url.i)
+    li.i <- grep("/$", html_attr(html_nodes(pg.i, "a"), "href"), value = T)[-1]
+    
+    for(j in li.i){
+      dir.create(sub("/", "", j))
+      setwd(sub("/", "", j))
+      
+      url.j <- paste0(url, i, j)
+      pg.j <- read_html(url.j)
+      li.j <- grep("[.]", html_attr(html_nodes(pg.j, "a"), "href"), value = T)
+      
+      for(k in li.j){
+        
+      #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+        
+      }
+      
+      setwd("..")
+      
+    }
+    
+    setwd("..")
+  }
+
+
+  ## timeseries ##
+  if(i == "timeseries/"){
+    
+    print(sub("/", "", i))
+    
+    dir.create(sub("/", "", i))
+    setwd(sub("/", "", i))
+    
+    url.i <- paste0(url, i)
+    pg.i <- read_html(url.i)
+    li.i <- grep("/$", html_attr(html_nodes(pg.i, "a"), "href"), value = T)[-1]
+    
+    for(j in li.i){
+      dir.create(sub("/", "", j))
+      setwd(sub("/", "", j))
+      
+      url.j <- paste0(url, i, j)
+      pg.j <- read_html(url.j)
+      li.j <- grep("[.]", html_attr(html_nodes(pg.j, "a"), "href"), value = T)
+      
+      for(k in li.j){
+        
+      #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+        
+      }
+      
+      setwd("..")
+      
+    }
+    
+    setwd("..")
+  }
+          
+}
+ 
+
+###------------------------------------------------------------------------------###
+ 
