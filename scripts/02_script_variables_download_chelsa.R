@@ -38,7 +38,8 @@ list
 
 # download
 for(i in list){
-  download(paste0(url, i), paste0(i), mode = "wb")}
+  download(paste0(url, i), paste0(i), mode = "wb")
+  }
 
 
 ###------------------------------------------------------------------------------###
@@ -62,7 +63,8 @@ list
 
 # download
 for(i in list){
-  download(paste0(url, i), paste0(i), mode = "wb")}
+  download(paste0(url, i), paste0(i), mode = "wb")
+  }
 
 
 ###------------------------------------------------------------------------------###
@@ -70,8 +72,6 @@ for(i in list){
 ### v1.2
 # directory
 setwd("..")
-
-setwd("C:/Users/Compaq 6910p/Downloads")
 dir.create("v1_2")
 setwd("v1_2")
 getwd()
@@ -80,7 +80,6 @@ getwd()
 url <- "https://www.wsl.ch/lud/chelsa/data/"
 pg <- read_html(url)
 li <- grep("/$", html_attr(html_nodes(pg, "a"), "href"), value = T)[-1]
-
 
 
 # download
@@ -108,7 +107,7 @@ for(i in li){
       
       for(k in li.j){
         
-      #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+        download(paste0(url, i, j, k), paste0(k), mode = "wb")
         
       }
       
@@ -145,7 +144,7 @@ for(i in li){
         
         for(k in li.j){
           
-        #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+          download(paste0(url, i, j, k), paste0(k), mode = "wb")
           
         }
         
@@ -183,7 +182,7 @@ for(i in li){
         
             for(m in li.l){
             
-            #download(paste0(url, i, j, k, l, m), paste0(m), mode = "wb")
+              download(paste0(url, i, j, k, l, m), paste0(m), mode = "wb")
             
             }
           
@@ -235,7 +234,7 @@ for(i in li){
         
         for(l in li.k){
           
-          #download(paste0(url, i, j, k, l), paste0(l), mode = "wb")
+          download(paste0(url, i, j, k, l), paste0(l), mode = "wb")
             
           }
           
@@ -274,7 +273,7 @@ for(i in li){
       
       for(k in li.j){
         
-      #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+        download(paste0(url, i, j, k), paste0(k), mode = "wb")
         
       }
       
@@ -308,7 +307,7 @@ for(i in li){
       
       for(k in li.j){
         
-      #download(paste0(url, i, j, k), paste0(k), mode = "wb")
+        download(paste0(url, i, j, k), paste0(k), mode = "wb")
         
       }
       
