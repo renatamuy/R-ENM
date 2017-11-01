@@ -148,8 +148,6 @@ for(i in li){
           
         }
         
-        setwd("..")
-        
       }
       
       setwd("..")
