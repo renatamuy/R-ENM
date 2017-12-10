@@ -22,7 +22,7 @@ search()
 
 # import data
 # directory
-setwd("D:/_github/enmR/ouput")
+setwd("D:/amazonia/02_ouput")
 
 # enms
 # list files
@@ -47,15 +47,8 @@ eva
 ## weighted average ensemble 
 # lists
 # species
-sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
+sp <- sub("zEval_bio_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
-
-# periods
-pe <- c("00k", "06k", "21k")
-pe
-
-# pe <- c("pres", "rcp45_2050", "rcp45_2070", "rcp85_2050", "rcp85_2070")
-# pe
 
 # data.table
 da <- data.table()
@@ -83,30 +76,19 @@ for(i in sp){
     print(paste0("Ops! The ensemble for ", i, " don't have models with TSS above 0.4!"))
     
   } else{
+    da <- rbind(da, stack(tif.sp[id.tss])[], use.names = F)
+    da.r <- data.table(decostand(da, "range", na.rm = T)) 
   
-  for(j in pe){
-    tif.pe <- grep(j, tif.sp, value = T)
-    da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}
-  
-  da.r <- data.table(decostand(da, "range", na.rm = T)) 
-  
-  da.r.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.r)
-  
-  for(k in pe){
-    da.pe <- da.r.pe[pe == k, -1]
-    ens[] <- apply(da.pe, 1, function (x) sum(x * tss.05) / sum(tss.05))
+    ens[] <- apply(da.r, 1, function (x) sum(x * tss.05) / sum(tss.05))
     
     setwd("ensemble_wei")
-    
-    writeRaster(ens, paste0("ensemble_wei_aver_", i, "_", k, ".tif"), 
-                format = "GTiff")
-    
+    writeRaster(ens, paste0("ensemble_wei_aver_", i, ".tif"), format = "GTiff")
     setwd("..")
     
-    print(paste0("Nice! The ensemble ", i, " for ", k, " it's done!"))}
+    print(paste0("Nice! The ensemble for ", i, " it's done!"))
   
-  da <- data.table()
-  ens[] <- NA}
+    da <- data.table()
+    ens[] <- NA}
   
   print("Yeh! It's over!!!")}
 

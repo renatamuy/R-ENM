@@ -62,7 +62,7 @@ ggplot(data = dt, aes(y = lat, x = long)) +
              size = 2, fill = adjustcolor("black", .9)) +
   
   scale_fill_gradientn("Bio 02", colours = matlab.like(100)) + 
-  # scale_fill_gradientn("Bio 02", colours = viridis(100)) + 
+  scale_fill_gradientn("Bio 02", colours = viridis(100)) + 
   
   coord_equal() +
   
