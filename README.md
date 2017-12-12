@@ -18,12 +18,21 @@ Scripts ENMs in R
 
 8. [hSDM R package](http://hsdm.sourceforge.net)
 
-9. [Simple Species Distribution Modeling in R﻿](http://kdahlin.weebly.com/open-science/simple-species-distribution-modeling-in-r)
+9. [Simple Species Distribution Modeling in R](http://kdahlin.weebly.com/open-science/simple-species-distribution-modeling-in-r)
 	
 ## Vídeos
 1. [Species Distribution Modelling](https://www.youtube.com/watch?v=obuMW5NAtJE&list=PLKYTvTbXFuChaoF-L-1e9RzCagdLPQcCU) - Prof. Richard Pearson
 
 2. [Curso Modelage de Nicho Avanzado - INECOL](https://docs.google.com/spreadsheets/d/1fTeX92qHf4v3EZ-VIYNBjAUB1Ma4bzNlrr4xBim75ZQ/edit#gid=0) - Prof. A. Townsend Peterson
+
+3. Modelos de Distribuição de espécies - Dr. Ubirajara de Oliveira
+- [Aula 1 - Introdução aos modelos](https://www.youtube.com/watch?v=fJxV1foRNeQ)
+
+- [Aula 2 - Modelos de distribuição](https://www.youtube.com/watch?v=q7h8PSbeCOs)
+
+- [Aula 3 - Algoritmos](https://www.youtube.com/watch?v=Kz3ZvVAp__Y)
+
+- [Aula 4 - Validação](https://www.youtube.com/watch?v=M2CA7QjY4wE)
 
 ## Biodiversity and Climate Change Virtual Lab (BCCVL)
 1. [Training](https://app.bccvl.org.au/training)
