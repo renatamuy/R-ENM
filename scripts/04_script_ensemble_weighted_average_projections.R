@@ -5,15 +5,14 @@
 
 ###----------------------------------------------------------------------------###
 
-# 1. clear memory and load packages 
-# clear workspace and increase memory
+# memory
 rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, data.table, vegan)
+pacman::p_load(raster, rgdal, data.table, vegan, viridis)
 
 # verify packages
 search()
@@ -22,16 +21,16 @@ search()
 
 # import data
 # directory
-setwd("D:/_github/enmR/ouput")
+setwd("E:/github_mauriciovancine/R-ENM/ouput_future")
 
 # enms
 # list files
 tif <- list.files(patt = ".tif$")
 tif
 
-enm <- raster(tif[1])
+enm <- raster(tif[sample(1:length(tif), 1)])
 enm
-plot(enm)
+plot(enm, col = viridis(100), main = names(enm))
 
 # evaluate
 txt <- list.files(patt = ".txt$")
@@ -47,54 +46,58 @@ eva
 ## weighted average ensemble 
 # lists
 # species
-sp <- sub("zEval_CCSM_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
+sp <- sub("zEval_ACCESS_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
 # periods
-pe <- c("00k", "06k", "21k")
+pe <- c("pres", "rcp45_2050", "rcp45_2070", "rcp85_2050", "rcp85_2070")
 pe
-
-# pe <- c("pres", "rcp45_2050", "rcp45_2070", "rcp85_2050", "rcp85_2070")
-# pe
 
 # data.table
 da <- data.table()
 da
 
-# raster
-ens <- enm[[1]]
-ens[] <- NA
-names(ens) <- "ens"
-ens
-
 # ensemble
 dir.create("ensemble_wei")
 
 for(i in sp){
+  
+  # verify
+  print(paste0("Nice! The ensemble ", i, " start!"))
+  
+  
   tif.sp <- grep(i, tif, value = T)
   eva.sp <- eva[grep(i, names(eva))]
   
   tss <- do.call("rbind", eva.sp)$TSS
-  id.tss <- which(tss > .4)
-  tss.05 <- tss[tss > .4]
+  id.tss <- which(tss > .5)
+  va.tss <- tss[tss > .5]
   
   if(length(id.tss) == 0){
-    
-    print(paste0("Ops! The ensemble for ", i, " don't have models with TSS above 0.4!"))
+    print(paste0("Ops! The ensemble for ", i, " don't have models with TSS above 0.5!"))
     
   } else{
   
   for(j in pe){
     tif.pe <- grep(j, tif.sp, value = T)
-    da <- rbind(da, stack(tif.pe[id.tss])[], use.names = F)}
+    da <- rbind(da, rasterToPoints(stack(tif.pe[id.tss])), use.names = F)
+    }
   
-  da.r <- data.table(decostand(da, "range", na.rm = T)) 
+  da.r <- data.table(decostand(da[, -c(1, 2)], "range", na.rm = T)) 
   
-  da.r.pe <- data.table(pe = rep(pe, each = ncell(enm)), da.r)
+  da.r.pe <- data.table(da[, 1:2], pe = rep(pe, each = length(na.omit(enm[]))), da.r)
+  
   
   for(k in pe){
-    da.pe <- da.r.pe[pe == k, -1]
-    ens[] <- apply(da.pe, 1, function (x) sum(x * tss.05) / sum(tss.05))
+    da.pe <- da.r.pe[pe == k, -3]
+    da.pe.wa <- apply(da.pe[, -c(1, 2)], 1, function (x) sum(x * va.tss) / sum(va.tss))
+    da.pe <- data.table(da.pe[, 1:2], da.pe.wa)
+    
+    gridded(da.pe) <- ~x + y 
+    ens <- raster(da.pe)
+    projection(ens) <- CRS("+proj=longlat +datum=WGS84")
+    
+    plot(ens, col = viridis(100))
     
     setwd("ensemble_wei")
     
@@ -103,11 +106,16 @@ for(i in sp){
     
     setwd("..")
     
-    print(paste0("Nice! The ensemble ", i, " for ", k, " it's done!"))}
+    print(paste0("Nice! The ensemble ", i, " for ", k, " it's done!"))
+    
+    }
   
   da <- data.table()
-  ens[] <- NA}
   
-  print("Yeh! It's over!!!")}
+  }
+  
+  print("Yeh! It's over!!!")
+  
+  }
 
 ###----------------------------------------------------------------------------###

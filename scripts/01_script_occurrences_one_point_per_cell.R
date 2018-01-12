@@ -34,14 +34,15 @@ projection(va) <- "+init=epsg:4326"
 po <- data.table(po, longitude = po$long, latitude = po$lat, va = 1)
 po
 
-
 coordinates(po) <- ~ long + lat
 crs(po) <- crs(va)
 
 ra <- rasterize(po@data[, 2:3], va, po@data$va)
 ra
 
-po.r <- data.table(sp = unique(po$sp), long = rasterToPoints(ra)[, 1], lat = rasterToPoints(ra)[, 2])
+po.r <- data.table(sp = unique(po$sp), 
+                   long = rasterToPoints(ra)[, 1], 
+                   lat = rasterToPoints(ra)[, 2])
 po.r
 
 plot(ra)

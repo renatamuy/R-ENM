@@ -1,0 +1,6 @@
+"thrs" "AUC" "TSS"
+"brachycephalus_ephippium01" 0.67703884 1 1
+"brachycephalus_ephippium02" 0.86174614 1 1
+"brachycephalus_ephippium03" 0.5614224 1 1
+"brachycephalus_ephippium04" 0.52767801 0.888888888888889 0.666666666666667
+"brachycephalus_ephippium05" 0.70681628 1 1

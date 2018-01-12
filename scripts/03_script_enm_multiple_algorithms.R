@@ -1,7 +1,7 @@
-### script enm ###
+### script enm dismo - multiple algorithms ###
 
 # Maurício Humberto Vancine - mauricio.vancine@gmail.com
-# 05/06/2017
+# 29/12/2017
 
 ###---------------------------------------------------------------------------###
 
@@ -12,72 +12,106 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, colorRamps)
+pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, colorRamps,
+               data.table, dplyr, colorRamps, spocc, ggplot2, RCurl, usdm, viridis)
+
+# temp
+setwd("E:/github_mauriciovancine/R-ENM/data")
+dir.create("temp")
+tempdir <- function() "E:/github_mauriciovancine/R-ENM/data/temp"
+unlockBinding("tempdir", baseenv())
+assignInNamespace("tempdir", tempdir, ns = "base", envir = baseenv())
+assign("tempdir", tempdir, baseenv())
+lockBinding("tempdir", baseenv())
+tempdir()
+
+# functions
+eval(parse(text = getURL("https://gist.githubusercontent.com/mauriciovancine/840428ae5511e78b5681af6f995e6348/raw/12228ca55408ba1cb06357a28ed86be6933a4d25/script_function_scalebar_north_arrow.R", 
+                         ssl.verifypeer = F)))
 
 ###---------------------------------------------------------------------------###
 
-# 2. import data
-# directory
-setwd("E:/github/enmR/data")
+## data
+#  variables
+en <- getData(name = "worldclim", var = "bio", res = 10, download = T)
+en
+plot(en[[1]])
+
+# resampling
+en.re <- aggregate(en, fact = 6, fun = "mean", expand = T)
+en.re
+plot(en.re[[1]])
+
+# limite
+br <- getData("GADM", country = "BRA", level = 0)
+br
+
+# adjust to mask
+en.br <- crop(mask(en.re, br), br)
+en.br
+plot(en.br[[1]])
+
+# correlation
+en.co <- vifcor(en.br[], th = .6) # bio05, bio14, bio18, bio19
+en.co
+
+en <- en.br[[as.character(en.co@results$Variables)]]
+en  
+  
+# background coordinates
+bc <- rasterToPoints(en)[, 1:2]
+colnames(bc[, -3]) <- c("long", "lat")
+
+plot(en[[1]], col = viridis(100))
+points(bc, pch = 20, cex = .5, col = "blue")
 
 # occurrences
-po <- read.table("Bromelia_balansae.txt", h = T)
-head(po, 10)
+ha <- distinct(occ2df(occ(query = "Haddadus binotatus", 
+                          from = c("gbif", "idigbio", "inat", "obis", "ala"),
+                          has_coords = T))[, 1:3])
+ha
 
-plot(po$long, po$lat, pch = 20)
+ha <- data.table(sp = sub(" ", "_", unique(tolower(ha$name))), 
+                 lon = as.numeric(ha$longitude), 
+                 lat = as.numeric(ha$latitude), 
+                 pres = 1)
+ha
 
-#  variables
-ti <- list.files(patt = "tif")
-ti
+plot(ha$lon, ha$lat, pch = 20)
 
-ti <- grep("0k", ti, value = T)
-ti
+# one point per cell
+po <- mask(rasterize(ha[, 2:3], en[[1]], ha$pres), br)
+po
 
-en <- stack(ti)
-names(en) <- paste0("bio", c("02", "04", "10", "16", "17"))
-en
+po <- data.table(sp = unique(ha$sp), 
+                    lon = rasterToPoints(po)[, 1], 
+                    lat = rasterToPoints(po)[, 2])
+po
 
-plot(en)
-
-plot(en[[1]])
-points(po$long, po$lat, pch = 20)
-
-
-## background coordinates
-id.na <- na.omit(cbind(1:ncell(en), values(en)[, 1]))
-cs <- xyFromCell(en, id.na[, 1])
-colnames(cs) <- c("long", "lat")
-head(cs, 10)
-
-plot(en[[1]])
-points(cs[sample(nrow(cs), 1000), ], pch = 20, cex = .8)
-
-plot(en[[1]], col = matlab.like2(100))
-points(cs[sample(nrow(cs), 1000), ], pch = 20, cex = .8)
+plot(en[[1]], col = viridis(100))
+points(bc, pch = 20, cex = .5, col = "blue")
+points(po$lon, po$lat, pch = 20, cex = .5, col = "red")
 
 ###---------------------------------------------------------------------------###
 
 # verify maxent
-
-jar <- paste0(system.file(package = "dismo"), "/java/maxent.jar")
-file.exists(jar)
+file.exists(paste0(system.file(package = "dismo"), "/java/maxent.jar"))
 
 ###---------------------------------------------------------------------------###
 
-### ENMs ###
+### enms ###
 
-# diretory
-setwd("..")
-getwd()
-dir.create("ouput")
-setwd("ouput")
-getwd()
+# output
+setwd("E:/github_mauriciovancine/R-ENM/output")
+dir.create("_output")
+setwd("_output")
 
-# variables
-bio <- "bio"
+# export points
+fwrite(po, "_po.csv")
 
 # enms
-for(i in 1:length(levels(po[, 1]))){ # for to each specie
+for(i in 1:length(unique(po[, 1]))){ # for to each specie
+  
   # variables for evaluate
   eval.Bioclim <- NULL
   eval.Gower <- NULL
@@ -87,20 +121,20 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
   eval.names <- NULL
 
   # selecting presence and absence
-	id.specie <- levels(po[, 1])[i]
+	id.specie <- as.character(unique(po[, 1]))[i]
 	pr.specie <- po[which(po[, 1] == id.specie), 2:3]
-	id.background <- sample(nrow(cs), nrow(pr.specie))
-	bc.specie <- cs[id.background, ]
+	id.background <- sample(nrow(bc), nrow(pr.specie))
+	bc.specie <- bc[id.background, ]
 	
 
   for(r in 1:10){	# number of replicas
-    ## preparing the models
+    
+	  ## preparing the models
     # train and test data	
 	  pr.sample.train <- sample(nrow(pr.specie), round(0.7 * nrow(pr.specie)))
 	  bc.sample.train <- sample(nrow(bc.specie), round(0.7 * nrow(bc.specie)))
-	  test <- na.omit(prepareData(x = en, p = pr.specie[-pr.sample.train, ], b = bc.specie[-bc.sample.train, ]))
-  	train <- na.omit(prepareData(x = en, p = pr.specie[pr.sample.train, ], b = bc.specie[bc.sample.train, ]))
-
+	  train <- na.omit(prepareData(x = en, p = pr.specie[pr.sample.train, ], b = bc.specie[bc.sample.train, ]))
+  	test <- na.omit(prepareData(x = en, p = pr.specie[-pr.sample.train, ], b = bc.specie[-bc.sample.train, ]))
 
     ### algorithms
   	
@@ -109,7 +143,7 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  Bioclim <- bioclim(train[which(train[, 1] == 1), -1])	
 	 
 	  # 1.2 projection
-    writeRaster(predict(en, Bioclim), paste0(bio, "_bioclim_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")	
+    writeRaster(predict(en, Bioclim), paste0("bioclim_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")	
    
     # 1.3 evaluation
 	  eBioclim <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Bioclim)
@@ -127,7 +161,7 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  Gower <- domain(train[which(train[, 1] == 1), -1])	
 
 	  # 2.2 projection
-    writeRaster(predict(en, Gower), paste0(bio, "_gower_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+    writeRaster(predict(en, Gower), paste0("gower_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 
     # 2.3 evaluation
 	  eGower <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Gower)
@@ -144,7 +178,7 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  Maha <- mahal(train[which(train[, 1] == 1), -1])	
 	
 	  # 3.2 projection
-    writeRaster(predict(en, Maha), paste0(bio, "_mahalanobis_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+    writeRaster(predict(en, Maha), paste0("mahalanobis_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 
     # 3.3 evaluation
 	  eMaha <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maha)
@@ -161,7 +195,7 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 	  Maxent <- maxent(train[, -1], train[, 1])	
 
 	  # 4.2 projection
-    writeRaster(predict(en, Maxent), paste0(bio, "_maxent_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+    writeRaster(predict(en, Maxent), paste0("maxent_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 
     # 4.3 evaluation
 	  eMaxent <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maxent)
@@ -175,10 +209,10 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
 
     ## 5. svm	
 	  # 5.1 calibration
-	  SVM <- ksvm(pb ~ bio02 + bio04 + bio10 + bio16 + bio17, data = train)	
+	  SVM <- ksvm(pb ~ bio5 + bio14 + bio18 + bio19 , data = train)	
 
 	  # 5.2 projection
-    writeRaster(predict(en, SVM), paste0(bio, "_svm_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+    writeRaster(predict(en, SVM), paste0("svm_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 
     # 5.3 evaluation
 	  eSVM <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = SVM)
@@ -201,11 +235,11 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
   dimnames(eval.Maxent) <- list(eval.names, c("thrs", "AUC", "TSS"))
   dimnames(eval.SVM) <- list(eval.names, c("thrs", "AUC", "TSS"))
 
-  write.table(eval.Bioclim, paste0("zEval_", bio, "_bioclim_", id.specie, ".txt"))
-  write.table(eval.Gower, paste0("zEval_", bio, "_gower_", id.specie, ".txt"))
-  write.table(eval.Maha, paste0("zEval_", bio, "_mahalanobis_", id.specie, ".txt"))
-  write.table(eval.Maxent, paste0("zEval_", bio, "_maxent_", id.specie, ".txt"))
-  write.table(eval.SVM, paste0("zEval_", bio, "_svm_", id.specie, ".txt"))
+  write.table(eval.Bioclim, paste0("zEval_", "bioclim_", id.specie, ".txt"))
+  write.table(eval.Gower, paste0("zEval_", "gower_", id.specie, ".txt"))
+  write.table(eval.Maha, paste0("zEval_", "mahalanobis_", id.specie, ".txt"))
+  write.table(eval.Maxent, paste0("zEval_", "maxent_", id.specie, ".txt"))
+  write.table(eval.SVM, paste0("zEval_", "svm_", id.specie, ".txt"))
 
 } # ends for"i"
 
