@@ -1,6 +1,6 @@
 ### script enm dismo - multiple algorithms ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
+# MaurÃ­cio Humberto Vancine - mauricio.vancine@gmail.com
 # 29/12/2017
 
 ###---------------------------------------------------------------------------###
@@ -24,10 +24,6 @@ assignInNamespace("tempdir", tempdir, ns = "base", envir = baseenv())
 assign("tempdir", tempdir, baseenv())
 lockBinding("tempdir", baseenv())
 tempdir()
-
-# functions
-eval(parse(text = getURL("https://gist.githubusercontent.com/mauriciovancine/840428ae5511e78b5681af6f995e6348/raw/12228ca55408ba1cb06357a28ed86be6933a4d25/script_function_scalebar_north_arrow.R", 
-                         ssl.verifypeer = F)))
 
 ###---------------------------------------------------------------------------###
 
