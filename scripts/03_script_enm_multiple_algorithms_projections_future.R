@@ -95,7 +95,7 @@ points(bc, pch = 20, cex = .5, col = "blue")
 
 # occurrences
 ba <- distinct(occ2df(occ(query = "Brachycephalus ephippium", 
-                          from = c("gbif", "idigbio", "inat", "obis", "ala"),
+                          from = c("gbif", "idigbio", "inat"),
                           has_coords = T))[, 1:3])
 ba
 
