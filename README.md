@@ -43,16 +43,9 @@ Scripts ENMs in R
 ## Biodiversity and Climate Change Virtual Lab (BCCVL)
 - [Training](https://app.bccvl.org.au/training)
 
-
-
 ---
 
 ## Bioclim
-
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
 
 | Variable | Type | Variable description |
 | ------------- | ------------- | ------------- |
