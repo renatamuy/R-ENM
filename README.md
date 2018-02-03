@@ -42,3 +42,36 @@ Scripts ENMs in R
 
 ## Biodiversity and Climate Change Virtual Lab (BCCVL)
 - [Training](https://app.bccvl.org.au/training)
+
+
+
+---
+
+## Bioclim
+
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
+| Variable | Type | Variable description |
+| ------------- | ------------- | ------------- |
+| BIO1 | T | Annual Mean Temperature |
+| BIO2 | T | Mean Diurnal Range (Mean of monthly (max temp - min temp)) |
+| BIO3 | T | Isothermality (BIO2/BIO7) (* 100) |
+| BIO4 | T | Temperature Seasonality (standard deviation * 100) |
+| BIO5 | T | Max Temperature of Warmest Month |
+| BIO6 | T | Min Temperature of Coldest Month |
+| BIO7 | T | Temperature Annual Range (BIO5-BIO6) |
+| BIO8 | T | Mean Temperature of Wettest Quarter |
+| BIO9 | T | Mean Temperature of Driest Quarter |
+| BIO10 | T | Mean Temperature of Warmest Quarter |
+| BIO11 | T | Mean Temperature of Coldest Quarter |
+| BIO12 | P | Annual Precipitation |
+| BIO13 | P | Precipitation of Wettest Month |
+| BIO14 | P | Precipitation of Driest Month |
+| BIO15 | P | Precipitation Seasonality (Coefficient of Variation) |
+| BIO16 | P | Precipitation of Wettest Quarter |
+| BIO17 | P | Precipitation of Driest Quarter |
+| BIO18 | P | Precipitation of Warmest Quarter |
+| BIO19 | P | Precipitation of Coldest Quarter |
