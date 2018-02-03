@@ -51,65 +51,46 @@ Scripts ENMs in R
 
 | Variable | Type | Variable description |
 | ------------- | ------------- | ------------- |
-| BIO1 | T | Annual Mean Temperature |
-| BIO2 | T | Mean Diurnal Range (Mean of monthly (max temp - min temp)) |
-| BIO3 | T | Isothermality (BIO2/BIO7) (* 100) |
-| BIO4 | T | Temperature Seasonality (standard deviation * 100) |
-| BIO5 | T | Max Temperature of Warmest Month |
-| BIO6 | T | Min Temperature of Coldest Month |
-| BIO7 | T | Temperature Annual Range (BIO5-BIO6) |
-| BIO8 | T | Mean Temperature of Wettest Quarter |
-| BIO9 | T | Mean Temperature of Driest Quarter |
-| BIO10 | T | Mean Temperature of Warmest Quarter |
-| BIO11 | T | Mean Temperature of Coldest Quarter |
-| BIO12 | P | Annual Precipitation |
-| BIO13 | P | Precipitation of Wettest Month |
-| BIO14 | P | Precipitation of Driest Month |
-| BIO15 | P | Precipitation Seasonality (Coefficient of Variation) |
-| BIO16 | P | Precipitation of Wettest Quarter |
-| BIO17 | P | Precipitation of Driest Quarter |
-| BIO18 | P | Precipitation of Warmest Quarter |
-| BIO19 | P | Precipitation of Coldest Quarter |
+| BIO1 | Temperature | Annual Mean Temperature |
+| BIO2 | Temperature | Mean Diurnal Range (Mean of monthly (max temp - min temp)) |
+| BIO3 | Temperature | Isothermality (BIO2/BIO7) (* 100) |
+| BIO4 | Temperature | Temperature Seasonality (standard deviation * 100) |
+| BIO5 | Temperature | Max Temperature of Warmest Month |
+| BIO6 | Temperature | Min Temperature of Coldest Month |
+| BIO7 | Temperature | Temperature Annual Range (BIO5-BIO6) |
+| BIO8 | Temperature | Mean Temperature of Wettest Quarter |
+| BIO9 | Temperature | Mean Temperature of Driest Quarter |
+| BIO10 | Temperature | Mean Temperature of Warmest Quarter |
+| BIO11 | Temperature | Mean Temperature of Coldest Quarter |
+| BIO12 | Precipitation | Annual Precipitation |
+| BIO13 | Precipitation | Precipitation of Wettest Month |
+| BIO14 | Precipitation | Precipitation of Driest Month |
+| BIO15 | Precipitation | Precipitation Seasonality (Coefficient of Variation) |
+| BIO16 | Precipitation | Precipitation of Wettest Quarter |
+| BIO17 | Precipitation | Precipitation of Driest Quarter |
+| BIO18 | Precipitation | Precipitation of Warmest Quarter |
+| BIO19 | Precipitation | Precipitation of Coldest Quarter |
 
 ### Portguese
 
 | Variável | Tipo | Descrição da variável |
 | ------------- | ------------- | ------------- |
-| BIO1 | T | Annual Mean Temperature |
-| BIO2 | T | Mean Diurnal Range (Mean of monthly (max temp - min temp)) |
-| BIO3 | T | Isothermality (BIO2/BIO7) (* 100) |
-| BIO4 | T | Temperature Seasonality (standard deviation * 100) |
-| BIO5 | T | Max Temperature of Warmest Month |
-| BIO6 | T | Min Temperature of Coldest Month |
-| BIO7 | T | Temperature Annual Range (BIO5-BIO6) |
-| BIO8 | T | Mean Temperature of Wettest Quarter |
-| BIO9 | T | Mean Temperature of Driest Quarter |
-| BIO10 | T | Mean Temperature of Warmest Quarter |
-| BIO11 | T | Mean Temperature of Coldest Quarter |
-| BIO12 | P | Annual Precipitation |
-| BIO13 | P | Precipitation of Wettest Month |
-| BIO14 | P | Precipitation of Driest Month |
-| BIO15 | P | Precipitation Seasonality (Coefficient of Variation) |
-| BIO16 | P | Precipitation of Wettest Quarter |
-| BIO17 | P | Precipitation of Driest Quarter |
-| BIO18 | P | Precipitation of Warmest Quarter |
-| BIO19 | P | Precipitation of Coldest Quarter |
-Temperatura média anual
-Variação Diurna Média de Temperatura (Média mensal (Tmax-Tmin))
-Isotermalidade ((BIO2/BIO7) (* 100))
-Sazonalidade da Temperatura (desvio padrão * 100)
-Temperatura máxima do mês mais quente
-Temperatura mínima do mês mais frio
-Amplitude térmica anual (BIO5-BIO6)
-Temperatura média do trimestre mais úmido
-Temperatura média do trimestre mais seco
-Temperatura média do trimestre mais quente
-Temperatura média do trimestre mais frio
-Precipitação Anual
-Precipitação do mês mais chuvoso
-Precipitação do mês mais seco
-Sazonalidade da Precipitação (coeficiente de variação)
-Precipitação do trimestre mais chuvoso
-Precipitação do trimestre mais seco
-Precipitação do trimestre mais quente
-Precipitação do trimestre mais frio
+| BIO1 | Temperatura | Temperatura média anual |
+| BIO2 | Temperatura | Variação Diurna Média de Temperatura (Média mensal (Tmax-Tmin)) |
+| BIO3 | Temperatura | Isotermalidade ((BIO2/BIO7) (* 100)) |
+| BIO4 | Temperatura | Sazonalidade da Temperatura (desvio padrão * 100) |
+| BIO5 | Temperatura | Temperatura máxima do mês mais quente |
+| BIO6 | Temperatura | Temperatura mínima do mês mais frio |
+| BIO7 | Temperatura | Amplitude térmica anual (BIO5-BIO6) |
+| BIO8 | Temperatura | Temperatura média do trimestre mais úmido |
+| BIO9 | Temperatura | Temperatura média do trimestre mais seco |
+| BIO10 | Temperatura | Temperatura média do trimestre mais quente |
+| BIO11 | Temperatura | Temperatura média do trimestre mais frio |
+| BIO12 | Precipitação | Precipitação Anual |
+| BIO13 | Precipitação | Precipitação do mês mais chuvoso |
+| BIO14 | Precipitação | Precipitação do mês mais seco |
+| BIO15 | Precipitação | Sazonalidade da Precipitação (coeficiente de variação) |
+| BIO16 | Precipitação | Precipitação do trimestre mais chuvoso |
+| BIO17 | Precipitação | Precipitação do trimestre mais seco |
+| BIO18 | Precipitação | Precipitação do trimestre mais quente |
+| BIO19 | Precipitação | Precipitação do trimestre mais frio |
