@@ -25,6 +25,8 @@ Scripts ENMs in R
 
 - [Ecological niche modelling in R - part 1](http://lab.fengxiao.info/2016/11/23/ENM-in-R-workshop.html)
 
+- [Geographic null models for species distribution modeling: An implementation combining BIOMOD2 and dismo](http://www.samuelbosch.com/2016/09/geographic-null-models-for-species_7.html?m=1)
+
 ## Vídeos
 - [Species Distribution Modelling](https://www.youtube.com/watch?v=obuMW5NAtJE&list=PLKYTvTbXFuChaoF-L-1e9RzCagdLPQcCU) - Prof. Richard Pearson
 
