@@ -114,11 +114,11 @@ for(i in sp){
   
   if(length(id.tss) == 0){
     
-    print(paste0("Ops! The ensemble for ", i, " don't have models with TSS above 0.4!"))
+    print(paste0("Ops! The ensemble for ", i, " don't have models with TSS above 0.5!"))
     
   } else{
     
-    print(paste0("The ensemble for ", i, " started, relax, take a coffe, it may take a while...."))
+    print(paste0("The ensemble for ", i, " started, relax, take a coffee, it may take awhile..."))
     
     da <- rbind(da, rasterToPoints(stack(tif.sp[id.tss])), use.names = F)
     da.r <- data.table(decostand(da[, -c(1, 2)], "range", na.rm = T)) 
