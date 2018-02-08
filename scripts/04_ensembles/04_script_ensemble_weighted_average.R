@@ -75,7 +75,8 @@ for(i in sp){
           axis.text = element_text(size = 12, colour = "black"), 
           axis.title = element_text(size = 15))
   
-  ggsave(paste0("boxplot_jitter_", i, ".tiff"), he = 18, wi = 18, un = "cm", dpi = 300)}
+  ggsave(paste0("boxplot_jitter_", i, ".tiff"), he = 18, wi = 18, un = "cm", dpi = 300)
+}
 
 setwd("..")
 
