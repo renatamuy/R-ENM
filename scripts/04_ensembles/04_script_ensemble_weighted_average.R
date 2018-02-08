@@ -20,7 +20,7 @@ search()
 
 # import data
 # directory
-setwd("F:/amphibians/01_persistence_af/02_output_st")
+setwd("E:/github_mauriciovancine/R-ENM/output")
 
 # enms
 # list files
@@ -43,12 +43,15 @@ eva
 
 ## plot evaluete
 # species
-sp <- sub("zEval_bio_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
+sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
 # algorithms
-al <- c("Bioclim", "Gower", "Maxent", "SVM")
+al <- c("Bioclim", "Gower", "Mahalanobis", "Maxent", "SVM")
 al
+
+# colors
+co <- c("forest green", "blue", "yellow", "orange", "red")
 
 dir.create("eval_boxplot")
 setwd("eval_boxplot")
@@ -56,7 +59,7 @@ setwd("eval_boxplot")
 for(i in sp){
   ev.sp <- eva[grep(i, names(eva))]
   tss <- do.call("rbind", ev.sp)
-  dat <- data.table(tss, alg = rep(al, each = 10), col = rep(c("forest green", "blue", "red", "orange"), each = 10))
+  dat <- data.table(tss, alg = rep(al, each = 10), col = rep(co, each = 10))
   
   ggplot(data = dat, aes(x = alg, y = TSS)) + 
     geom_boxplot() + 
@@ -67,7 +70,9 @@ for(i in sp){
     
     theme_classic() +
     
-    geom_hline(yintercept = .4, color = "red") + 
+    geom_hline(yintercept = .5, color = "red") + 
+    
+    ylim(c(0, 1)) + 
     
     ggtitle(bquote("" ~ italic(.(sub("_", " ", str_to_title(i)))))) + 
     
@@ -99,6 +104,7 @@ ens
 dir.create("ensemble_wei")
 
 for(i in sp){
+  
   tif.sp <- grep(i, tif, value = T)
   eva.sp <- eva[grep(i, names(eva))]
   
@@ -113,10 +119,18 @@ for(i in sp){
   } else{
     
     print(paste0("The ensemble for ", i, " started, relax, take a coffe, it may take a while...."))
-    da <- rbind(da, rasterToPoints(stack(tif.pe[id.tss])), use.names = F)
-    da.r <- data.table(decostand(da[, -c(1, 2)], "range", na.rm = T)) 
     
-    ens[] <- apply(da.r, 1, function (x) sum(x * va.tss) / sum(va.tss))
+    da <- rbind(da, rasterToPoints(stack(tif.sp[id.tss])), use.names = F)
+    da.r <- data.table(decostand(da[, -c(1, 2)], "range", na.rm = T)) 
+    da.r <- data.table(da[, c(1, 2)], da.r)
+    
+    gridded(da.r) <- ~x + y 
+    ens <- raster(da.r)
+    crs(ens) <- crs("+proj=longlat +datum=WGS84")
+    
+    plot(ens, col = viridis(100))
+    
+    
     
     setwd("ensemble_wei")
     writeRaster(ens, paste0("ens_wei_ave_", i, ".tif"), format = "GTiff")

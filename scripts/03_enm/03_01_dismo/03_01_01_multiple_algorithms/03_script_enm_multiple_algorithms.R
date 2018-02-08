@@ -48,8 +48,6 @@ en.br
 plot(en.br[[1]])
 
 # selection
-
-# correlation
 en.co <- vifcor(en.br[], th = .7)
 en.co
 
