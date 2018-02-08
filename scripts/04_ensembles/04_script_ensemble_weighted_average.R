@@ -103,8 +103,8 @@ for(i in sp){
   eva.sp <- eva[grep(i, names(eva))]
   
   tss <- do.call("rbind", eva.sp)$TSS
-  id.tss <- which(tss > .4)
-  tss.04 <- tss[tss > .4]
+  id.tss <- which(tss > .5)
+  va.tss <- tss[tss > .5]
   
   if(length(id.tss) == 0){
     
@@ -113,10 +113,10 @@ for(i in sp){
   } else{
     
     print(paste0("The ensemble for ", i, " started, relax, take a coffe, it may take a while...."))
-    da <- rbind(da, stack(tif.sp[id.tss])[], use.names = F)
-    da.r <- data.table(decostand(da, "range", na.rm = T)) 
+    da <- rbind(da, rasterToPoints(stack(tif.pe[id.tss])), use.names = F)
+    da.r <- data.table(decostand(da[, -c(1, 2)], "range", na.rm = T)) 
     
-    ens[] <- apply(da.r, 1, function (x) sum(x * tss.04) / sum(tss.04))
+    ens[] <- apply(da.r, 1, function (x) sum(x * va.tss) / sum(va.tss))
     
     setwd("ensemble_wei")
     writeRaster(ens, paste0("ens_wei_ave_", i, ".tif"), format = "GTiff")
