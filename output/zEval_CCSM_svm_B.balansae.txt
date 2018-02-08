@@ -1,6 +1,0 @@
-"thrs" "AUC" "TSS"
-"B.balansae01" 0.27793338 0.98 0.9
-"B.balansae02" 0.4438405 0.98 0.9
-"B.balansae03" 0.4523252 0.97 0.8
-"B.balansae04" 0.5395096 0.98 0.9
-"B.balansae05" 0.74761653 1 1
