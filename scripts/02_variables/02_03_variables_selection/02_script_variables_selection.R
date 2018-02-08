@@ -4,63 +4,61 @@
 
 ###-----------------------------------------------------------------------------------------###
 
-# 1. clear the memory and load the packages
-# clear workspace and increase memory
+# memory
 rm(list = ls())
+gc()
 memory.limit(size = 1.75e13) 
 
 # packages
 if(!require(pacman)) install.packages("pacman")
-pacman::p_load(raster, rgdal, corrplot, RStoolbox, vegan, psych)
+pacman::p_load(raster, rgdal, corrplot, RStoolbox, vegan, psych, data.table, dplyr, 
+               ggplot2, usdm, viridis, ecospat)
+
 
 # check package
 search()
 
 ###-----------------------------------------------------------------------------------------###
 
-# 2. import data
-# directory
-setwd("D:/_github/enmR/data/variables")
-getwd()
+# data
+# raster
+en <- getData(name = "worldclim", var = "bio", res = 10, download = T)
+en
+plot(en[[1]], col = viridis(100))
 
-# list name of archives
-tif <- list.files(patt = ".tif$")
-tif
+# resampling
+en.re <- aggregate(en, fact = 6, fun = "mean", expand = T)
+en.re
+plot(en.re[[1]])
 
-# select name
-pres <- grep("0k", tif, value = T)
-pres
+# limite
+br <- getData("GADM", country = "BRA", level = 0)
+br
 
-hol <- grep("6k", tif, value = T)
-hol
+# adjust to mask
+en.br <- crop(mask(en.re, br), br)
+en.br
+plot(en.br[[1]])
 
-lgm <- grep("21k", tif, value = T)
-lgm
+# selection
+en.vif <- vifcor(na.omit(en.br[]), th = .7) # bio05, bio14, bio18, bio19
+en.vif
 
-# load variables ans rename
-pres.s <- stack(pres)
-pres.s
+en.pca <- prcomp(na.omit(en.br[]), scale = TRUE)
+table(summary(en.pca)$sdev > 1)[2]
+lo <- abs(round(en.pca$rotation[, 1:3], 2))
+lo
 
-names(pres.s)
-names(pres.s) <- c(paste0("pres_", "bio0", 1:9), paste0("pres_", "bio", 10:19))
-names(pres.s)
+na <- unique(c(names(lo[lo[, 1] >= .3, 1]), 
+               names(lo[lo[, 2] >= .4, 2]), 
+               names(lo[lo[, 3] >= .4, 3])))
 
-plot(pres.s)
-plot(pres.s[[1]])
+se <- na[na %in% en.vif@results$Variables]
 
-# bioclim
-# http://www.worldclim.org/bioclim
+en <- en.br[[se]]
+en  
 
-hol.s <- stack(hol)
-hol.s
-names(hol.s) <- c(paste0("hol_", "bio0", 1:9), paste0("hol_", "bio", 10:19))
-plot(hol.s)
-
-lgm.s <- stack(lgm)
-lgm.s
-names(lgm.s) <- c(paste0("lgm_", "bio0", 1:9), paste0("lgm_", "bio", 10:19))
-plot(lgm.s)
-
+ecospat.cor.plot(na.omit(en[]))
 
 ###-----------------------------------------------------------------------------------------###
 

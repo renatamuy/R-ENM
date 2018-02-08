@@ -1,7 +1,7 @@
 ### script enm dismo - multiple algorithms ###
 
-# Maurício Humberto Vancine - mauricio.vancine@gmail.com
-# 29/12/2017
+# Mauricio Humberto Vancine - mauricio.vancine@gmail.com
+# 01/02/2018
 
 ###---------------------------------------------------------------------------###
 
