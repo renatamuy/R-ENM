@@ -40,8 +40,10 @@ eva
 names(eva) <- txt
 eva
 
+###-----------------------------------------------------------------------------###
 
-## plot evaluete
+## weighted average ensemble 
+
 # species
 sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
@@ -49,46 +51,6 @@ sp
 # algorithms
 al <- c("Bioclim", "Gower", "Mahalanobis", "Maxent", "SVM")
 al
-
-# colors
-co <- c("forest green", "blue", "yellow", "orange", "red")
-
-dir.create("eval_boxplot")
-setwd("eval_boxplot")
-
-for(i in sp){
-  ev.sp <- eva[grep(i, names(eva))]
-  tss <- do.call("rbind", ev.sp)
-  dat <- data.table(tss, alg = rep(al, each = 10), col = rep(co, each = 10))
-  
-  ggplot(data = dat, aes(x = alg, y = TSS)) + 
-    geom_boxplot() + 
-    geom_jitter(colour = dat$col, width = 0.2) +
-    theme(legend.position = "none") +
-    xlab("Algorithms") +
-    ylab("TSS") + 
-    
-    theme_classic() +
-    
-    geom_hline(yintercept = .5, color = "red") + 
-    
-    ylim(c(0, 1)) + 
-    
-    ggtitle(bquote("" ~ italic(.(sub("_", " ", str_to_title(i)))))) + 
-    
-    theme(plot.title = element_text(lineheight = .8, face = "bold"), 
-          axis.text = element_text(size = 12, colour = "black"), 
-          axis.title = element_text(size = 15))
-  
-  ggsave(paste0("boxplot_jitter_", i, ".tiff"), he = 18, wi = 18, un = "cm", dpi = 300)
-}
-
-setwd("..")
-
-
-###-----------------------------------------------------------------------------###
-
-## weighted average ensemble 
 
 # data.table
 da <- data.table()
