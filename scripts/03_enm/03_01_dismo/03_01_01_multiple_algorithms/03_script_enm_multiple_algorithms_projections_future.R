@@ -14,6 +14,7 @@ memory.limit(size = 1.75e13)
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, colorRamps,
                data.table, dplyr, colorRamps, spocc, ggplot2, RCurl, usdm, viridis)
+search()
 
 # temp
 setwd("E:/github_mauriciovancine/R-ENM/data")
@@ -140,6 +141,9 @@ dir.create("ouput_future")
 setwd("ouput_future")
 getwd()
 
+# export occurrences
+fwrite(po, "_occ.csv")
+
 # aogcms
 AOGCM <- "ACCESS"
 AOGCM
@@ -160,6 +164,9 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	pr.specie <- po[which(po[, 1] == id.specie), 2:3]
 	id.background <- sample(nrow(bc), nrow(pr.specie))
 	bc.specie <- bc[id.background, ]
+	
+	# export background points
+	fwrite(bc.specie, "_background points.csv")
 	
 
   for(r in 1:5){   # number of replicas

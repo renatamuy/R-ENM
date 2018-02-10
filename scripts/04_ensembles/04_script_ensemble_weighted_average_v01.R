@@ -56,6 +56,9 @@ al
 da <- data.table()
 da
 
+# tss
+tss <- .5
+
 # raster
 ens <- enm[[1]]
 ens[] <- NA
@@ -68,12 +71,13 @@ ens
 dir.create("ensemble_wei")
 
 for(i in sp){
+  
   tif.sp <- grep(i, tif, value = T)
   eva.sp <- eva[grep(i, names(eva))]
   
-  tss <- do.call("rbind", eva.sp)$TSS
-  id.tss <- which(tss > .5)
-  tss.05 <- tss[tss > .5]
+  tss.da <- do.call("rbind", eva.sp)$TSS
+  tss.id <- which(tss.da > tss)
+  tss.va <- tss.da[tss.da > tss]
   
   if(length(id.tss) == 0){
     
@@ -81,21 +85,23 @@ for(i in sp){
     
   } else{
     
-    print(paste0("The ensemble for ", i, " started, relax, take a coffee, it may take a while...."))
+    print(paste0("The ensemble for ", i, " started, relax, take a coffee, it may take awhile..."))
     
-    da <- rbind(da, stack(tif.sp[id.tss])[], use.names = F)
-    da.r <- data.table(decostand(da, "range", na.rm = T)) 
+    da <- rbind(da, stack(tif.sp[tss.id])[], use.names = FALSE)
+    da.r <- data.table(decostand(da, "range", na.rm = TRUE)) 
     
-    ens[] <- apply(da.r, 1, function (x) sum(x * tss.05) / sum(tss.05))
+    ens[] <- apply(da.r, 1, function (x) sum(x * tss.va) / sum(tss.va))
     
     setwd("ensemble_wei")
-    writeRaster(ens, paste0("ens_wei_ave_", i, ".tif"), format = "GTiff")
+    writeRaster(ens, paste0("ens_wei_ave_", i, ".tif"), format = "GTiff", overwrite = TRUE)
     setwd("..")
     
     print(paste0("Nice! The ensemble for ", i, " it's done!"))
     
     da <- data.table()
-    ens[] <- NA}
+    ens[] <- NA
+    
+    }
   
   print("Yeh! It's over!!!")
   }

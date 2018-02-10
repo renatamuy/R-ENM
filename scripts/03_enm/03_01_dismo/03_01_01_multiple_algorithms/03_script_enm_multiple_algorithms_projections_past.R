@@ -14,86 +14,113 @@ memory.limit(size = 1.75e13)
 # packages
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan)
-
-# verify packages
 search()
+
+# temp
+setwd("E:/github_mauriciovancine/R-ENM/data")
+dir.create("temp")
+tempdir <- function() "E:/github_mauriciovancine/R-ENM/data/temp"
+unlockBinding("tempdir", baseenv())
+assignInNamespace("tempdir", tempdir, ns = "base", envir = baseenv())
+assign("tempdir", tempdir, baseenv())
+lockBinding("tempdir", baseenv())
+tempdir()
 
 ###---------------------------------------------------------------------------###
 
-# 2. import data
-# directory
-setwd("D:/_github/enmR/data")
-
-# ocurrences
-po <- read.table("Bromelia_balansae.txt", h = T)
-head(po, 10)
-
-plot(po$long, po$lat, pch = 20)
-
+## data
 #  variables
-ti <- list.files(patt = "tif")
-ti
-
-ti.00k <- grep("0k", ti, value = T)
-ti.00k
-
-ti.06k <- grep("6k", ti, value = T)
-ti.06k
-
-ti.21k <- grep("21k", ti, value = T)
-ti.21k
-
-en.00k <- stack(ti.00k)
-names(en.00k) <- paste0("bio", c("02", "04", "10", "16", "17"))
-en.00k
-
-en.06k <- stack(ti.06k)
-names(en.06k) <- paste0("bio", c("02", "04", "10", "16", "17"))
-en.06k
-
-en.21k <- stack(ti.21k)
-names(en.21k) <- paste0("bio", c("02", "04", "10", "16", "17"))
-en.21k
-
-plot(en.00k)
-plot(en.06k)
-plot(en.21k)
-
-plot(en.00k[[1]])
-points(po$long, po$lat, pch = 20)
 
 
-## extract coordinates for background
-# coordinates
-id <- 1:ncell(en.00k)
-head(id, 50)
-length(id)
 
-co <- xyFromCell(en.00k, id)
-head(co, 50)
+en <- stack(
+  getData(name = "worldclim", var = "bio", res = 10, download = T),
+  getData(name = "CMIP5", var = "bio", res = 10, download = T, 
+          rcp = 45, model = "AC", year = 50),
+  getData(name = "CMIP5", var = "bio", res = 10, download = T,
+          rcp = 45, model = "AC", year = 70),
+  getData(name = "CMIP5", var = "bio", res = 10, download = T,
+          rcp = 85, model = "AC", year = 50),
+  getData(name = "CMIP5", var = "bio", res = 10, download = T,
+          rcp = 85, model = "AC", year = 70))
 
-plot(en.00k[[1]])
-points(co, pch = "o", cex = 1e-1)
+en
 
-# without NAs
-va <- values(en.00k)[, 1]
-head(va, 50)
-length(va)
+plot(en[[1]], col = viridis(100))
 
-co.va <- data.frame(co, va)
-head(co.va, 20)
+# resampling
+en.re <- aggregate(en, fact = 6, fun = "mean", expand = T)
+en.re
+plot(en.re[[1]])
 
-co.va.na <- na.omit(co.va)
-head(co.va.na, 10)
+# limite
+br <- getData("GADM", country = "BRA", level = 0)
+br
 
-cs <- co.va.na[, -3]
-head(cs, 10)
+# adjust to mask
+en.br <- crop(mask(en.re, br), br)
+en.br
+plot(en.br[[1]])
 
-colnames(cs) <- c("long", "lat")
-head(cs, 10)
+# correlation
+en.co <- vifcor(en.br[[1:19]], th = .6) # bio05, bio14, bio18, bio19
+en.co
 
-plot(en.00k[[1]])
-points(cs, pch = "o", cex = 1e-1)
+en <- en.br[[as.character(en.co@results$Variables)]]
+en  
+
+# selection
+en.p <- en.br[[1:19]][[as.character(en.co@results$Variables)]]
+
+en.45.50 <- en.br[[grep("45bi50", names(en.br))]]
+names(en.45.50) <-  names(en.br[[1:19]])
+en.45.50 <- en.45.50[[as.character(en.co@results$Variables)]]
+
+en.45.70 <- en.br[[grep("45bi70", names(en.br))]]
+names(en.45.70) <-  names(en.br[[1:19]])
+en.45.70 <- en.45.70[[as.character(en.co@results$Variables)]]
+
+en.85.50 <- en.br[[grep("85bi50", names(en.br))]]
+names(en.85.50) <-  names(en.br[[1:19]])
+en.85.50 <- en.85.50[[as.character(en.co@results$Variables)]]
+
+en.85.70 <- en.br[[grep("85bi70", names(en.br))]]
+names(en.85.70) <-  names(en.br[[1:19]])
+en.85.70 <- en.85.70[[as.character(en.co@results$Variables)]]
+
+# background coordinates
+bc <- rasterToPoints(en.p)[, 1:2]
+colnames(bc[, -3]) <- c("long", "lat")
+
+plot(en.p[[1]], col = viridis(100))
+points(bc, pch = 20, cex = .5, col = "blue")
+
+# occurrences
+ba <- distinct(occ2df(occ(query = "Brachycephalus ephippium", 
+                          from = c("gbif", "idigbio", "inat"),
+                          has_coords = T))[, 1:3])
+ba
+
+ba <- data.table(sp = sub(" ", "_", unique(tolower(ba$name))), 
+                 lon = as.numeric(ba$longitude), 
+                 lat = as.numeric(ba$latitude), 
+                 pres = 1)
+ba
+
+plot(ba$lon, ba$lat, pch = 20)
+
+# one point per cell
+po <- mask(rasterize(ba[, 2:3], en.p[[1]], ba$pres), br)
+po
+
+po <- data.table(sp = unique(ba$sp), 
+                 lon = rasterToPoints(po)[, 1], 
+                 lat = rasterToPoints(po)[, 2])
+po
+
+plot(en.p[[1]], col = viridis(100))
+points(bc, pch = 20, cex = .5, col = "blue")
+points(po$lon, po$lat, pch = 20, cex = .5, col = "red")
 
 ###---------------------------------------------------------------------------###
 

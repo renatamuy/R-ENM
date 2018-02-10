@@ -120,8 +120,8 @@ setwd("E:/github_mauriciovancine/R-ENM")
 dir.create("output")
 setwd("output")
 
-# export points
-fwrite(po, "_po.csv")
+# export occurrences
+fwrite(po, "_occ.csv")
 
 # enms
 for(i in 1:length(unique(po[, 1]))){ # for to each specie
@@ -139,6 +139,9 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	pr.specie <- po[which(po[, 1] == id.specie), 2:3]
 	id.background <- sample(nrow(bc), nrow(pr.specie))
 	bc.specie <- bc[id.background, ]
+	
+	# export background points
+	fwrite(bc.specie, "_background points.csv")
 	
 
   for(r in 1:10){	# number of replicas
