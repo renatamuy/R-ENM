@@ -49,6 +49,10 @@ eva
 sp <- sub("zEval_ACCESS_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
+# algorithms
+al <- c("Bioclim", "Gower", "Mahalanobis", "Maxent", "SVM")
+al
+
 # periods
 pe <- c("pres", "rcp45_2050", "rcp45_2070", "rcp85_2050", "rcp85_2070")
 pe
