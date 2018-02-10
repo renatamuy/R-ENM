@@ -23,7 +23,7 @@ setwd("F:/amphibians/01_persistence_af/__enm_persistence/02_output_clim")
 
 # evaluate
 # list files
-txt <- list.files(patt = ".txt$")
+txt <- dir(patt = ".txt$")
 txt
 
 eva <- lapply(txt, read.table)
@@ -38,7 +38,7 @@ da
 
 ## plot evaluete
 # species
-sp <- sub("zEval_bio_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
+sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
 # algorithms
