@@ -5,8 +5,7 @@
 
 ###----------------------------------------------------------------------------###
 
-# 1. clear memory and load packages 
-# clear workspace and increase memory
+# memory
 rm(list = ls())
 gc()
 memory.limit(size = 1.75e13) 
@@ -23,7 +22,6 @@ search()
 setwd("E:/github_mauriciovancine/R-ENM/output")
 
 # enms
-# list files
 tif <- dir(patt = ".tif$")
 tif
 
@@ -102,11 +100,11 @@ for(i in sp){
         tif.al <- grep(l, tif.pe, value = TRUE)
         eva.al <- eva.gc[grep(l, row.names(eva.gc)), ]
         
+        enm.al <- stack(tif.al)
         
         for(m in 1:length(tif.al)){
           
-          enm.al <- stack(tif.al)
-          ens.re <- sum(ens, enm.al[[m]] >= eva.al[m, 1])
+          ens <- sum(ens, enm.al[[m]] >= eva.al[m, 1])
           
           }
         
@@ -114,8 +112,8 @@ for(i in sp){
       
       setwd("ensemble_freq")
 
-      writeRaster(ens / (length(al) * length(tif.sp)), 
-                  paste0(sub("__", "", "ensemble_freq_", i, "_", j, "_", k, "_bin.tif")), 
+      writeRaster(ens / (length(tif.sp)), 
+                  sub("__", "", paste0("ensemble_freq_", i, "_", j, "_", k, ".tif")), 
                   format = "GTiff", overwrite = TRUE)
       
       setwd("..")

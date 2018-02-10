@@ -60,30 +60,52 @@ en.br
 plot(en.br[[1]])
 
 # correlation
-en.co <- vifcor(en.br[[1:19]], th = .6) # bio05, bio14, bio18, bio19
+en.co <- vifcor(en.br[[1:19]], th = .7)
 en.co
 
-en <- en.br[[as.character(en.co@results$Variables)]]
-en  
+en.pca <- prcomp(na.omit(en.br[[1:19]]), scale = T)
+en.pca
+
+su <- summary(en.pca)
+su
+
+n.pca <- length(su$sdev[su$sdev > 1])
+n.pca
+
+l.pca <- abs(round(en.pca$rotation[, 1:n.pca], 2))
+l.pca
+
+va <- l.pca[row.names(l.pca) %in% en.co@results$Variables, ]
+va
+
+va.max <- row.names(va)[apply(va, 2, which.max)]
+va.max 
+
 
 # selection
-en.p <- en.br[[1:19]][[as.character(en.co@results$Variables)]]
+en.p <- en.br[[1:19]][[va.max]]
+en.p
 
 en.45.50 <- en.br[[grep("45bi50", names(en.br))]]
 names(en.45.50) <-  names(en.br[[1:19]])
-en.45.50 <- en.45.50[[as.character(en.co@results$Variables)]]
+en.45.50 <- en.45.50[[va.max]]
+en.45.50
 
 en.45.70 <- en.br[[grep("45bi70", names(en.br))]]
 names(en.45.70) <-  names(en.br[[1:19]])
-en.45.70 <- en.45.70[[as.character(en.co@results$Variables)]]
+en.45.70 <- en.45.70[[va.max]]
+en.45.70
 
 en.85.50 <- en.br[[grep("85bi50", names(en.br))]]
 names(en.85.50) <-  names(en.br[[1:19]])
-en.85.50 <- en.85.50[[as.character(en.co@results$Variables)]]
+en.85.50 <- en.85.50[[va.max]]
+en.85.50
 
 en.85.70 <- en.br[[grep("85bi70", names(en.br))]]
 names(en.85.70) <-  names(en.br[[1:19]])
-en.85.70 <- en.85.70[[as.character(en.co@results$Variables)]]
+en.85.70 <- en.85.70[[va.max]]
+en.85.70
+
 
 # background coordinates
 bc <- rasterToPoints(en.p)[, 1:2]
@@ -126,7 +148,8 @@ points(po$lon, po$lat, pch = 20, cex = .5, col = "red")
 
 # verify maxent
 
-# copy maxent.jar in "C:\Users\john01\Documents\R\win-library\3.4\dismo\java"
+# copy maxent.jar (https://biodiversityinformatics.amnh.org/open_source/maxent/) in 
+# the folder "C:\Users\john01\Documents\R\win-library\3.4\dismo\java"
 
 file.exists(paste0(system.file(package = "dismo"), "/java/maxent.jar"))
 
@@ -142,7 +165,7 @@ setwd("ouput_future")
 getwd()
 
 # export occurrences
-fwrite(po, "_occ.csv")
+fwrite(po, "_occurrences_points.csv")
 
 # aogcms
 AOGCM <- "ACCESS"
@@ -166,7 +189,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	bc.specie <- bc[id.background, ]
 	
 	# export background points
-	fwrite(bc.specie, "_background points.csv")
+	fwrite(data.table(back = "background", bc.specie), "_background_points.csv")
 	
 
   for(r in 1:5){   # number of replicas
@@ -194,10 +217,10 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	 
 	  # 1.2 projection
     writeRaster(predict(en.p, Bioclim), paste0(AOGCM, "_bioclim_pres_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")	
-    writeRaster(predict(en.45.50, Bioclim), paste(AOGCM, "_bioclim_rcp45_2050_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")
-    writeRaster(predict(en.85.50, Bioclim), paste(AOGCM, "_bioclim_rcp85_2050_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")
-    writeRaster(predict(en.45.70, Bioclim), paste(AOGCM, "-bioclim_rcp45_2070_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")
-    writeRaster(predict(en.85.70, Bioclim), paste(AOGCM, "_bioclim_rcp85_2070_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+    writeRaster(predict(en.45.50, Bioclim), paste0(AOGCM, "_bioclim_rcp45_2050_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")
+    writeRaster(predict(en.85.50, Bioclim), paste0(AOGCM, "_bioclim_rcp85_2050_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")
+    writeRaster(predict(en.45.70, Bioclim), paste0(AOGCM, "-bioclim_rcp45_2070_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")
+    writeRaster(predict(en.85.70, Bioclim), paste0(AOGCM, "_bioclim_rcp85_2070_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
     
     # 1.3 evaluation
 	  eBioclim <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Bioclim)
@@ -302,7 +325,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	               ifelse(r < 10, paste0("0", r), r), " started!"))	
 	  
 	  # 5.1 calibration
-	  SVM <- ksvm(pb ~ bio5 + bio14 + bio18 + bio19, data = train)	
+	  SVM <- ksvm(pb ~ bio2 + bio4 + bio14, data = train)	
 
 	  # 5.2 projection
 	  writeRaster(predict(en.p, SVM), paste0(AOGCM, "_svm_pres_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")

@@ -121,7 +121,7 @@ dir.create("output")
 setwd("output")
 
 # export occurrences
-fwrite(po, "_occ.csv")
+fwrite(data.table(po), "_occ.csv")
 
 # enms
 for(i in 1:length(unique(po[, 1]))){ # for to each specie
@@ -141,7 +141,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	bc.specie <- bc[id.background, ]
 	
 	# export background points
-	fwrite(bc.specie, "_background points.csv")
+	fwrite(data.table(bc.specie), "_background_points.csv")
 	
 
   for(r in 1:10){	# number of replicas

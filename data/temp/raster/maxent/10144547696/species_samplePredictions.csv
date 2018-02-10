@@ -1,0 +1,5 @@
+X,Y,Test or train,Raw prediction,Cumulative prediction,Cloglog prediction
+1.0,1.0,train,0.125,12.5,0.6321205588285577
+2.0,2.0,train,0.125,12.5,0.6321205588285577
+3.0,3.0,train,0.125,12.5,0.6321205588285577
+4.0,4.0,train,0.125,12.5,0.6321205588285577

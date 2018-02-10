@@ -1,0 +1,35 @@
+Sat Feb 10 16:52:39 BRST 2018
+MaxEnt version 3.4.1
+Reading file absence
+readGrid: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 14198640
+Reading samples from presence
+Read samples: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 0
+Adding samples to background in feature space
+Command line used:  autorun -e E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696/absence -o E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696 -s E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696/presence -z
+Command line to repeat: java density.MaxEnt nowarnings noprefixes outputdirectory=E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696 samplesfile=E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696/presence environmentallayers=E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696/absence autorun novisible
+Species: species
+Layers: bio14 bio2 bio4
+Layertypes: Continuous Continuous Continuous
+outputdirectory: E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696
+samplesfile: E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696/presence
+environmentallayers: E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/10144547696/absence
+autorun: true
+visible: false
+
+getSamples: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 0
+Making features
+makeFeatures: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 0
+species: 
+Regularization values: linear/quadratic/product: 1.000, categorical: 0.590, threshold: 1.960, hinge: 0.500
+4 samples
+Density: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 0
+linearPredictor: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 0
+FeaturedSpace: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 0
+Sequential: max memory 477626368, total allocated 104857600, free 82840496, used 22017104, increment 0
+Initial loss: 2.0794415416798357
+20: time = 0.001000 loss = 2.079442
+Resulting gain: 0.0
+Leaving out Equate entropy of thresholded and original distributions from threshold table, as uninitialized
+Projecting...
+Writing file E:\github_mauriciovancine\R-ENM\data\temp\raster\maxent\10144547696\species.csv
+Ending

@@ -72,20 +72,20 @@ dir.create("ensemble_wei")
 
 for(i in sp){
   
-  tif.sp <- grep(i, tif, value = T)
+  tif.sp <- grep(i, tif, value = TRUE)
   eva.sp <- eva[grep(i, names(eva))]
   
   tss.da <- do.call("rbind", eva.sp)$TSS
   tss.id <- which(tss.da > tss)
   tss.va <- tss.da[tss.da > tss]
   
-  if(length(id.tss) == 0){
+  if(length(tss.id) == 0){
     
-    print(paste0("Ops! The ensemble for ", i, " don't have models with TSS above 0.5!"))
+    print(paste0("Ops! The ensemble for '", i, "' don't have models with TSS above ", tss, "!"))
     
   } else{
     
-    print(paste0("The ensemble for ", i, " started, relax, take a coffee, it may take awhile..."))
+    print(paste0("The ensemble for '", i, "' started, relax, take a coffee, it may take awhile..."))
     
     da <- rbind(da, stack(tif.sp[tss.id])[], use.names = FALSE)
     da.r <- data.table(decostand(da, "range", na.rm = TRUE)) 
@@ -96,7 +96,7 @@ for(i in sp){
     writeRaster(ens, paste0("ens_wei_ave_", i, ".tif"), format = "GTiff", overwrite = TRUE)
     setwd("..")
     
-    print(paste0("Nice! The ensemble for ", i, " it's done!"))
+    print(paste0("Nice! The ensemble for '", i, "' it's done!"))
     
     da <- data.table()
     ens[] <- NA

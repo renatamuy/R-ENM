@@ -30,9 +30,6 @@ tempdir()
 
 ## data
 #  variables
-
-
-
 en <- stack(
   getData(name = "worldclim", var = "bio", res = 10, download = T),
   getData(name = "CMIP5", var = "bio", res = 10, download = T, 
@@ -162,6 +159,9 @@ for(i in 1:length(levels(po[, 1]))){ # for to each specie
   pr.specie <- po[which(po[, 1] == id.specie), 2:3]
   id.background <- sample(nrow(cs), nrow(pr.specie))
   bc.specie <- cs[id.background, ]
+  
+  # export background points
+  fwrite(data.table(back = "background", bc.specie), "_background points.csv")
   
   
   for(r in 1:5){	# number of replicas
