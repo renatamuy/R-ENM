@@ -19,7 +19,7 @@ search()
 
 # import data
 # directory
-setwd("E:/github_mauriciovancine/R-ENM/ouput_future")
+setwd("E:/github_mauriciovancine/R-ENM/output_future")
 
 # enms
 # list files

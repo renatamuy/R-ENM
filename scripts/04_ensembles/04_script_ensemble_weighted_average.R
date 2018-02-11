@@ -75,10 +75,12 @@ for(i in sp){
   tif.sp <- grep(i, tif, value = TRUE)
   eva.sp <- eva[grep(i, names(eva))]
   
-  tss.da <- do.call("rbind", eva.sp)$TSS
+  eva.t <- do.call("rbind", eva.sp)
+  tss.da <- eva.t$TSS
   tss.id <- which(tss.da > tss)
   tss.va <- tss.da[tss.da > tss]
   
+
   if(length(tss.id) == 0){
     
     print(paste0("Ops! The ensemble for '", i, "' don't have models with TSS above ", tss, "!"))
@@ -94,7 +96,10 @@ for(i in sp){
     
     setwd("ensemble_wei")
     writeRaster(ens, paste0("ens_wei_ave_", i, ".tif"), format = "GTiff", overwrite = TRUE)
-    setwd("..")
+   
+    fwrite(data.table(mo = row.names(eva.t[eva.t$TSS > tss,]), 
+                      eva.t[eva.t$TSS > tss,]), "_models_used_ensemble_wei.csv")
+     setwd("..")
     
     print(paste0("Nice! The ensemble for '", i, "' it's done!"))
     

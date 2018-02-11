@@ -116,6 +116,8 @@ for(i in sp){
                   sub("__", "", paste0("ensemble_freq_", i, "_", j, "_", k, ".tif")), 
                   format = "GTiff", overwrite = TRUE)
       
+      fwrite(eva.sp, "_models_used_ensemble_freq.csv")
+      
       setwd("..")
       
       print(paste0("Nice! The ensemble of ", i, ", ", j, ", ", k, " it's done!"))
