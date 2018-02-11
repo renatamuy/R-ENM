@@ -19,7 +19,7 @@ search()
 
 # import data
 # directory
-setwd("E:/github_mauriciovancine/R-ENM/ouput_future")
+setwd("E:/github_mauriciovancine/R-ENM/output")
 
 # enms
 tif <- dir(patt = ".tif$")
@@ -45,15 +45,15 @@ eva
 ## frequency ensemble 
 # lists
 # species
-sp <- sub("zEval_ACCESS_svm_", "", sub(".txt", "", grep("svm", txt, value = TRUE)))
+sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = TRUE)))
 sp
 
 # gcms
-gc <- c("ACCESS")
+gc <- c("")
 gc
 
 # periods
-pe <- c("pres", "rcp45_2050", "rcp45_2070", "rcp85_2050", "rcp85_2070")
+pe <- c("")
 pe
 
 # algorithms
@@ -64,7 +64,7 @@ al
 na <- data.table()
 
 # tss
-tss <- .5
+tss <- .9
 
 # ensembles
 ens <- enm
@@ -72,7 +72,7 @@ ens[] <- 0
 ens
 
 # directory
-dir.create("ensemble_freq")
+dir.create("ensemble_freq_tss")
 
 # for
 for(i in sp){
@@ -123,7 +123,7 @@ for(i in sp){
           
       }
       
-      setwd("ensemble_freq")
+      setwd("ensemble_freq_tss")
 
       writeRaster(ens / (max(ens[], na.rm = T)), 
                   sub("__", "", paste0("ensemble_freq_", i, "_", j, "_", k, ".tif")), 
