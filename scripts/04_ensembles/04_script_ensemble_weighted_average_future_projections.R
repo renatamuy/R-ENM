@@ -12,7 +12,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, data.table, vegan, viridis)
+pacman::p_load(raster, rgdal, vegan, data.table, vegan, viridis)
 search()
 
 ###----------------------------------------------------------------------------###
@@ -99,7 +99,7 @@ for(i in sp){
     for(j in gc){
       
       tif.gc <- grep(j, tif.sp, value = TRUE)
-      eva.gc <- eva.sp[grep(j, names(eva.sp))]
+      eva[grep(i, row.names(eva)), ]
       
       print(paste0("The ensemble for ", i, " started, relax, take a coffee, it may take awhile..."))
       

@@ -12,7 +12,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, data.table, viridis)
+pacman::p_load(raster, rgdal, vegan, data.table, viridis)
 search()
 
 ###----------------------------------------------------------------------------###
@@ -98,41 +98,51 @@ for(i in sp){
       for(l in al){
         
         tif.al <- grep(l, tif.pe, value = TRUE)
-        eva.al <- eva.gc[grep(l, row.names(eva.gc)), ]
         
-        enm.al <- stack(tif.al)
-        
-        for(m in 1:length(tif.al)){
+        if(length(tif.al) == 0){
           
-          ens <- sum(ens, enm.al[[m]] >= eva.al[m, 1])
+          print(paste0("Ops! The ensemble for '", i, "' don't have models of '", l, "' with TSS above ", tss, "!"))
           
+        } else{
+          
+          eva.al <- eva.gc[grep(l, row.names(eva.gc)), ]
+          
+          enm.al <- stack(tif.al)
+          
+          for(m in 1:length(tif.al)){
+            
+            ens <- sum(ens, enm.al[[m]] >= eva.al[m, 1])
+            
           }
-        
+          
         }
-      
-      setwd("ensemble_freq")
-
-      writeRaster(ens / (length(tif.sp)), 
-                  sub("__", "", paste0("ensemble_freq_", i, "_", j, "_", k, ".tif")), 
-                  format = "GTiff", overwrite = TRUE)
-      
-      fwrite(eva.sp, "_models_used_ensemble_freq.csv")
-      
-      setwd("..")
-      
-      print(paste0("Nice! The ensemble of ", i, ", ", j, ", ", k, " it's done!"))
-      
-      ens[] <- 0
+        
+      }
+        
+        setwd("ensemble_freq")
+        
+        writeRaster(ens / (length(tif.sp)), 
+                    sub("__", "", paste0("ensemble_freq_", i, "_", j, "_", k, ".tif")), 
+                    format = "GTiff", overwrite = TRUE)
+        
+        fwrite(eva.sp, "_models_used_ensemble_freq.csv")
+        
+        setwd("..")
+        
+        print(paste0("Nice! The ensemble of ", i, ", ", j, ", ", k, " it's done!"))
+        
+        ens[] <- 0
+        
+      }
       
     }
     
-    }
-  
-  print("Yeh! It's over!!!")
-  
+    print("Yeh! It's over!!!")
+    
   }
-
-###----------------------------------------------------------------------------###
-
-
-
+  
+  ###----------------------------------------------------------------------------###
+  
+  
+  
+  
