@@ -63,7 +63,7 @@ plot(en.br[[1]])
 en.co <- vifcor(en.br[[1:19]], th = .7)
 en.co
 
-en.pca <- prcomp(na.omit(en.br[[1:19]]), scale = T)
+en.pca <- prcomp(na.omit(en.br[[1:19]][]), scale = T)
 en.pca
 
 su <- summary(en.pca)
@@ -160,8 +160,8 @@ file.exists(paste0(system.file(package = "dismo"), "/java/maxent.jar"))
 # diretory
 setwd("..")
 getwd()
-dir.create("ouput_future")
-setwd("ouput_future")
+dir.create("output_future")
+setwd("output_future")
 getwd()
 
 # export occurrences

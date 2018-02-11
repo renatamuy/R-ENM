@@ -121,7 +121,7 @@ dir.create("output")
 setwd("output")
 
 # export occurrences
-fwrite(data.table(po), "_occ.csv")
+fwrite(data.table(po), "_occurrences_points.csv")
 
 # enms
 for(i in 1:length(unique(po[, 1]))){ # for to each specie
