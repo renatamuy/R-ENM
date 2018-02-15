@@ -12,8 +12,9 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, colorRamps,
-               data.table, dplyr, colorRamps, spocc, ggplot2, RCurl, usdm, viridis)
+pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, 
+	       colorRamps, data.table, dplyr, colorRamps, spocc, ggplot2, 
+	       RCurl, usdm, viridis, data.table)
 
 # temp
 setwd("E:/github_mauriciovancine/R-ENM/data")
