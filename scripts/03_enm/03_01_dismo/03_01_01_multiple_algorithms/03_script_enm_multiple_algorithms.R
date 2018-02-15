@@ -140,8 +140,9 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	id.background <- sample(nrow(bc), nrow(pr.specie))
 	bc.specie <- bc[id.background, ]
 	
-	# export background points
-	fwrite(data.table(bc.specie), "_background_points.csv")
+	# export points
+	fwrite(data.table(pr.specie), paste0(id.specie, "_presence_points.csv"))
+	fwrite(data.table(bc.specie), paste0(id.specie, "_background_points.csv"))
 	
 
   for(r in 1:10){	# number of replicas
