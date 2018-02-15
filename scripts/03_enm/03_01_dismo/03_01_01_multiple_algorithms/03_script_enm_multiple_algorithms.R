@@ -48,7 +48,7 @@ en.br
 plot(en.br[[1]])
 
 # selection
-en.co <- vifcor(en.br[], th = .7)
+en.co <- vifcor(en.br[], th = .6)
 en.co
 
 en.pca <- prcomp(na.omit(en.br[]), scale = T)

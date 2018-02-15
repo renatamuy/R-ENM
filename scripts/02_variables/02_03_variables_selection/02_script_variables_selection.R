@@ -41,24 +41,35 @@ en.br
 plot(en.br[[1]])
 
 # selection
-en.vif <- vifcor(na.omit(en.br[]), th = .7) # bio05, bio14, bio18, bio19
-en.vif
+en.co <- vifcor(en.br[], th = .6)
+en.co
 
-en.pca <- prcomp(na.omit(en.br[]), scale = TRUE)
-table(summary(en.pca)$sdev > 1)[2]
-lo <- abs(round(en.pca$rotation[, 1:3], 2))
-lo
+en.pca <- prcomp(na.omit(en.br[]), scale = T)
+en.pca
 
-na <- unique(c(names(lo[lo[, 1] >= .3, 1]), 
-               names(lo[lo[, 2] >= .4, 2]), 
-               names(lo[lo[, 3] >= .4, 3])))
+su <- summary(en.pca)
+su
 
-se <- na[na %in% en.vif@results$Variables]
+n.pca <- length(su$sdev[su$sdev > 1])
+n.pca
 
-en <- en.br[[se]]
+l.pca <- abs(round(en.pca$rotation[, 1:n.pca], 2))
+l.pca
+
+va <- l.pca[row.names(l.pca) %in% en.co@results$Variables, ]
+va
+
+va.max <- row.names(va)[apply(va, 2, which.max)]
+va.max 
+
+en <- en.br[[va.max]]
 en  
 
+# graphics
 ecospat.cor.plot(na.omit(en[]))
+
+corrplot(cor(na.omit(en.br[])), type = "lower", diag = F, tl.srt = 45, mar = c(3, 0.5, 2, 1),
+         title = "Correlacao entre variaveis Bioclimaticas")
 
 ###-----------------------------------------------------------------------------------------###
 
