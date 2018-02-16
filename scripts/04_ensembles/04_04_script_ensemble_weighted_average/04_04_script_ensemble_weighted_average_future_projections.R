@@ -118,7 +118,7 @@ for(i in sp){
       
       da.r <- data.table(decostand(da, "range", na.rm = TRUE)) 
       # da.r.pe <- data.table(pe = rep(pe, each = length(enm[])), da.r)
-      da.r.pe <- data.table(pe = rep(pe, each = nrow(da)/length(al)), da.r)
+      da.r.pe <- data.table(pe = rep(pe, each = nrow(da)/length(pe)), da.r)
       
 
       for(l in pe){
