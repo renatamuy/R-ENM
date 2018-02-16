@@ -19,7 +19,7 @@ search()
 
 # import data
 # directory
-setwd("E:/github_mauriciovancine/R-ENM/output_future")
+setwd("E:/github_mauriciovancine/R-ENM/output")
 
 # enms
 # list files
@@ -44,17 +44,18 @@ eva
 ## weighted average ensemble 
 # lists
 # species
-sp <- sub("zEval_ACCESS_svm_", "", sub(".txt", "", grep("svm", txt, value = TRUE)))
+sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = TRUE)))
 sp
 
 # gcms
 gc <- c("ACCESS")
+gc <- ""
 gc
 
 # periods
 pe <- c("pres", "rcp45_2050", "rcp45_2070", "rcp85_2050", "rcp85_2070")
-pe
-
+pe <- ""
+  
 # algorithms
 al <- c("Bioclim", "Gower", "Mahalanobis", "Maxent", "SVM")
 al
@@ -71,13 +72,13 @@ tss <- .5
 
 # raster
 ens <- enm[[1]]
-ens[] <- NA
+values(ens)[is.na(values(ens)) == FALSE] <- 1
+plot(ens, col = viridis(100))
 names(ens) <- "ens"
 ens
 
 # ensemble
-dir.create("ensemble_wei")
-
+dir.create("ensemble_wei2")
 
 for(i in sp){
   
@@ -99,7 +100,7 @@ for(i in sp){
     for(j in gc){
       
       tif.gc <- grep(j, tif.sp, value = TRUE)
-      eva[grep(i, row.names(eva)), ]
+      eva.gc <- eva.sp[grep(j, names(eva.sp))]
       
       print(paste0("The ensemble for ", i, " started, relax, take a coffee, it may take awhile..."))
       
@@ -109,31 +110,31 @@ for(i in sp){
         print(paste0("Nice! The ensemble '", i, "', GCM '", j, "', for '", k, "', it's done!"))
     
         tif.pe <- grep(k, tif.gc, value = TRUE)
-        da <- rbind(da, stack(tif.pe[tss.id])[], use.names = FALSE)
+        # da <- rbind(da, stack(tif.pe[tss.id])[], use.names = FALSE)
+        da <- rbind(da, na.omit(stack(tif.pe[tss.id])[]), use.names = FALSE)
         na <- rbind(na, data.table(pe = rep(k, each = length(tif.pe[tss.id])), 
-                                            mo = sub(".tif", "", tif.pe[tss.id])))
+                                   mo = sub(".tif", "", tif.pe[tss.id])))
         }
       
       da.r <- data.table(decostand(da, "range", na.rm = TRUE)) 
-      da.r.pe <- data.table(pe = rep(pe, each = length(enm[])), da.r)
+      # da.r.pe <- data.table(pe = rep(pe, each = length(enm[])), da.r)
+      da.r.pe <- data.table(pe = rep(pe, each = nrow(da)/length(al)), da.r)
       
 
       for(l in pe){
+        da.pe <- da.r.pe[pe == l, -1]
+        values(ens)[is.na(values(ens)) == FALSE] <- apply(da.pe, 1, function (x) sum(x * tss.va) / sum(tss.va))
+            
+        plot(ens)
+            
+        setwd("ensemble_wei2")
     
-      da.pe <- da.r.pe[pe == l, -1]
-      ens[] <- apply(da.pe, 1, function (x) sum(x * tss.va) / sum(tss.va))
-
-      dim(da.pe)
-      length(tss.va)
+        writeRaster(ens, paste0("ensemble_wei_aver_", i, "_", j, "_", l, ".tif"), format = "GTiff",
+                    overwrite = TRUE)
     
-      setwd("ensemble_wei")
-    
-      writeRaster(ens, paste0("ensemble_wei_aver_", i, "_", j, "_", l, ".tif"), format = "GTiff",
-                  overwrite = TRUE)
-    
-      fwrite(na, "_models_used_ensemble_wei.csv")
+        fwrite(na, "_models_used_ensemble_wei.csv")
       
-      setwd("..")
+        setwd("..")
   
       }
       
@@ -145,6 +146,6 @@ for(i in sp){
   
   print("Yeh! It's over!!!")
   
-  }
+}
 
 ###----------------------------------------------------------------------------###
