@@ -23,6 +23,8 @@ eval(parse(text = getURL("https://gist.githubusercontent.com/mauriciovancine/840
 
 # https://github.com/atredennick/Plot_geographical_data
 
+# http://rmhogervorst.nl/cleancode/blog/2017/01/06/plotting-a-map-with-ggplot2.html
+
 ###---------------------------------------------------------------------###
 
 ## data
