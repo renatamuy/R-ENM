@@ -1,4 +1,4 @@
-### script occurrences cooma points ###
+### script occurrences comma points ###
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 # Claudia Kanda - claudiakand@gmail.com 
