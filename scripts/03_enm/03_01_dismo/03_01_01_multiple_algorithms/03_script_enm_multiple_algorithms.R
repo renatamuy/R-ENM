@@ -120,9 +120,7 @@ file.exists(paste0(system.file(package = "dismo"), "/java/maxent.jar"))
 setwd("E:/github_mauriciovancine/R-ENM")
 dir.create("output")
 setwd("output")
-
-# export occurrences
-fwrite(data.table(po), "_occurrences_points.csv")
+dir.create("graphics")
 
 # enms
 for(i in 1:length(unique(po[, 1]))){ # for to each specie
@@ -134,6 +132,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
   eval.Maxent <- NULL
   eval.SVM <- NULL
   eval.names <- NULL
+  max.res <- matrix()
 
   # selecting presence and absence
 	id.specie <- as.character(unique(po[, 1]))[i]
@@ -142,8 +141,8 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	bc.specie <- bc[id.background, ]
 	
 	# export points
-	fwrite(data.table(pr.specie), paste0(id.specie, "_presence_points.csv"))
-	fwrite(data.table(bc.specie), paste0(id.specie, "_background_points.csv"))
+	fwrite(data.table(pr.specie), paste0("_", id.specie, "_presence_points.csv"))
+	fwrite(data.table(bc.specie), paste0("_", id.specie, "_background_points.csv"))
 	
 
   for(r in 1:10){	# number of replicas
@@ -159,8 +158,8 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
   	
     ## 1. bioclim
   	# 1.1 calibration
-	  Bioclim <- bioclim(train[which(train[, 1] == 1), -1])	
-	 
+	  Bioclim <- bioclim(train[which(train[, 1] == 1), -1])
+	  
 	  # 1.2 projection
     writeRaster(predict(en, Bioclim), paste0("bioclim_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")	
    
@@ -170,6 +169,12 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  eval.Bioclim.sp <- c(eBioclim@t[idBioclim], eBioclim@auc, (eBioclim@TPR[idBioclim] + eBioclim@TNR[idBioclim] - 1))
 	  eval.Bioclim <- rbind(eval.Bioclim, eval.Bioclim.sp)
 
+	  # 1.4 graphics
+	  setwd("graphics")
+	  tiff(paste0("bioclim_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Bioclim); dev.off()
+	  tiff(paste0("bioclim_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eBioclim, "ROC"); dev.off()
+	  setwd("..")
+	  
 	  # verify 
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Bioclim', replica ", 
 	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
@@ -178,7 +183,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
     ## 2. gower
 	  # 2.1 calibration
 	  Gower <- domain(train[which(train[, 1] == 1), -1])	
-
+	  
 	  # 2.2 projection
     writeRaster(predict(en, Gower), paste0("gower_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 
@@ -188,9 +193,16 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  eval.Gower.sp <- c(eGower@t[idGower], eGower@auc, (eGower@TPR[idGower] + eGower@TNR[idGower] - 1))
 	  eval.Gower <- rbind(eval.Gower, eval.Gower.sp)
 
+	  # 2.4 graphics
+	  setwd("graphics")
+	  tiff(paste0("gower_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Gower); dev.off()
+	  tiff(paste0("gower_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eGower, "ROC"); dev.off()
+	  setwd("..")
+	  
 	  # verify 
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Gower', replica ", 
 	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
+	  
 	  
     ## 3. mahalanobis	
 	  # 3.1 calibration
@@ -205,6 +217,13 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  eval.Maha.sp <- c(eMaha@t[idMaha], eMaha@auc, (eMaha@TPR[idMaha] + eMaha@TNR[idMaha] - 1))
 	  eval.Maha <- rbind(eval.Maha, eval.Maha.sp)
 	
+	  # 3.4 graphics
+	  setwd("graphics")
+	  tiff(paste0("mahalanobis_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Maha); dev.off()
+	  tiff(paste0("mahalanobis_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eMaha, "ROC"); dev.off()
+	  setwd("..")
+	  
+	  
 	  # verify 
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Mahalanobis', replica ", 
 	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
@@ -221,15 +240,23 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  idMaxent <- which(eMaxent@t == as.numeric(threshold(eMaxent, "spec_sens")))
 	  eval.Maxent.sp <- c(eMaxent@t[idMaxent], eMaxent@auc, (eMaxent@TPR[idMaxent] + eMaxent@TNR[idMaxent] - 1))
 	  eval.Maxent <- rbind(eval.Maxent, eval.Maxent.sp)
-
-	  # verify 
+	  
+	  # 4.4 grapihcs
+	  setwd("graphics")
+	  tiff(paste0("maxent_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Maxent); dev.off()
+	  tiff(paste0("maxent_contribution_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(Maxent); dev.off()
+	  tiff(paste0("maxent_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eMaxent, "ROC"); dev.off()
+	  max.res <- data.table(max.res, as.matrix(Maxent@results[1:50]))
+	  setwd("..")
+	  
+    # verify 
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Maxent', replica ", 
 	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
 
     ## 5. svm	
 	  # 5.1 calibration
-	  SVM <- ksvm(pb ~ bio2 + bio4 + bio14, data = train)	
-
+	  SVM <- ksvm(pb ~ ., data = train)
+	  
 	  # 5.2 projection
     writeRaster(predict(en, SVM), paste0("svm_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 
@@ -239,6 +266,12 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  eval.SVM.sp <- c(eSVM@t[idSVM], eSVM@auc, (eSVM@TPR[idSVM] + eSVM@TNR[idSVM] - 1))
 	  eval.SVM <- rbind(eval.SVM, eval.SVM.sp)
 	  
+	  # 5.4 graphics
+	  setwd("graphics")
+	  tiff(paste0("svm_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eSVM, "ROC"); dev.off()
+	  setwd("..")
+	  
+	  
 	  # verify 
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'SVM', replica ", 
 	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
@@ -247,7 +280,16 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  eval.names <- c(eval.names, paste0(id.specie, ifelse(r < 10, paste0("0", r), r)))	
 	  
   } # ends for "r"
-
+	
+	# maxent results
+	setwd("graphics")
+	na <- attributes(Maxent@results)[[2]][[1]]
+	max.res <- data.table(na, max.res[, -1])
+	colnames(max.res) <- c("names", paste0("rep", 1:r))
+	fwrite(max.res, "_maxent_results.csv")
+  setwd("..")
+	
+	# evaluations
   dimnames(eval.Bioclim) <- list(eval.names, c("thrs", "AUC", "TSS"))
   dimnames(eval.Gower) <- list(eval.names, c("thrs", "AUC", "TSS"))  
   dimnames(eval.Maha) <- list(eval.names, c("thrs", "AUC", "TSS"))  
