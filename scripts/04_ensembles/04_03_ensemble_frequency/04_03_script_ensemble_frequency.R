@@ -61,7 +61,7 @@ al <- c("bioclim", "gower", "mahalanobis", "maxent", "svm")
 al
 
 # tss
-tss <- .5
+tss <- -1
 
 # ensembles
 ens <- enm

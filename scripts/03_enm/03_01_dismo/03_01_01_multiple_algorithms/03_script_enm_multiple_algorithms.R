@@ -86,21 +86,27 @@ ha <- distinct(occ2df(occ(query = "Haddadus binotatus",
                           has_coords = T))[, 1:3])
 ha
 
-ha <- data.table(sp = sub(" ", "_", unique(tolower(ha$name))), 
+po.ha <- data.table(sp = sub(" ", "_", unique(tolower(ha$name))), 
                  lon = as.numeric(ha$longitude), 
-                 lat = as.numeric(ha$latitude), 
-                 pres = 1)
-ha
+                 lat = as.numeric(ha$latitude))
+po.ha
 
-plot(ha$lon, ha$lat, pch = 20)
+plot(po.ha$lon, po.ha$lat, pch = 20)
+
 
 # one point per cell
-po <- mask(rasterize(ha[, 2:3], en[[1]], ha$pres), br)
-po
+ra <- data.table(rasterToPoints(en[[1]])[, 1:2], id = 1:nrow(ra))
+gridded(ra) <- ~ x + y
+ra.r <- raster(ra) 
+crs(ra.r) <- crs(va)  
+plot(ra.r, col = viridis(100))
+points(po$lon, po$lat, pch = 20)
 
-po <- data.table(sp = unique(ha$sp), 
-                    lon = rasterToPoints(po)[, 1], 
-                    lat = rasterToPoints(po)[, 2])
+po.ha$oppc <- extract(ra.r, po.ha[, c(2:3)])
+table(po.ha$oppc)
+write.csv(po.ha, "po_check_oppc.csv")
+
+po <- na.omit(distinct(po.ha, oppc, .keep_all = TRUE))
 po
 
 plot(en[[1]], col = viridis(100))
