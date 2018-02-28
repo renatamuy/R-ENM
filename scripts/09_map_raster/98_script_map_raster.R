@@ -11,8 +11,8 @@ memory.limit(size = 1.75e13)
 
 # packages 
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, ggplot2, data.table, dismo, maps, viridis, colorRamps, RCurl,
-               stringr, lettercase)
+pacman::p_load(raster, rgdal, spocc, ggplot2, data.table, dismo, maps, viridis, colorRamps, RCurl,
+               stringr, lettercase, dplyr)
 
 ## functions
 eval(parse(text = getURL("https://gist.githubusercontent.com/mauriciovancine/840428ae5511e78b5681af6f995e6348/raw/12228ca55408ba1cb06357a28ed86be6933a4d25/script_function_scalebar_north_arrow.R", 
@@ -29,28 +29,30 @@ eval(parse(text = getURL("https://gist.githubusercontent.com/mauriciovancine/840
 
 ## data
 # points
-po <- fread("E:/github_mauriciovancine/R-ENM/output/_output/_po.csv")
+po <- distinct(occ2df(occ(query = "Haddadus binotatus", 
+                          from = c("gbif", "idigbio", "inat", "obis", "ala"), 
+                          has_coords = T))[, 1:3])
 po
 
+plot(po$lon, po$lat, pch = 20)
+
 # raster
-en <- raster("E:/github_mauriciovancine/R-ENM/output/_output/ensemble_wei/ensemble_wei_aver_haddadus_binotatus.tif")
+#  variables
+br <- getData("GADM", country = "BRA", level = 0)
+br
+
+en <- crop(mask(aggregate(getData(name = "worldclim", var = "bio", res = 10, download = T), fact = 6, fun = "mean", expand = T), br), br)[[1]]
 en
 
-# convert the raster to points for plotting
-en.p <- rasterToPoints(en)
-en.p
+plot(en, col = viridis(100))
 
-# make the points a datatable for ggplot
-dt <- data.table(en.p)
+# convert the raster to points for plotting
+dt <- data.table(rasterToPoints(en))
 dt
 
 # Make appropriate column headings
 colnames(dt) <- c("lon", "lat", "suitability")
 dt
-
-# vector
-br <- getData("GADM", country = "BRA", level = 0)
-br
 
 # Now make the map
 ggplot(data = dt, aes(y = lat, x = lon)) +
@@ -79,7 +81,7 @@ ggplot(data = dt, aes(y = lat, x = lon)) +
         legend.text = element_text(size = 8),
         legend.title = element_blank()) +
   
-  annotate("text", -67, -15, label= "Suitability", size = 5) +
+  annotate("text", -67, -15, label= "Bio 01", size = 5) +
   
   labs(title = bquote("" ~ italic(.(sub("_", " ", str_to_title(unique(po$sp)))))))
 

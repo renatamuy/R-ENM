@@ -14,7 +14,7 @@ memory.limit(size = 1.75e13)
 if(!require("pacman")) install.packages("pacman")
 pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, 
 	       colorRamps, data.table, dplyr, colorRamps, spocc, ggplot2, 
-	       RCurl, usdm, viridis, data.table)
+	       RCurl, usdm, viridis, data.table, cptcity)
 
 # temp
 setwd("E:/github_mauriciovancine/R-ENM/data")
@@ -32,7 +32,9 @@ tempdir()
 #  variables
 en <- getData(name = "worldclim", var = "bio", res = 10, download = T)
 en
-plot(en[[1]])
+
+find_cpt("temperature")
+plot(en[[1]], col = cpt("jjg_misc_temperature"))
 
 # resampling
 en.re <- aggregate(en, fact = 6, fun = "mean", expand = T)
