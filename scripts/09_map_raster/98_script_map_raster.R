@@ -32,9 +32,11 @@ eval(parse(text = getURL("https://gist.githubusercontent.com/mauriciovancine/840
 po <- distinct(occ2df(occ(query = "Haddadus binotatus", 
                           from = c("gbif", "idigbio", "inat", "obis", "ala"), 
                           has_coords = T))[, 1:3])
-po
 
-plot(po$lon, po$lat, pch = 20)
+po$longitude <- as.numeric(po$longitude)
+po$latitude <- as.numeric(po$latitude)
+
+plot(po$longitude, po$latitude, pch = 20)
 
 # vector
 br <- getData("GADM", country = "BRA", level = 0)
@@ -51,7 +53,7 @@ dt <- data.table(rasterToPoints(en))
 dt
 
 # column names
-colnames(dt) <- c("lon", "lat", "annual mean temperature")
+colnames(dt) <- c("lon", "lat", "bio01")
 dt
 
 # Now make the map
@@ -60,12 +62,12 @@ ggplot(data = dt, aes(y = lat, x = lon)) +
   geom_polygon(data = br, aes(x = long, y = lat, group = group),
                color = "black", fill = adjustcolor("white", 1), size = .01) + 
   
-  geom_raster(aes(fill = suitability), alpha = .7) +
+  geom_raster(aes(fill = bio01), alpha = .7) +
   
-  geom_point(data = po, aes(x = lon, y = lat), shape = 21, 
-             size = 1, fill = adjustcolor("black", .9)) +
+  geom_point(data = po, aes(x = longitude, y = latitude), shape = 21, 
+            size = 1, fill = adjustcolor("black", .9)) +
   
-  scale_fill_gradientn("Bio 01", colours = matlab.like(100)) + 
+  scale_fill_gradientn("bio01", colours = matlab.like(100)) + 
   #scale_fill_gradientn("Suitability", colours = viridis(100)) + 
   
   coord_equal() +
@@ -83,11 +85,9 @@ ggplot(data = dt, aes(y = lat, x = lon)) +
   
   annotate("text", -67, -15, label= "Bio 01", size = 5) +
   
-  labs(title = bquote("" ~ italic(.(sub("_", " ", str_to_title(unique(po$sp)))))))
+  labs(title = bquote("" ~ italic(.(unique(po$name)[1]))))
 
 
 ggsave("map.tiff", wi = 15, he = 15, un = "cm", dpi = 100)
-
-
 
 ###---------------------------------------------------------------------###
