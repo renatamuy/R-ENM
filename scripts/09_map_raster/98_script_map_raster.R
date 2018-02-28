@@ -1,4 +1,4 @@
-### script amphibians raster map ###
+### script raster map ###
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
 
@@ -18,7 +18,7 @@ pacman::p_load(raster, rgdal, spocc, ggplot2, data.table, dismo, maps, viridis, 
 eval(parse(text = getURL("https://gist.githubusercontent.com/mauriciovancine/840428ae5511e78b5681af6f995e6348/raw/12228ca55408ba1cb06357a28ed86be6933a4d25/script_function_scalebar_north_arrow.R", 
                          ssl.verifypeer = F)))
 
-## font
+## fonts
 # https://nrelscience.org/2013/05/30/this-is-how-i-did-it-mapping-in-r-with-ggplot2/
 
 # https://github.com/atredennick/Plot_geographical_data
@@ -36,22 +36,22 @@ po
 
 plot(po$lon, po$lat, pch = 20)
 
-# raster
-#  variables
+# vector
 br <- getData("GADM", country = "BRA", level = 0)
 br
 
+# raster
 en <- crop(mask(aggregate(getData(name = "worldclim", var = "bio", res = 10, download = T), fact = 6, fun = "mean", expand = T), br), br)[[1]]
 en
 
 plot(en, col = viridis(100))
 
-# convert the raster to points for plotting
+# convert raster to points for plotting
 dt <- data.table(rasterToPoints(en))
 dt
 
-# Make appropriate column headings
-colnames(dt) <- c("lon", "lat", "suitability")
+# column names
+colnames(dt) <- c("lon", "lat", "annual mean temperature")
 dt
 
 # Now make the map
@@ -65,7 +65,7 @@ ggplot(data = dt, aes(y = lat, x = lon)) +
   geom_point(data = po, aes(x = lon, y = lat), shape = 21, 
              size = 1, fill = adjustcolor("black", .9)) +
   
-  scale_fill_gradientn("Suitability", colours = matlab.like(100)) + 
+  scale_fill_gradientn("Bio 01", colours = matlab.like(100)) + 
   #scale_fill_gradientn("Suitability", colours = viridis(100)) + 
   
   coord_equal() +
