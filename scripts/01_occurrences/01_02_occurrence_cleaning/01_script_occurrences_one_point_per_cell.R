@@ -53,6 +53,28 @@ points(po.r$long, po.r$lat, pch = 20, col = "red")
 fwrite(po.r, "Bromelia_balansae_rarefection.csv")
 
 
+
+# one point per cell
+ra <- data.table(rasterToPoints(en[[1]])[, 1:2])
+ra <- data.table(id = 1:nrow(ra), ra)
+gridded(ra) <- ~ x + y
+ra.r <- raster(ra) 
+crs(ra.r) <- crs(va)  
+plot(ra.r, col = viridis(100))
+points(po$lon, po$lat, pch = 20)
+
+po$oppc <- extract(ra.r, po[, c(2:3)])
+table(po$oppc)
+write.csv(po, "po_check_oppc.csv")
+
+po <- na.omit(distinct(po, oppc, .keep_all = TRUE))
+po
+
+plot(en[[1]], col = viridis(100))
+points(bc, pch = 20, cex = .5, col = "blue")
+points(po$lon, po$lat, pch = 20, cex = .5, col = "red")
+
+
 ###---------------------------------------------------------------------###
 
 

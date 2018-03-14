@@ -267,6 +267,8 @@ biplot(pca, var.axes = T, xlabs = rep("o", nrow(pca$x)), ylabs = paste0("bio", 1
 	 expand = 1.2, xlab = "PC1 (43.52%)", ylab = "PC2 (23.51%)", main = "PCA Bioclimaticas", 
 	 xlim = c(-.03, .04))
 
+
+
 # 6.2. pca as new variables
 # pca of raster
 pca.sa <- rasterPCA(pres.sa, spca = T) 

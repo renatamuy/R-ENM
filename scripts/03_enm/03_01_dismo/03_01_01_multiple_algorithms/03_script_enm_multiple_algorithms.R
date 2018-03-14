@@ -12,9 +12,8 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, dismo, gam, randomForest, kernlab, rJava, vegan, 
-	       colorRamps, data.table, dplyr, colorRamps, spocc, ggplot2, 
-	       RCurl, usdm, viridis, data.table, cptcity)
+pacman::p_load(raster, rgdal, dismo, kernlab, rJava, vegan, 
+	      data.table, spocc, ggplot2, usdm, viridis, RCurl, RStoolbox)
 
 # temp
 setwd("E:/github_mauriciovancine/R-ENM/data")
@@ -26,20 +25,25 @@ assign("tempdir", tempdir, baseenv())
 lockBinding("tempdir", baseenv())
 tempdir()
 
+# functions
+eval(parse(text = getURL(
+  "https://gist.githubusercontent.com/mauriciovancine/498e34ddb89f0a7ecf991174cb9893d0/raw/900ecb7c4604fb4604c2df364a441e279582f695/script_%2520eliminate_biases_environmental_space.R",
+  ssl.verifypeer = F)))
+
+
 ###---------------------------------------------------------------------------###
 
 ## data
 #  variables
-en <- getData(name = "worldclim", var = "bio", res = 10, download = T)
+en <- getData(name = "worldclim", var = "bio", res = 10, download = TRUE)
 en
 
-find_cpt("temperature")
-plot(en[[1]], col = cpt("jjg_misc_temperature"))
+plot(en[[1]], col = viridis(100))
 
 # resampling
-en.re <- aggregate(en, fact = 6, fun = "mean", expand = T)
+en.re <- aggregate(en, fact = 6, fun = "mean", expand = TRUE)
 en.re
-plot(en.re[[1]])
+plot(en.re[[1]], col = viridis(100))
 
 # limite
 br <- getData("GADM", country = "BRA", level = 0)
@@ -48,22 +52,24 @@ br
 # adjust to mask
 en.br <- crop(mask(en.re, br), br)
 en.br
-plot(en.br[[1]])
+plot(en.br[[1]], col = viridis(100))
 
 # selection
 en.co <- vifcor(en.br[], th = .6)
 en.co
 
-en.pca <- prcomp(na.omit(en.br[]), scale = T)
+en.pca <- rasterPCA(en.br, spca = TRUE)
 en.pca
 
-su <- summary(en.pca)
+plot(en.pca$map$PC1, col = viridis(100))
+
+su <- summary(en.pca$model)
 su
 
 n.pca <- length(su$sdev[su$sdev > 1])
 n.pca
 
-l.pca <- abs(round(en.pca$rotation[, 1:n.pca], 2))
+l.pca <- abs(round(en.pca$model$loadings[, 1:n.pca], 2))
 l.pca
 
 va <- l.pca[row.names(l.pca) %in% en.co@results$Variables, ]
@@ -82,38 +88,46 @@ colnames(bc[, -3]) <- c("long", "lat")
 plot(en[[1]], col = viridis(100))
 points(bc, pch = 20, cex = .5, col = "blue")
 
+
 # occurrences
 ha <- distinct(occ2df(occ(query = "Haddadus binotatus", 
-                          from = c("gbif", "idigbio", "inat", "obis", "ala"),
-                          has_coords = T))[, 1:3])
-ha
+                          from = c("gbif", "idigbio", "inat"),
+                          has_coords = T))[, 1:4])
+barplot(table(ha$prov))
 
-po.ha <- data.table(sp = sub(" ", "_", unique(tolower(ha$name))), 
+po <- data.table(sp = sub(" ", "_", unique(tolower(ha$name))), 
                  lon = as.numeric(ha$longitude), 
                  lat = as.numeric(ha$latitude))
-po.ha
-
-plot(po.ha$lon, po.ha$lat, pch = 20)
-
-
-# one point per cell
-ra <- data.table(rasterToPoints(en[[1]])[, 1:2], id = 1:nrow(ra))
-gridded(ra) <- ~ x + y
-ra.r <- raster(ra) 
-crs(ra.r) <- crs(va)  
-plot(ra.r, col = viridis(100))
-points(po$lon, po$lat, pch = 20)
-
-po.ha$oppc <- extract(ra.r, po.ha[, c(2:3)])
-table(po.ha$oppc)
-write.csv(po.ha, "po_check_oppc.csv")
-
-po <- na.omit(distinct(po.ha, oppc, .keep_all = TRUE))
 po
 
-plot(en[[1]], col = viridis(100))
-points(bc, pch = 20, cex = .5, col = "blue")
-points(po$lon, po$lat, pch = 20, cex = .5, col = "red")
+plot(po$lon, po$lat, pch = 20)
+
+
+# biases in the environmental space
+da <- data.table(extract(en.pca$map, po[, 2:3]))
+da
+
+co <- na.omit(data.table(po, da))[, 2:3]
+co
+
+da <- na.omit(da)
+da
+
+# all environmental space
+po.s <- data.frame(sp = unique(ha$name)[2], 
+                 envSample(coord = co, 
+                           filters = list(da$PC1, da$PC2), 
+                           res = list(1, 100), 
+                           do.plot = TRUE))
+po.s      
+
+# part of envoronmental space
+po.s <- data.frame(sp = unique(ha$name)[2], 
+                 envSample(coord = co, 
+                           filters = list(da$PC1, da$PC2), 
+                           res = list(1, 1), 
+                           do.plot = TRUE))
+po.s
 
 ###---------------------------------------------------------------------------###
 
