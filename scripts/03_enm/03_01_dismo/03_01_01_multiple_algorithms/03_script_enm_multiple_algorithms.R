@@ -12,7 +12,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, dismo, kernlab, rJava, vegan, 
+pacman::p_load(raster, rgdal, dismo, kernlab, rJava, vegan, dplyr,
 	      data.table, spocc, ggplot2, usdm, viridis, RCurl, RStoolbox)
 
 # temp
@@ -34,7 +34,24 @@ eval(parse(text = getURL(
 ###---------------------------------------------------------------------------###
 
 ## data
-#  variables
+
+## occurrences
+ha <- distinct(occ2df(occ(query = "Haddadus binotatus", 
+                          from = c("gbif", "idigbio", "inat"),
+                          has_coords = T))[, 1:4])
+
+barplot(table(ha$prov), col = 1:length(unique(ha$prov)))
+
+po <- data.table(sp = sub(" ", "_", unique(tolower(ha$name))), 
+                 lon = as.numeric(ha$longitude), 
+                 lat = as.numeric(ha$latitude))
+po
+
+plot(po$lon, po$lat, pch = 20)
+
+
+
+## variables
 en <- getData(name = "worldclim", var = "bio", res = 10, download = TRUE)
 en
 
@@ -54,10 +71,15 @@ en.br <- crop(mask(en.re, br), br)
 en.br
 plot(en.br[[1]], col = viridis(100))
 
-# selection
+###---------------------------------------------------------------------------###
+
+## variable selection
+
+# vif
 en.co <- vifcor(en.br[], th = .6)
 en.co
 
+# raster pca
 en.pca <- rasterPCA(en.br, spca = TRUE)
 en.pca
 
@@ -66,12 +88,15 @@ plot(en.pca$map$PC1, col = viridis(100))
 su <- summary(en.pca$model)
 su
 
+# axis number
 n.pca <- length(su$sdev[su$sdev > 1])
 n.pca
 
+# loadings
 l.pca <- abs(round(en.pca$model$loadings[, 1:n.pca], 2))
 l.pca
 
+# selecting
 va <- l.pca[row.names(l.pca) %in% en.co@results$Variables, ]
 va
 
@@ -80,28 +105,15 @@ va.max
 
 en <- en.br[[va.max]]
 en  
-  
-# background coordinates
-bc <- rasterToPoints(en)[, 1:2]
-colnames(bc[, -3]) <- c("long", "lat")
 
-plot(en[[1]], col = viridis(100))
-points(bc, pch = 20, cex = .5, col = "blue")
+###---------------------------------------------------------------------------###
 
+## occurrences selection
 
-# occurrences
-ha <- distinct(occ2df(occ(query = "Haddadus binotatus", 
-                          from = c("gbif", "idigbio", "inat"),
-                          has_coords = T))[, 1:4])
-barplot(table(ha$prov))
-
-po <- data.table(sp = sub(" ", "_", unique(tolower(ha$name))), 
-                 lon = as.numeric(ha$longitude), 
-                 lat = as.numeric(ha$latitude))
-po
-
-plot(po$lon, po$lat, pch = 20)
-
+# output
+setwd("E:/github_mauriciovancine/R-ENM")
+dir.create("output")
+setwd("output")
 
 # biases in the environmental space
 da <- data.table(extract(en.pca$map, po[, 2:3]))
@@ -114,20 +126,36 @@ da <- na.omit(da)
 da
 
 # all environmental space
-po.s <- data.frame(sp = unique(ha$name)[2], 
+tiff("selection_all_hb_points.tiff", wi = 20, he = 10, un = "cm", res = 300)
+po.all <- data.frame(sp = paste0(unique(po$sp), "_all"),
                  envSample(coord = co, 
                            filters = list(da$PC1, da$PC2), 
-                           res = list(1, 100), 
+                           res = list(.01, .1), 
                            do.plot = TRUE))
-po.s      
+dev.off()
 
 # part of envoronmental space
-po.s <- data.frame(sp = unique(ha$name)[2], 
+tiff("selection_part_hb_points.tiff", wi = 20, he = 10, un = "cm", res = 300)
+po.part <- data.frame(sp = paste0(unique(po$sp), "_part"), 
                  envSample(coord = co, 
                            filters = list(da$PC1, da$PC2), 
-                           res = list(1, 1), 
+                           res = list(.5, 2), 
                            do.plot = TRUE))
-po.s
+dev.off()
+
+po <- as.data.frame(rbind(po, po.all, po.part))
+po
+
+
+###---------------------------------------------------------------------------###
+
+## background coordinates
+bc <- rasterToPoints(en)[, 1:2]
+colnames(bc[, -3]) <- c("long", "lat")
+
+plot(en[[1]], col = viridis(100))
+points(bc, pch = 20, cex = .5, col = "blue")
+points(po[, 2:3], pch = 20, cex = .5, col = as.factor(po$sp))
 
 ###---------------------------------------------------------------------------###
 
@@ -138,14 +166,11 @@ file.exists(paste0(system.file(package = "dismo"), "/java/maxent.jar"))
 
 ### enms ###
 
-# output
-setwd("E:/github_mauriciovancine/R-ENM")
-dir.create("output")
-setwd("output")
-dir.create("graphics")
-
 # enms
 for(i in 1:length(unique(po[, 1]))){ # for to each specie
+  
+  # graphics
+  dir.create("graphics")
   
   # variables for evaluate
   eval.Bioclim <- NULL
@@ -193,8 +218,8 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 
 	  # 1.4 graphics
 	  setwd("graphics")
-	  tiff(paste0("bioclim_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Bioclim); dev.off()
-	  tiff(paste0("bioclim_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eBioclim, "ROC"); dev.off()
+	  tiff(paste0("bioclim_response_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); response(Bioclim); dev.off()
+	  tiff(paste0("bioclim_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eBioclim, "ROC"); dev.off()
 	  setwd("..")
 	  
 	  # verify 
@@ -217,8 +242,8 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 
 	  # 2.4 graphics
 	  setwd("graphics")
-	  tiff(paste0("gower_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Gower); dev.off()
-	  tiff(paste0("gower_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eGower, "ROC"); dev.off()
+	  tiff(paste0("gower_response_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); response(Gower); dev.off()
+	  tiff(paste0("gower_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eGower, "ROC"); dev.off()
 	  setwd("..")
 	  
 	  # verify 
@@ -241,8 +266,8 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	
 	  # 3.4 graphics
 	  setwd("graphics")
-	  tiff(paste0("mahalanobis_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Maha); dev.off()
-	  tiff(paste0("mahalanobis_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eMaha, "ROC"); dev.off()
+	  tiff(paste0("mahalanobis_response_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); response(Maha); dev.off()
+	  tiff(paste0("mahalanobis_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eMaha, "ROC"); dev.off()
 	  setwd("..")
 	  
 	  
@@ -265,9 +290,9 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  
 	  # 4.4 grapihcs
 	  setwd("graphics")
-	  tiff(paste0("maxent_response_", ifelse(r < 10, paste0("0", r), r), ".tif")); response(Maxent); dev.off()
-	  tiff(paste0("maxent_contribution_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(Maxent); dev.off()
-	  tiff(paste0("maxent_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eMaxent, "ROC"); dev.off()
+	  tiff(paste0("maxent_response_",  id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); response(Maxent); dev.off()
+	  tiff(paste0("maxent_contribution_",  id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(Maxent); dev.off()
+	  tiff(paste0("maxent_auc_",  id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eMaxent, "ROC"); dev.off()
 	  max.res <- data.table(max.res, as.matrix(Maxent@results[1:50]))
 	  setwd("..")
 	  
@@ -290,7 +315,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  
 	  # 5.4 graphics
 	  setwd("graphics")
-	  tiff(paste0("svm_auc_", ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eSVM, "ROC"); dev.off()
+	  tiff(paste0("svm_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eSVM, "ROC"); dev.off()
 	  setwd("..")
 	  
 	  
@@ -308,7 +333,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	na <- attributes(Maxent@results)[[2]][[1]]
 	max.res <- data.table(na, max.res[, -1])
 	colnames(max.res) <- c("names", paste0("rep", 1:r))
-	fwrite(max.res, "_maxent_results.csv")
+	fwrite(max.res, paste0("_maxent_results", id.specie, ".csv"))
   setwd("..")
 	
 	# evaluations
