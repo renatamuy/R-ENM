@@ -1,0 +1,34 @@
+Wed Mar 14 15:58:55 BRT 2018
+MaxEnt version 3.4.1
+Reading file absence
+readGrid: max memory 477626368, total allocated 42991616, free 9687448, used 33304168, increment 7619312
+Reading samples from presence
+Read samples: max memory 477626368, total allocated 42991616, free 27829104, used 15162512, increment -18141656
+Adding samples to background in feature space
+Command line used:  autorun -e E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526/absence -o E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526 -s E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526/presence -z
+Command line to repeat: java density.MaxEnt nowarnings noprefixes outputdirectory=E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526 samplesfile=E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526/presence environmentallayers=E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526/absence autorun novisible
+Species: species
+Layers: bio14 bio18 bio5
+Layertypes: Continuous Continuous Continuous
+outputdirectory: E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526
+samplesfile: E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526/presence
+environmentallayers: E:/github_mauriciovancine/R-ENM/data/temp/raster/maxent/3635833526/absence
+autorun: true
+visible: false
+
+getSamples: max memory 477626368, total allocated 42991616, free 26704144, used 16287472, increment 1124960
+Making features
+makeFeatures: max memory 477626368, total allocated 42991616, free 26704144, used 16287472, increment 0
+species: 
+Regularization values: linear/quadratic/product: 0.050, categorical: 0.250, threshold: 1.000, hinge: 0.500
+136 samples
+Density: max memory 477626368, total allocated 42991616, free 26704144, used 16287472, increment 0
+linearPredictor: max memory 477626368, total allocated 42991616, free 26704144, used 16287472, increment 0
+FeaturedSpace: max memory 477626368, total allocated 42991616, free 26704144, used 16287472, increment 0
+Sequential: max memory 477626368, total allocated 42991616, free 26704144, used 16287472, increment 0
+Initial loss: 5.552959584921617
+360: time = 0.232000 loss = 4.980632
+Resulting gain: 0.5723278748229257
+Projecting...
+Writing file E:\github_mauriciovancine\R-ENM\data\temp\raster\maxent\3635833526\species.csv
+Ending

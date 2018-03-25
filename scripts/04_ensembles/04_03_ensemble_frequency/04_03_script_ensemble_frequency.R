@@ -150,7 +150,7 @@ setwd("ensemble_freq")
 mo <- stack(dir(patt = ".tif"))
 mo
 
-plot(mo, col = viridis(100), main = c("all", "part"))  
+plot(mo, col = viridis(100), main = c("raw", "all", "part"))  
   
 ###----------------------------------------------------------------------------###
   
