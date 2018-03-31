@@ -12,7 +12,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, vegan, data.table, viridis)
+pacman::p_load(raster, rgdal, vegan, data.table, viridis, wesanderson)
 search()
 
 ###----------------------------------------------------------------------------###
@@ -27,7 +27,12 @@ tif
 
 enm <- raster(tif[[1]])
 enm
-plot(enm, main = names(tif[[1]]), col = viridis(100))
+
+plot(enm, main = names(tif[[1]]), col = viridis(10))
+lines(rasterToPolygons(enm), col = adjustcolor("gray30", .3))
+
+plot(enm, main = names(tif[[1]]), col = wes_palette("Zissou", 100, type = "continuous"))
+lines(rasterToPolygons(enm), col = adjustcolor("gray30", .3))
 
 # evaluate
 txt <- list.files(patt = ".txt$")
