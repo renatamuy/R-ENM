@@ -2,6 +2,12 @@
 Scripts ENMs in R
 
 ## Sites
+- [Global Change Conservation](http://www.earthskysea.org)
+
+- [Bayreuther Zentrum für Ökologie und Umweltforschung](https://www.bayceer.uni-bayreuth.de)
+
+- [Ecological Niche Modelling](https://sites.google.com/site/amiyaiitb/research/ecological-niche-modelling)
+
 - [Spatial data manipulation](http://rspatial.org/index.html) - Prof. Robert Hijmans
   
 - [Species distribution modeling with R](https://cran.r-project.org/web/packages/dismo/vignettes/sdm.pdf) - Prof. Robert J. Hijmans e Profa. Jane Elith
