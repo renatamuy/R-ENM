@@ -9,7 +9,6 @@
 
 # memory
 rm(list = ls())
-gc()
 memory.limit(size = 1.75e13) 
 
 # packages
@@ -86,7 +85,7 @@ euclidean <- function (occ, env, method = "mean",
  values <- apply(values, 2, decostand, method = decostand.method,
          na.rm = T)
  values(env) <- values
- values_occ <- extract(env, occ)
+ values_occ <- raster::extract(env, occ)
  pos <- is.na(values[, 1])
  values2 <- values[!pos, ]
  n <- nrow(values2)

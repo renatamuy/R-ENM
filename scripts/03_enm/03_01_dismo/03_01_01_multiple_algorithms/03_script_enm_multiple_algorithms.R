@@ -140,17 +140,6 @@ po.se <- data.frame(sp = paste0(unique(po$sp), "_all"),
                            res = list(diff(range(da$PC1)) / r, diff(range(da$PC2)) / r), 
                            do.plot = TRUE))
 
-while(r > 0){
-  
-  r <- r - .1
-  
-  po.se <- data.frame(sp = paste0(unique(po$sp), "_all"),
-                      envSample(coord = co, 
-                                filters = list(da$PC1, da$PC2), 
-                                res = list(diff(range(da$PC1)) / r, diff(range(da$PC2)) / r), 
-                                do.plot = TRUE))
-  }
-
 po <- as.data.frame(rbind(po, po.all, po.part))
 po
 
