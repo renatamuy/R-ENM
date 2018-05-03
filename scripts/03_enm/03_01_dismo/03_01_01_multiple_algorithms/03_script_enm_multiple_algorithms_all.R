@@ -215,7 +215,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
   	             ifelse(r < 10, paste0("0", r), r), " it's done!"))
   	
   	
-    ## 3. bioclim
+  	## 3. bioclim
   	Bioclim <- bioclim(train[which(train[, 1] == 1), -1])
   	writeRaster(predict(en, Bioclim), paste0("bioclim_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff")	
   	eBioclim <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Bioclim)
@@ -235,7 +235,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
     ## 4. gower
 	  Gower <- domain(train[which(train[, 1] == 1), -1])	
 	  writeRaster(predict(en, Gower), paste0("gower_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
-    eGower <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Gower)
+	  eGower <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Gower)
   	idGower <- which(eGower@t == as.numeric(threshold(eGower, "spec_sens")))
 	  eval.Gower.sp <- c(eGower@t[idGower], eGower@auc, (eGower@TPR[idGower] + eGower@TNR[idGower] - 1))
 	  eval.Gower <- rbind(eval.Gower, eval.Gower.sp)
@@ -249,7 +249,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
 	  
 	  
-    ## 5. mahalanobis	
+	  ## 5. mahalanobis	
 	  Maha <- mahal(train[which(train[, 1] == 1), -1])	
 	  writeRaster(predict(en, Maha), paste0("mahalanobis_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 	  eMaha <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maha)
@@ -302,7 +302,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  
 	  ## 8. maxent	
 	  Maxent <- maxent(train[, -1], train[, 1])	
-    writeRaster(predict(en, Maxent), paste0("maxent_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+	  writeRaster(predict(en, Maxent), paste0("maxent_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 	  eMaxent <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = Maxent)
 	  idMaxent <- which(eMaxent@t == as.numeric(threshold(eMaxent, "spec_sens")))
 	  eval.Maxent.sp <- c(eMaxent@t[idMaxent], eMaxent@auc, (eMaxent@TPR[idMaxent] + eMaxent@TNR[idMaxent] - 1))
@@ -317,11 +317,11 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Maxent', replica ", 
 	               ifelse(r < 10, paste0("0", r), r), " it's done!"))
-
-	  
-    ## 9. svm	
+	        
+	        
+	  ## 9. svm	
 	  SVM <- ksvm(pb ~ ., data = train)
-    writeRaster(predict(en, SVM), paste0("svm_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+	  writeRaster(predict(en, SVM), paste0("svm_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 	  eSVM <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = SVM)
 	  idSVM <- which(eSVM@t == as.numeric(threshold(eSVM, "spec_sens")))
 	  eval.SVM.sp <- c(eSVM@t[idSVM], eSVM@auc, (eSVM@TPR[idSVM] + eSVM@TNR[idSVM] - 1))
@@ -345,7 +345,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	max.res <- data.table(na, max.res[, -1])
 	colnames(max.res) <- c("names", paste0("rep", 1:r))
 	fwrite(max.res, paste0("_maxent_results", id.specie, ".csv"))
-  setwd("..")
+	setwd("..")
 	
 	# evaluations
   dimnames(eval.GLM) <- list(eval.names, c("thrs", "AUC", "TSS"))
