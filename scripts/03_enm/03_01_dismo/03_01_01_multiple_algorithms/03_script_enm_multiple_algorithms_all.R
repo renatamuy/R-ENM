@@ -312,7 +312,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	  tiff(paste0("maxent_response_",  id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); response(Maxent); dev.off()
 	  tiff(paste0("maxent_contribution_",  id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(Maxent); dev.off()
 	  tiff(paste0("maxent_auc_",  id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eMaxent, "ROC"); dev.off()
-	  max.res <- data.table(max.res, as.matrix(Maxent@results[1:50]))
+	  maxent.results <- data.table(maxent.results, as.matrix(Maxent@results[1:50]))
 	  setwd("..")
 	  
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Maxent', replica ", 
@@ -342,9 +342,9 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	# maxent results
 	setwd("graphics")
 	na <- attributes(Maxent@results)[[2]][[1]]
-	max.res <- data.table(na, max.res[, -1])
-	colnames(max.res) <- c("names", paste0("rep", 1:r))
-	fwrite(max.res, paste0("_maxent_results", id.specie, ".csv"))
+	maxent.results <- data.table(na, maxent.results[, -1])
+	colnames(maxent.results) <- c("names", paste0("rep", 1:r))
+	fwrite(maxent.results, paste0("_maxent_results", id.specie, ".csv"))
 	setwd("..")
 	
 	# evaluations
