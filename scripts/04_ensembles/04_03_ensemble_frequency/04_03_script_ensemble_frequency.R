@@ -7,7 +7,6 @@
 
 # memory
 rm(list = ls())
-gc()
 memory.limit(size = 1.75e13) 
 
 # packages
@@ -28,11 +27,7 @@ tif
 enm <- raster(tif[[1]])
 enm
 
-plot(enm, main = names(tif[[1]]), col = viridis(10))
-lines(rasterToPolygons(enm), col = adjustcolor("gray30", .3))
-
-plot(enm, main = names(tif[[1]]), col = wes_palette("Zissou", 100, type = "continuous"))
-lines(rasterToPolygons(enm), col = adjustcolor("gray30", .3))
+plot(enm, main = names(enm), col = wes_palette("Zissou", 10, type = "continuous"))
 
 # evaluate
 txt <- list.files(patt = ".txt$")
@@ -62,7 +57,10 @@ pe <- c("")
 pe
 
 # algorithms
-al <- c("bioclim", "gower", "mahalanobis", "maxent", "svm")
+al <- sub("_", "", sub(sp[1], "", sub("zEval_", "", sub(".txt", "", grep(sp[1], txt, value = T)))))
+al
+
+al <- c("bioclim", "gam", "glm", "gower", "mahalanobis", "maxent", "RandomForest", "svm")
 al
 
 # tss
@@ -103,6 +101,8 @@ for(i in sp){
       for(l in al){
         
         tif.al <- grep(l, tif.pe, value = TRUE)
+        
+        print(paste0("The ensemble for '", i, "', models '", l, "' are going!"))
         
         if(length(tif.al) == 0){
           
@@ -155,7 +155,7 @@ setwd("ensemble_freq")
 mo <- stack(dir(patt = ".tif"))
 mo
 
-plot(mo, col = viridis(100), main = c("raw", "all", "part"))  
+plot(mo, col = wes_palette("Zissou", 10, type = "continuous"))  
   
 ###----------------------------------------------------------------------------###
   

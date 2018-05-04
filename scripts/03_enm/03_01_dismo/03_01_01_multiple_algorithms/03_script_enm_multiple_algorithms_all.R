@@ -286,7 +286,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	 
 	  ## 7. random forest
 	  RandomForest <- randomForest(pb ~ ., data = train)
-	  writeRaster(predict(en, RandomForest), paste0("randomForest_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+	  writeRaster(predict(en, RandomForest), paste0("randomforest_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 	  eRandomForest <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = RandomForest)
 	  idRandomForest <- which(eRandomForest@t == as.numeric(threshold(eRandomForest, "spec_sens")))
 	  eval.RandomForest.sp <- c(eRandomForest@t[idRandomForest], eRandomForest@auc, (eRandomForest@TPR[idRandomForest] + eRandomForest@TNR[idRandomForest] - 1))

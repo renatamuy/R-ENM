@@ -7,7 +7,6 @@
 
 # memory
 rm(list = ls())
-gc()
 memory.limit(size = 1.75e13) 
 
 # packages
@@ -19,7 +18,7 @@ search()
 
 # import data
 # directory
-setwd("F:/amphibians/01_persistence_af/__enm_persistence/02_output_clim")
+setwd("E:/github_mauriciovancine/R-ENM/output")
 
 # evaluate
 # list files
@@ -42,7 +41,7 @@ sp <- sub("zEval_svm_", "", sub(".txt", "", grep("svm", txt, value = T)))
 sp
 
 # algorithms
-al <- c("Bioclim", "Gower", "Maxent", "SVM")
+al <- sub("_", "", sub(sp[1], "", sub("zEval_", "", sub(".txt", "", grep(sp[1], txt, value = T)))))
 al
 
 # directory
@@ -50,9 +49,12 @@ dir.create("boxplot")
 setwd("boxplot")
 
 for(i in sp){
+  
   ev.sp <- eva[grep(i, names(eva))]
   da <- do.call("rbind", ev.sp)
-  dat <- data.frame(da, alg = rep(al, each = 10), col = rep(c("forest green", "blue", "red", "orange"), each = 10))
+  dat <- data.frame(da, 
+                    alg = rep(al, each = nrow(da)/length(al)), 
+                    col = rep(wes_palette("Zissou", length(al), type = "continuous"), each = nrow(da)/length(al)))
   dat
   
   ggplot(data = dat, aes(x = alg, y = TSS)) + 
@@ -71,7 +73,8 @@ for(i in sp){
     ggtitle(bquote("" ~ italic(.(sub("_", " ", str_to_title(i)))))) + 
     
     theme(plot.title = element_text(lineheight = 1.4, face = "bold"), 
-          axis.text = element_text(size = 13, colour = "black"), 
+          axis.text.x = element_text(size = 10, angle = 20, hjust = 1),
+          axis.text.y = element_text(size = 15), 
           axis.title = element_text(size = 17))
   
   ggsave(paste0("boxplot_jitter_tss_", i, ".tiff"), he = 15, wi = 15, un = "cm", dpi = 300)
@@ -94,9 +97,10 @@ ggplot(data = dat, aes(x = alg, y = AUC)) +
   ggtitle(bquote("" ~ italic(.(sub("_", " ", str_to_title(i)))))) + 
   
   
-  theme(plot.title = element_text(lineheight = 1.2, face = "bold"), 
-        axis.text = element_text(size = 15, colour = "black"), 
-        axis.title = element_text(size = 20))
+  theme(plot.title = element_text(lineheight = 1.4, face = "bold"), 
+        axis.text.x = element_text(size = 10, angle = 20, hjust = 1),
+        axis.text.y = element_text(size = 15), 
+        axis.title = element_text(size = 17))
 
 ggsave(paste0("boxplot_jitter_auc_", i, ".tiff"), he = 15, wi = 15, un = "cm", dpi = 300)
 
