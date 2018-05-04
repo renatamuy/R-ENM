@@ -1,7 +1,7 @@
 ### script enm dismo - multiple algorithms ###
 
 # Mauricio Humberto Vancine - mauricio.vancine@gmail.com
-# 2018-05-02
+# 2018-05-04
 
 ###---------------------------------------------------------------------------###
 
@@ -208,10 +208,10 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
   	eval.GAM <- rbind(eval.GAM, eval.GAM.sp)
   	
   	setwd("graphics")
-  	tiff(paste0("GAM_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eGAM, "ROC"); dev.off()
+  	tiff(paste0("gam_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eGAM, "ROC"); dev.off()
   	setwd("..")
   	
-  	print(paste0("Yeh! The model of ", id.specie, ", algorithm 'gam', replica ", 
+  	print(paste0("Yeh! The model of ", id.specie, ", algorithm 'GAM', replica ", 
   	             ifelse(r < 10, paste0("0", r), r), " it's done!"))
   	
   	
@@ -224,8 +224,8 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
   	eval.Bioclim <- rbind(eval.Bioclim, eval.Bioclim.sp)
   	
   	setwd("graphics")
-  	tiff(paste0("Bioclim_response_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); response(Bioclim); dev.off()
-  	tiff(paste0("Bioclim_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eBioclim, "ROC"); dev.off()
+  	tiff(paste0("bioclim_response_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); response(Bioclim); dev.off()
+  	tiff(paste0("bioclim_auc_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif")); plot(eBioclim, "ROC"); dev.off()
   	setwd("..")
 	  
 	  print(paste0("Yeh! The model of ", id.specie, ", algorithm 'Bioclim', replica ", 
@@ -286,7 +286,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
 	 
 	  ## 7. random forest
 	  RandomForest <- randomForest(pb ~ ., data = train)
-	  writeRaster(predict(en, RandomForest), paste0("RandomForest_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
+	  writeRaster(predict(en, RandomForest), paste0("randomForest_", id.specie, ifelse(r < 10, paste0("0", r), r), ".tif"), format = "GTiff") 
 	  eRandomForest <- evaluate(p = test[test[, 1] == 1, -1], a = test[test[, 1] == 0, -1], model = RandomForest)
 	  idRandomForest <- which(eRandomForest@t == as.numeric(threshold(eRandomForest, "spec_sens")))
 	  eval.RandomForest.sp <- c(eRandomForest@t[idRandomForest], eRandomForest@auc, (eRandomForest@TPR[idRandomForest] + eRandomForest@TNR[idRandomForest] - 1))
@@ -357,6 +357,7 @@ for(i in 1:length(unique(po[, 1]))){ # for to each specie
   dimnames(eval.RandomForest) <- list(eval.names, c("thrs", "AUC", "TSS"))
   dimnames(eval.Maxent) <- list(eval.names, c("thrs", "AUC", "TSS"))
   dimnames(eval.SVM) <- list(eval.names, c("thrs", "AUC", "TSS"))
+  
   
   write.table(eval.GLM, paste0("zEval_", "glm_", id.specie, ".txt"))
   write.table(eval.GAM, paste0("zEval_", "gam_", id.specie, ".txt"))
