@@ -102,7 +102,7 @@ for(i in sp){
         
         tif.al <- grep(l, tif.pe, value = TRUE)
         
-        print(paste0("The ensemble for '", i, "', models '", l, "' are going!"))
+        print(paste0("The ensemble for '", i, "', algorithm '", l, "' are going!"))
         
         if(length(tif.al) == 0){
           
@@ -152,7 +152,7 @@ for(i in sp){
 setwd("ensemble_freq")
 
 # plot
-mo <- stack(dir(patt = ".tif"))
+mo <- stack(dir(patt = ".tif")[1])
 mo
 
 plot(mo, col = wes_palette("Zissou", 10, type = "continuous"))  

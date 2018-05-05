@@ -111,7 +111,7 @@ points(po$lon, po$lat, pch = 20)
 
 po$oppc <- raster::extract(ra.r, po[, c(2:3)])
 table(po$oppc)
-write.csv(po, "po_check_oppc.csv")
+write.csv(po, "_po_check_oppc.csv")
 
 po <- na.omit(distinct(po, oppc, .keep_all = TRUE))
 po
