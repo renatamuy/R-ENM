@@ -11,7 +11,7 @@ memory.limit(size = 1.75e13)
 
 # packages
 if(!require("pacman")) install.packages("pacman")
-pacman::p_load(raster, rgdal, data.table, vegan, ggplot2, stringr, viridis)
+pacman::p_load(raster, rgdal, data.table, vegan, ggplot2, stringr, viridis, wesanderson)
 search()
 
 ###----------------------------------------------------------------------------###
@@ -58,8 +58,8 @@ for(i in sp){
   dat
   
   ggplot(data = dat, aes(x = alg, y = TSS)) + 
-    geom_boxplot() + 
     geom_jitter(colour = dat$col, width = 0.2, size = 2) +
+    geom_boxplot(size = .5, col = "gray50",  fill = "#FFFFFF00") + 
     theme(legend.position = "none") +
     xlab("Algorithms") +
     ylab("TSS") + 
@@ -82,8 +82,8 @@ for(i in sp){
 
 
 ggplot(data = dat, aes(x = alg, y = AUC)) + 
-  geom_boxplot() + 
-  geom_jitter(colour = dat$col, width = 0.2) +
+  geom_jitter(colour = dat$col, width = 0.2, size = 2) +
+  geom_boxplot(size = .5, col = "gray50", fill = "#FFFFFF00") + 
   theme(legend.position = "none") +
   xlab("Algorithms") +
   ylab("AUC") + 

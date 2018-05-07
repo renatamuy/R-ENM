@@ -1,6 +1,5 @@
 # memory
 rm(list = ls())
-gc() 
 memory.limit(size = 1.75e13) 
 
 # instalar e carregar pacotes
