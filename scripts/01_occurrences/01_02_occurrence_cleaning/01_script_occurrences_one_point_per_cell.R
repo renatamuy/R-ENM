@@ -50,7 +50,7 @@ points(po$longitude, po$latitude, pch = 20)
 points(po.r$long, po.r$lat, pch = 20, col = "red")
 
 
-fwrite(po.r, "Bromelia_balansae_rarefection.csv")
+fwrite(po.r, "Bromelia_balansae_rarefaction.csv")
 
 
 
@@ -78,10 +78,12 @@ points(po$lon, po$lat, pch = 20, cex = .5, col = "red")
 ###---------------------------------------------------------------------###
 
 
-# multiple species
+# For multiple species
 
-da <- fread("")
+temp = list.files(pattern="*.csv")
 
+da = do.call(rbind, lapply(temp, function(x) fread(x, stringsAsFactors = FALSE)))
+                           
 da.sp.ra <- data.table()
 
 # shapefile
